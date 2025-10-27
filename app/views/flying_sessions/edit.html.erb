@@ -1,0 +1,12 @@
+<% content_for :title, "Editing flying session" %>
+
+<h1>Editing flying session</h1>
+
+<%= render "form", flying_session: @flying_session %>
+
+<br>
+
+<div>
+  <%= link_to "Show this flying session", @flying_session %> |
+  <%= link_to "Back to flying sessions", flying_sessions_path %>
+</div>

@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @flying_session %>
+
+<div>
+  <%= link_to "Edit this flying session", edit_flying_session_path(@flying_session) %> |
+  <%= link_to "Back to flying sessions", flying_sessions_path %>
+
+  <%= button_to "Destroy this flying session", @flying_session, method: :delete %>
+</div>

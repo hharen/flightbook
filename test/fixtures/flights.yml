@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  time: 2025-10-27 20:24:30
+  flying_session: one
+
+two:
+  time: 2025-10-27 20:24:30
+  flying_session: two

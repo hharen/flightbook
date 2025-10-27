@@ -1,0 +1,16 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Flying sessions" %>
+
+<h1>Flying sessions</h1>
+
+<div id="flying_sessions">
+  <% @flying_sessions.each do |flying_session| %>
+    <%= render flying_session %>
+    <p>
+      <%= link_to "Show this flying session", flying_session %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New flying session", new_flying_session_path %>

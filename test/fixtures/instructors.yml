@@ -1,0 +1,28 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+chris:
+  name: Chris
+
+craig:
+  name: Craig
+
+cris:
+  name: Cris
+
+dominique:
+  name: Dominique
+
+josef:
+  name: Josef
+
+kim:
+  name: Kim
+
+lena:
+  name: Lena
+
+rafi:
+  name: Rafi
+
+sandro:
+  name: Sandro

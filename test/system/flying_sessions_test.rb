@@ -1,0 +1,51 @@
+require "application_system_test_case"
+
+class FlyingSessionsTest < ApplicationSystemTestCase
+  setup do
+    @flying_session = flying_sessions(:one)
+  end
+
+  test "visiting the index" do
+    visit flying_sessions_url
+    assert_selector "h1", text: "Flying sessions"
+  end
+
+  test "should create flying session" do
+    visit flying_sessions_url
+    click_on "New flying session"
+
+    fill_in "Date", with: @flying_session.date
+    fill_in "Flight time", with: @flying_session.flight_time
+    fill_in "Instructor", with: @flying_session.instructor_id
+    fill_in "Note", with: @flying_session.note
+    fill_in "Time", with: @flying_session.time
+    fill_in "User", with: @flying_session.user_id
+    click_on "Create Flying session"
+
+    assert_text "Flying session was successfully created"
+    click_on "Back"
+  end
+
+  test "should update Flying session" do
+    visit flying_session_url(@flying_session)
+    click_on "Edit this flying session", match: :first
+
+    fill_in "Date", with: @flying_session.date
+    fill_in "Flight time", with: @flying_session.flight_time
+    fill_in "Instructor", with: @flying_session.instructor_id
+    fill_in "Note", with: @flying_session.note
+    fill_in "Time", with: @flying_session.time.to_s
+    fill_in "User", with: @flying_session.user_id
+    click_on "Update Flying session"
+
+    assert_text "Flying session was successfully updated"
+    click_on "Back"
+  end
+
+  test "should destroy Flying session" do
+    visit flying_session_url(@flying_session)
+    click_on "Destroy this flying session", match: :first
+
+    assert_text "Flying session was successfully destroyed"
+  end
+end
