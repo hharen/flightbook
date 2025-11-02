@@ -20,7 +20,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_192430) do
   end
 
   create_table "flying_sessions", force: :cascade do |t|
-    t.time "date_time", null: false
+    t.datetime "date_time", null: false
     t.integer "flight_time"
     t.string "note"
     t.integer "user_id", null: false

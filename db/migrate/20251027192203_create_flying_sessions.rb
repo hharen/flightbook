@@ -1,7 +1,7 @@
 class CreateFlyingSessions < ActiveRecord::Migration[8.0]
   def change
     create_table :flying_sessions do |t|
-      t.time :date_time, null: false
+      t.datetime :date_time, null: false
       t.integer :flight_time
       t.string :note
       t.references :user, null: false, foreign_key: true
