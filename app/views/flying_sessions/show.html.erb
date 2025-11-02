@@ -2,6 +2,42 @@
 
 <%= render @flying_session %>
 
+<div class="flights-section">
+  <h2>Flights in this session</h2>
+  
+  <% if @flying_session.flights.any? %>
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Flight Time</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @flying_session.flights.order(:time).each do |flight| %>
+            <tr>
+              <td><%= flight.time&.strftime("%H:%M:%S") %></td>
+              <td class="actions">
+                <%= link_to "Show", flight, class: "btn btn-small" %>
+                <%= link_to "Edit", edit_flight_path(flight), class: "btn btn-small" %>
+                <%= link_to "Delete", flight_path(flight), method: :delete, 
+                            confirm: "Are you sure?", class: "btn btn-small btn-danger" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p class="no-data">No flights recorded for this session yet.</p>
+  <% end %>
+  
+  <div class="flight-actions">
+    <%= link_to "Add new flight", new_flight_path(flying_session_id: @flying_session.id), class: "btn btn-primary" %>
+  </div>
+</div>
+
 <div>
   <%= link_to "Edit this flying session", edit_flying_session_path(@flying_session) %> |
   <%= link_to "Back to flying sessions", flying_sessions_path %>

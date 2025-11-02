@@ -4,13 +4,36 @@
 
 <h1>Flying sessions</h1>
 
-<div id="flying_sessions">
-  <% @flying_sessions.each do |flying_session| %>
-    <%= render flying_session %>
-    <p>
-      <%= link_to "Show this flying session", flying_session %>
-    </p>
-  <% end %>
+<div class="table-container">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Date & Time</th>
+        <th>Flight Time (min)</th>
+        <th>User</th>
+        <th>Instructor</th>
+        <th>Note</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @flying_sessions.each do |flying_session| %>
+        <tr>
+          <td><%= flying_session.date_time&.strftime("%H:%M") %></td>
+          <td><%= flying_session.flight_time %></td>
+          <td><%= flying_session.user&.name %></td>
+          <td><%= flying_session.instructor&.name %></td>
+          <td><%= flying_session.note %></td>
+          <td class="actions">
+            <%= link_to "Show", flying_session, class: "btn btn-small" %>
+            <%= link_to "Edit", edit_flying_session_path(flying_session), class: "btn btn-small" %>
+            <%= link_to "Delete", flying_session_path(flying_session), method: :delete, 
+                        confirm: "Are you sure?", class: "btn btn-small btn-danger" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>
 
 <%= link_to "New flying session", new_flying_session_path %>

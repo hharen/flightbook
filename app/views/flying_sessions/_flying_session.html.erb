@@ -1,17 +1,12 @@
 <div id="<%= dom_id flying_session %>">
   <p>
-    <strong>Date:</strong>
-    <%= flying_session.date_time.to_date %>
-  </p>
-
-  <p>
-    <strong>Time:</strong>
-    <%= flying_session.date_time.strftime("%R") %>
+    <% session_date = flying_session.date_time.to_date %>
+    <strong><%= "#{session_date.day.ordinalize} of #{session_date.strftime('%B %Y')} - #{flying_session.date_time.strftime("%R")} with #{flying_session.instructor.name}" %></strong> 
   </p>
 
   <p>
     <strong>Flight time:</strong>
-    <%= flying_session.flight_time %>
+    <%= "#{flying_session.flight_time} min" %>
   </p>
 
   <p>
@@ -23,10 +18,4 @@
     <strong>User:</strong>
     <%= flying_session.user.name %>
   </p>
-
-  <p>
-    <strong>Instructor:</strong>
-    <%= flying_session.instructor.name %>
-  </p>
-
 </div>

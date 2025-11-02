@@ -4,13 +4,28 @@
 
 <h1>Instructors</h1>
 
-<div id="instructors">
-  <% @instructors.each do |instructor| %>
-    <%= render instructor %>
-    <p>
-      <%= link_to "Show this instructor", instructor %>
-    </p>
-  <% end %>
+<div class="table-container">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @instructors.each do |instructor| %>
+        <tr>
+          <td><%= instructor.name %></td>
+          <td class="actions">
+            <%= link_to "Show", instructor, class: "btn btn-small" %>
+            <%= link_to "Edit", edit_instructor_path(instructor), class: "btn btn-small" %>
+            <%= link_to "Delete", instructor_path(instructor), method: :delete, 
+                        confirm: "Are you sure?", class: "btn btn-small btn-danger" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>
 
 <%= link_to "New instructor", new_instructor_path %>

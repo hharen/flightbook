@@ -4,13 +4,28 @@
 
 <h1>Users</h1>
 
-<div id="users">
-  <% @users.each do |user| %>
-    <%= render user %>
-    <p>
-      <%= link_to "Show this user", user %>
-    </p>
-  <% end %>
+<div class="table-container">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr>
+          <td><%= user.name %></td>
+          <td class="actions">
+            <%= link_to "Show", user, class: "btn btn-small" %>
+            <%= link_to "Edit", edit_user_path(user), class: "btn btn-small" %>
+            <%= link_to "Delete", user_path(user), method: :delete, 
+                        confirm: "Are you sure?", class: "btn btn-small btn-danger" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>
 
 <%= link_to "New user", new_user_path %>
