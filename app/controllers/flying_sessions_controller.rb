@@ -1,12 +1,12 @@
 class FlyingSessionsController < ApplicationController
   before_action :set_flying_session, only: %i[ show edit update destroy ]
 
-  # GET /flying_sessions or /flying_sessions.json
+  # GET /flying_sessions
   def index
     @flying_sessions = FlyingSession.all
   end
 
-  # GET /flying_sessions/1 or /flying_sessions/1.json
+  # GET /flying_sessions/1
   def show
   end
 
@@ -19,42 +19,30 @@ class FlyingSessionsController < ApplicationController
   def edit
   end
 
-  # POST /flying_sessions or /flying_sessions.json
+  # POST /flying_sessions
   def create
     @flying_session = FlyingSession.new(flying_session_params)
 
-    respond_to do |format|
-      if @flying_session.save
-        format.html { redirect_to @flying_session, notice: "Flying session was successfully created." }
-        format.json { render :show, status: :created, location: @flying_session }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @flying_session.errors, status: :unprocessable_entity }
-      end
+    if @flying_session.save
+      redirect_to @flying_session, notice: "Flying session was successfully created."
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /flying_sessions/1 or /flying_sessions/1.json
+  # PATCH/PUT /flying_sessions/1
   def update
-    respond_to do |format|
-      if @flying_session.update(flying_session_params)
-        format.html { redirect_to @flying_session, notice: "Flying session was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @flying_session }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @flying_session.errors, status: :unprocessable_entity }
-      end
+    if @flying_session.update(flying_session_params)
+      redirect_to @flying_session, notice: "Flying session was successfully updated.", status: :see_other
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
-  # DELETE /flying_sessions/1 or /flying_sessions/1.json
+  # DELETE /flying_sessions/1
   def destroy
     @flying_session.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to flying_sessions_path, notice: "Flying session was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+    redirect_to flying_sessions_path, notice: "Flying session was successfully destroyed.", status: :see_other
   end
 
   private

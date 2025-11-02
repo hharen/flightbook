@@ -1,7 +1,7 @@
 class FlightsController < ApplicationController
   before_action :set_flight, only: %i[ edit update destroy ]
 
-  # GET /flights or /flights.json
+  # GET /flights
   def index
     @flights = Flight.all
   end
@@ -15,42 +15,30 @@ class FlightsController < ApplicationController
   def edit
   end
 
-  # POST /flights or /flights.json
+  # POST /flights
   def create
     @flight = Flight.new(flight_params)
 
-    respond_to do |format|
-      if @flight.save
-        format.html { redirect_to flights_path, notice: "Flight was successfully created." }
-        format.json { render :show, status: :created, location: @flight }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @flight.errors, status: :unprocessable_entity }
-      end
+    if @flight.save
+      redirect_to flights_path, notice: "Flight was successfully created."
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /flights/1 or /flights/1.json
+  # PATCH/PUT /flights/1
   def update
-    respond_to do |format|
-      if @flight.update(flight_params)
-        format.html { redirect_to flights_path, notice: "Flight was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @flight }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @flight.errors, status: :unprocessable_entity }
-      end
+    if @flight.update(flight_params)
+      redirect_to flights_path, notice: "Flight was successfully updated.", status: :see_other
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
-  # DELETE /flights/1 or /flights/1.json
+  # DELETE /flights/1
   def destroy
     @flight.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to flights_path, notice: "Flight was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+    redirect_to flights_path, notice: "Flight was successfully destroyed.", status: :see_other
   end
 
   private

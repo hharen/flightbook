@@ -1,12 +1,12 @@
 class InstructorsController < ApplicationController
   before_action :set_instructor, only: %i[ show edit update destroy ]
 
-  # GET /instructors or /instructors.json
+  # GET /instructors
   def index
     @instructors = Instructor.all
   end
 
-  # GET /instructors/1 or /instructors/1.json
+  # GET /instructors/1
   def show
   end
 
@@ -19,42 +19,30 @@ class InstructorsController < ApplicationController
   def edit
   end
 
-  # POST /instructors or /instructors.json
+  # POST /instructors
   def create
     @instructor = Instructor.new(instructor_params)
 
-    respond_to do |format|
-      if @instructor.save
-        format.html { redirect_to @instructor, notice: "Instructor was successfully created." }
-        format.json { render :show, status: :created, location: @instructor }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @instructor.errors, status: :unprocessable_entity }
-      end
+    if @instructor.save
+      redirect_to @instructor, notice: "Instructor was successfully created."
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /instructors/1 or /instructors/1.json
+  # PATCH/PUT /instructors/1
   def update
-    respond_to do |format|
-      if @instructor.update(instructor_params)
-        format.html { redirect_to @instructor, notice: "Instructor was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @instructor }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @instructor.errors, status: :unprocessable_entity }
-      end
+    if @instructor.update(instructor_params)
+      redirect_to @instructor, notice: "Instructor was successfully updated.", status: :see_other
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
-  # DELETE /instructors/1 or /instructors/1.json
+  # DELETE /instructors/1
   def destroy
     @instructor.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to instructors_path, notice: "Instructor was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+    redirect_to instructors_path, notice: "Instructor was successfully destroyed.", status: :see_other
   end
 
   private
