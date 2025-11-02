@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :flights
+  resources :flights, except: [ :show ]
   resources :flying_sessions
   resources :instructors
   resources :users

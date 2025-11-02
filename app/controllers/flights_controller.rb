@@ -1,13 +1,9 @@
 class FlightsController < ApplicationController
-  before_action :set_flight, only: %i[ show edit update destroy ]
+  before_action :set_flight, only: %i[ edit update destroy ]
 
   # GET /flights or /flights.json
   def index
     @flights = Flight.all
-  end
-
-  # GET /flights/1 or /flights/1.json
-  def show
   end
 
   # GET /flights/new
@@ -25,7 +21,7 @@ class FlightsController < ApplicationController
 
     respond_to do |format|
       if @flight.save
-        format.html { redirect_to @flight, notice: "Flight was successfully created." }
+        format.html { redirect_to flights_path, notice: "Flight was successfully created." }
         format.json { render :show, status: :created, location: @flight }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +34,7 @@ class FlightsController < ApplicationController
   def update
     respond_to do |format|
       if @flight.update(flight_params)
-        format.html { redirect_to @flight, notice: "Flight was successfully updated.", status: :see_other }
+        format.html { redirect_to flights_path, notice: "Flight was successfully updated.", status: :see_other }
         format.json { render :show, status: :ok, location: @flight }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -65,6 +61,6 @@ class FlightsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def flight_params
-      params.expect(flight: [ :time, :flying_session_id ])
+      params.expect(flight: [ :duration, :flying_session_id ])
     end
 end

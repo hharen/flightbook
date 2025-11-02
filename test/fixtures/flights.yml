@@ -1,9 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  time: 2025-10-27 20:24:30
+  duration: 2.5
+  note: Frist flight 🎉
   flying_session: one
 
 two:
-  time: 2025-10-27 20:24:30
+  duration: 3
+  note: Whoops
   flying_session: two

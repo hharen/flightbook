@@ -9,6 +9,11 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
+/* Global font settings */
+body {
+  font-family: sans-serif;
+}
+
 /* Navbar Styles */
 .navbar {
   background-color: #2c3e50;
@@ -248,4 +253,21 @@ a[href*="new"]:hover {
   color: white;
   text-decoration: none;
   transform: translateY(-1px);
+}
+
+/* Form styling */
+.form-select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: white;
+  margin-top: 0.25rem;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }

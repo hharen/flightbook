@@ -10,16 +10,17 @@
       <table class="data-table">
         <thead>
           <tr>
-            <th>Flight Time</th>
+            <th>Duration</th>
+            <th>Note</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <% @flying_session.flights.order(:time).each do |flight| %>
+          <% @flying_session.flights.order(:duration).each do |flight| %>
             <tr>
-              <td><%= flight.time&.strftime("%H:%M:%S") %></td>
+              <td><%= flight.duration %> min</td>
+              <td><%= flight.note.present? ? flight.note : "—" %></td>
               <td class="actions">
-                <%= link_to "Show", flight, class: "btn btn-small" %>
                 <%= link_to "Edit", edit_flight_path(flight), class: "btn btn-small" %>
                 <%= link_to "Delete", flight_path(flight), method: :delete, 
                             confirm: "Are you sure?", class: "btn btn-small btn-danger" %>

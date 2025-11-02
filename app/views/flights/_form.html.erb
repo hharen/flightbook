@@ -12,13 +12,25 @@
   <% end %>
 
   <div>
-    <%= form.label :time, style: "display: block" %>
-    <%= form.time_field :time %>
+    <%= form.label :duration, style: "display: block" %>
+    <%= form.number_field :duration, step: 0.5, min: 0, placeholder: "Duration in minutes" %>
   </div>
 
   <div>
-    <%= form.label :flying_session_id, style: "display: block" %>
-    <%= form.text_field :flying_session_id %>
+    <%= form.label :flying_session_id, "Flying Session", style: "display: block" %>
+    <%= form.select :flying_session_id,
+        options_from_collection_for_select(
+          FlyingSession.includes(:user, :instructor).order(:date_time),
+          :id,
+          -> (session) {
+            session_date = session.date_time.to_date
+            "#{session_date.day.ordinalize} of #{session_date.strftime('%B %Y')} - #{session.date_time.strftime('%R')} with #{session.instructor.name} (#{session.user.name})"
+          },
+          flight.flying_session_id
+        ),
+        { prompt: "Select a flying session" },
+        { class: "form-select" }
+    %>
   </div>
 
   <div>

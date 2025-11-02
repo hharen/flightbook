@@ -8,7 +8,7 @@
   <table class="data-table">
     <thead>
       <tr>
-        <th>Time</th>
+        <th>Duration</th>
         <th>Flying Session</th>
         <th>Actions</th>
       </tr>
@@ -16,7 +16,7 @@
     <tbody>
       <% @flights.each do |flight| %>
         <tr>
-          <td><%= flight.time&.strftime("%H:%M:%S") %></td>
+          <td><%= flight.duration %> min</td>
           <td>
             <% if flight.flying_session %>
               <%= link_to "Session ##{flight.flying_session.id}", flying_session_path(flight.flying_session) %>
@@ -25,7 +25,6 @@
             <% end %>
           </td>
           <td class="actions">
-            <%= link_to "Show", flight, class: "btn btn-small" %>
             <%= link_to "Edit", edit_flight_path(flight), class: "btn btn-small" %>
             <%= link_to "Delete", flight_path(flight), method: :delete, 
                         confirm: "Are you sure?", class: "btn btn-small btn-danger" %>
