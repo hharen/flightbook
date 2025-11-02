@@ -1,12 +1,12 @@
 <div id="<%= dom_id flying_session %>">
   <p>
     <strong>Date:</strong>
-    <%= flying_session.date %>
+    <%= flying_session.date_time.to_date %>
   </p>
 
   <p>
     <strong>Time:</strong>
-    <%= flying_session.time %>
+    <%= flying_session.date_time.strftime("%R") %>
   </p>
 
   <p>
@@ -21,12 +21,12 @@
 
   <p>
     <strong>User:</strong>
-    <%= flying_session.user_id %>
+    <%= flying_session.user.name %>
   </p>
 
   <p>
     <strong>Instructor:</strong>
-    <%= flying_session.instructor_id %>
+    <%= flying_session.instructor.name %>
   </p>
 
 </div>
