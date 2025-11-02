@@ -3,7 +3,13 @@ class FlyingSessionsController < ApplicationController
 
   # GET /flying_sessions
   def index
-    @flying_sessions = FlyingSession.all
+    if params[:user_id].present?
+      @selected_user = User.find(params[:user_id])
+      @flying_sessions = FlyingSession.where(user: @selected_user).includes(:user, :instructor)
+    else
+      @flying_sessions = FlyingSession.all.includes(:user, :instructor)
+    end
+    @users = User.all.order(:name)
   end
 
   # GET /flying_sessions/1
@@ -48,7 +54,12 @@ class FlyingSessionsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_flying_session
-      @flying_session = FlyingSession.find(params.expect(:id))
+      if params[:user_id].present?
+        @selected_user = User.find(params[:user_id])
+        @flying_session = @selected_user.flying_sessions.find(params.expect(:id))
+      else
+        @flying_session = FlyingSession.find(params.expect(:id))
+      end
     end
 
     # Only allow a list of trusted parameters through.

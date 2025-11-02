@@ -9,6 +9,7 @@
     <thead>
       <tr>
         <th>Name</th>
+        <th>Sessions</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -16,6 +17,10 @@
       <% @users.each do |user| %>
         <tr>
           <td><%= user.name %></td>
+          <td>
+            <%= link_to "#{user.flying_sessions.count} sessions", user_flying_sessions_path(user), 
+                        class: "btn btn-small btn-primary" %>
+          </td>
           <td class="actions">
             <%= link_to "Show", user, class: "btn btn-small" %>
             <%= link_to "Edit", edit_user_path(user), class: "btn btn-small" %>

@@ -271,3 +271,36 @@ a[href*="new"]:hover {
   border-color: #3498db;
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
+
+/* User filter section */
+.user-filter-section {
+  margin-bottom: 2rem;
+}
+
+.filter-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.user-filter-form {
+  margin: 0;
+}
+
+.user-filter-form .form-select {
+  width: 200px;
+  margin-top: 0;
+}
+
+.filter-info {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.filter-info strong {
+  color: #2c3e50;
+}
