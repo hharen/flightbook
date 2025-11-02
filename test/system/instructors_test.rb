@@ -2,7 +2,7 @@ require "application_system_test_case"
 
 class InstructorsTest < ApplicationSystemTestCase
   setup do
-    @instructor = instructors(:one)
+    @instructor = instructors(:dominique)
   end
 
   test "visiting the index" do

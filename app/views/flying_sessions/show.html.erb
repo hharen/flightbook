@@ -22,8 +22,9 @@
               <td><%= flight.note.present? ? flight.note : "—" %></td>
               <td class="actions">
                 <%= link_to "Edit", edit_flight_path(flight), class: "btn btn-small" %>
-                <%= link_to "Delete", flight_path(flight), method: :delete, 
-                            confirm: "Are you sure?", class: "btn btn-small btn-danger" %>
+                <%= button_to "Delete", flight_path(flight), method: :delete,
+                              class: "btn btn-small btn-danger",
+                              form: { style: "display: inline;" } %>
               </td>
             </tr>
           <% end %>

@@ -27,18 +27,30 @@ class FlyingSessionsController < ApplicationController
 
   # POST /flying_sessions
   def create
-    @flying_session = FlyingSession.new(flying_session_params)
+    @flying_session = FlyingSession.new(flying_session_params.except(:date, :time))
+
+    # Combine date and time into date_time if they exist
+    if params.dig(:flying_session, :date).present? && params.dig(:flying_session, :time).present?
+      date_str = params[:flying_session][:date]
+      time_str = params[:flying_session][:time]
+      @flying_session.date_time = DateTime.parse("#{date_str} #{time_str}")
+    end
 
     if @flying_session.save
       redirect_to @flying_session, notice: "Flying session was successfully created."
     else
       render :new, status: :unprocessable_entity
     end
-  end
-
-  # PATCH/PUT /flying_sessions/1
+  end  # PATCH/PUT /flying_sessions/1
   def update
-    if @flying_session.update(flying_session_params)
+    # Combine date and time into date_time if they exist
+    if params.dig(:flying_session, :date).present? && params.dig(:flying_session, :time).present?
+      date_str = params[:flying_session][:date]
+      time_str = params[:flying_session][:time]
+      @flying_session.date_time = DateTime.parse("#{date_str} #{time_str}")
+    end
+
+    if @flying_session.update(flying_session_params.except(:date, :time))
       redirect_to @flying_session, notice: "Flying session was successfully updated.", status: :see_other
     else
       render :edit, status: :unprocessable_entity
@@ -64,6 +76,6 @@ class FlyingSessionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def flying_session_params
-      params.expect(flying_session: [ :date, :time, :flight_time, :note, :user_id, :instructor_id ])
+      params.expect(flying_session: [ :date, :time, :date_time, :flight_time, :note, :user_id, :instructor_id ])
     end
 end

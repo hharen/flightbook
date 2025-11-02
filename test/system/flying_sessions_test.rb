@@ -14,12 +14,12 @@ class FlyingSessionsTest < ApplicationSystemTestCase
     visit flying_sessions_url
     click_on "New flying session"
 
-    fill_in "Date", with: @flying_session.date
+    fill_in "Date", with: @flying_session.date_time.to_date
+    fill_in "Time", with: @flying_session.date_time.strftime("%H:%M")
     fill_in "Flight time", with: @flying_session.flight_time
-    fill_in "Instructor", with: @flying_session.instructor_id
     fill_in "Note", with: @flying_session.note
-    fill_in "Time", with: @flying_session.time
     fill_in "User", with: @flying_session.user_id
+    fill_in "Instructor", with: @flying_session.instructor_id
     click_on "Create Flying session"
 
     assert_text "Flying session was successfully created"
@@ -30,12 +30,12 @@ class FlyingSessionsTest < ApplicationSystemTestCase
     visit flying_session_url(@flying_session)
     click_on "Edit this flying session", match: :first
 
-    fill_in "Date", with: @flying_session.date
-    fill_in "Flight time", with: @flying_session.flight_time
-    fill_in "Instructor", with: @flying_session.instructor_id
-    fill_in "Note", with: @flying_session.note
-    fill_in "Time", with: @flying_session.time.to_s
+    fill_in "Date", with: (@flying_session.date_time + 1.day).to_date
+    fill_in "Time", with: @flying_session.date_time.strftime("%H:%M")
+    fill_in "Flight time", with: @flying_session.flight_time + 5
+    fill_in "Note", with: "Updated: #{@flying_session.note}"
     fill_in "User", with: @flying_session.user_id
+    fill_in "Instructor", with: @flying_session.instructor_id
     click_on "Update Flying session"
 
     assert_text "Flying session was successfully updated"

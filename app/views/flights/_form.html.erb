@@ -17,6 +17,11 @@
   </div>
 
   <div>
+    <%= form.label :note, style: "display: block" %>
+    <%= form.text_field :note, placeholder: "Optional note about this flight" %>
+  </div>
+
+  <div>
     <%= form.label :flying_session_id, "Flying Session", style: "display: block" %>
     <%= form.select :flying_session_id,
         options_from_collection_for_select(

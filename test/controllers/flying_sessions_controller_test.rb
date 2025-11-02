@@ -17,7 +17,7 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
 
   test "should create flying_session" do
     assert_difference("FlyingSession.count") do
-      post flying_sessions_url, params: { flying_session: { date: @flying_session.date, flight_time: @flying_session.flight_time, instructor_id: @flying_session.instructor_id, note: @flying_session.note, time: @flying_session.time, user_id: @flying_session.user_id } }
+      post flying_sessions_url, params: { flying_session: { date_time: @flying_session.date_time, flight_time: @flying_session.flight_time, instructor_id: @flying_session.instructor_id, note: @flying_session.note, user_id: @flying_session.user_id } }
     end
 
     assert_redirected_to flying_session_url(FlyingSession.last)
@@ -34,7 +34,7 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update flying_session" do
-    patch flying_session_url(@flying_session), params: { flying_session: { date: @flying_session.date, flight_time: @flying_session.flight_time, instructor_id: @flying_session.instructor_id, note: @flying_session.note, time: @flying_session.time, user_id: @flying_session.user_id } }
+    patch flying_session_url(@flying_session), params: { flying_session: { date_time: @flying_session.date_time, flight_time: @flying_session.flight_time, instructor_id: @flying_session.instructor_id, note: @flying_session.note, user_id: @flying_session.user_id } }
     assert_redirected_to flying_session_url(@flying_session)
   end
 

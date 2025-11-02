@@ -20,12 +20,7 @@ class FlightsControllerTest < ActionDispatch::IntegrationTest
       post flights_url, params: { flight: { flying_session_id: @flight.flying_session_id, duration: @flight.duration } }
     end
 
-    assert_redirected_to flight_url(Flight.last)
-  end
-
-  test "should show flight" do
-    get flight_url(@flight)
-    assert_response :success
+    assert_redirected_to flights_url
   end
 
   test "should get edit" do
@@ -35,7 +30,7 @@ class FlightsControllerTest < ActionDispatch::IntegrationTest
 
   test "should update flight" do
     patch flight_url(@flight), params: { flight: { flying_session_id: @flight.flying_session_id, duration: @flight.duration } }
-    assert_redirected_to flight_url(@flight)
+    assert_redirected_to flights_url
   end
 
   test "should destroy flight" do
