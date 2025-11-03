@@ -7,12 +7,6 @@ require "json"
 class FlyingSessionsController < ApplicationController
   before_action :set_flying_session, only: %i[ show edit update destroy ]
 
-  # Hardcoded cookie for Windwerk booking authentication
-  WINDWERK_COOKIE = "_ga_40169XR08J=GS2.1.s1762122873$o30$g1$t1762129633$j34$l0$h1247841990; _ga=GA1.1.1415058565.1745671404; FPID=FPID2.2.4dN%2BuJt91Qtb6dyWEMY2Vyp2DUyOkdc1Z4OOpPm8sdc%3D.1745671404; _fbp=fb.1.1745671404377.1426736015; _clck=ozawaf%5E2%5Eg0p%5E0%5E1942; _hjSessionUser_1319343=eyJpZCI6ImNlY2I1YTUyLTU4ZGItNTY4NC1hN2FhLTcwOGY3NjU0NGRhYyIsImNyZWF0ZWQiOjE3NDU2NzE0MDQ3ODUsImV4aXN0aW5nIjp0cnVlfQ==; _tt_enable_cookie=1; _ttp=01JSS1ZF7W8ECYR1D3BHP9GQHP_.tt.1; ttcsid_CS525IJC77UBU0VRRH2G=1762122874231::LtQKY0hf0u7tIIg6XL…F7iGDPWdYN8OhsEd0jrkqRkZ%2FO9BdC%2B%2BXyiRHBkdLTieQ6EoxVdc%2BEqtLMKMz9MIL84IKl8b6hXVxd%2BHcIkrWsW8%2BfrE65U%2F1M8ISGmts3NSlnK8DO1SNg%3D%3D; FPAU=1.1.1743238882.1762104226; _clsk=1eg3qzf%5E1762129628691%5E88%5E1%5Ea.clarity.ms%2Fcollect; Tunn3lShop=m5vh2r5n7kl9eard8p5v870kuf; _hjSession_1319343=eyJpZCI6IjVmM2ZhOWRkLTY1Y2YtNDRhNy05OTFjLTAwMmY0N2U4MDQzMCIsImMiOjE3NjIxMjY2NjQyNTcsInMiOjAsInIiOjAsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjowLCJzcCI6MX0=; FPGSID=1.1762128924.1762129607.G-40169XR08J.fftVA-y2CudTnIewOYdN4g".freeze
-
-  # Hardcoded cookie for Windwerk media authentication
-  WINDWERK_MEDIA_COOKIE = "_ga_40169XR08J=GS2.1.s1762122873$o30$g1$t1762129893$j39$l0$h1247841990; _ga=GA1.1.1415058565.1745671404; FPID=FPID2.2.4dN%2BuJt91Qtb6dyWEMY2Vyp2DUyOkdc1Z4OOpPm8sdc%3D.1745671404; _fbp=fb.1.1745671404377.1426736015; _clck=ozawaf%5E2%5Eg0p%5E0%5E1942; _hjSessionUser_1319343=eyJpZCI6ImNlY2I1YTUyLTU4ZGItNTY4NC1hN2FhLTcwOGY3NjU0NGRhYyIsImNyZWF0ZWQiOjE3NDU2NzE0MDQ3ODUsImV4aXN0aW5nIjp0cnVlfQ==; _tt_enable_cookie=1; _ttp=01JSS1ZF7W8ECYR1D3BHP9GQHP_.tt.1; ttcsid_CS525IJC77UBU0VRRH2G=1762122874231::LtQKY0hf0u7tIIg6XLV7.25.1762129893903.0; ttcsid=1762122874231::m7oD2Gr4R6gQW4exCXBO.26.1762129893903.0; Tunn3lMedia=p8d6hee5md3oknkftved9e43e7; _pin_unauth=dWlkPVlUTXpaRGhsTlRRdFpHTTVZUzAwTURBekxUZzJNR1V0TkdVMllqY3dOR1JsWTJOaA; _icl_visitor_lang_js=en_us; _gcl_au=1.1.1743238882.1762104226.311283892.1762124867.1762129874; FPLC=WghAjrQn%2F7iGDPWdYN8OhsEd0jrkqRkZ%2FO9BdC%2B%2BXyiRHBkdLTieQ6EoxVdc%2BEqtLMKMz9MIL84IKl8b6hXVxd%2BHcIkrWsW8%2BfrE65U%2F1M8ISGmts3NSlnK8DO1SNg%3D%3D; FPAU=1.1.1743238882.1762104226; _clsk=1eg3qzf%5E1762129893675%5E94%5E1%5Ea.clarity.ms%2Fcollect; _pin_unauth=dWlkPVlUTXpaRGhsTlRRdFpHTTVZUzAwTURBekxUZzJNR1V0TkdVMllqY3dOR1JsWTJOaA; _hjSession_1319343=eyJpZCI6IjVmM2ZhOWRkLTY1Y2YtNDRhNy05OTFjLTAwMmY0N2U4MDQzMCIsImMiOjE3NjIxMjY2NjQyNTcsInMiOjAsInIiOjAsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjowLCJzcCI6MX0=; FPGSID=1.1762128924.1762129873.G-40169XR08J.fftVA-y2CudTnIewOYdN4g".freeze
-
   # GET /flying_sessions
   def index
     if params[:user_id].present?
@@ -78,20 +72,19 @@ class FlyingSessionsController < ApplicationController
   # POST /flying_sessions/get_flying_sessions
   def get_flying_sessions
     begin
-      # Step 1: Login directly to media.windwerk.ch
+      # Step 1: Login to booking.windwerk.ch
       login_response = login_with_hardcoded_cookie
-
+      
       # Check if login was successful
-      raise "Log in didn't succeed" unless login_successful?(login_response)
+      raise "Login didn't succeed" unless login_successful?(login_response)
+      
+      # Step 2: Follow any redirects manually to get to the flight data
+      final_response = follow_redirects_manually(login_response)
+      
+      # Step 3: Parse the HTML response and create flying sessions
+      created_sessions = parse_and_create_sessions(final_response.body)
 
-      # Step 2: After successful login, fetch media proflyer page with media cookie
-      sessions_response = fetch_flying_sessions_with_cookie(WINDWERK_MEDIA_COOKIE)
-
-      # puts "-----RESPONSE: #{sessions_response.body}"
-      # Step 3: Parse the HTML response and create flying sessions with flights
-      created_sessions = parse_and_create_sessions(sessions_response.body)
-
-      success_message = "Flying sessions data fetched successfully! Login: #{login_response.code}, Sessions: #{sessions_response.code}. Created #{created_sessions} sessions."
+      success_message = "Flying sessions data fetched successfully! Login: #{login_response.code}, Final: #{final_response.code}. Created #{created_sessions} sessions."
       redirect_to flying_sessions_path, notice: success_message
 
     rescue => e
@@ -116,8 +109,8 @@ class FlyingSessionsController < ApplicationController
       params.expect(flying_session: [ :date, :time, :date_time, :flight_time, :note, :user_id, :instructor_id ])
     end
 
-    def login_with_hardcoded_cookie
-      uri = URI("https://booking.windwerk.ch/index.php")
+    def login
+      uri = URI("https://media.windwerk.ch/proflyer")
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
 
@@ -126,7 +119,20 @@ class FlyingSessionsController < ApplicationController
       request["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8"
       request["Origin"] = "https://booking.windwerk.ch"
       request["Connection"] = "keep-alive"
-      request["Cookie"] = WINDWERK_COOKIE
+      request["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:143.0) Gecko/20100101 Firefox/143.0"
+
+
+      #       curl 'https://booking.windwerk.ch/index.php' \
+      # --compressed \
+      # -X POST \
+      # -H 'Accept: application/json, text/javascript, */*; q=0.01' \
+      # -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
+      # -H 'Origin: https://booking.windwerk.ch' \
+      # -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:143.0) Gecko/20100101 Firefox/143.0' \
+      # -H 'Connection: keep-alive' \
+      # --data-raw 'ctrl=do&do=checkout_connect_user&email=h.harencarova%40gmail.com&password=woodpaper498WW_&token=' \
+      # -v
+
 
       # Get credentials from Rails credentials
       email = Rails.application.credentials.email
@@ -138,61 +144,87 @@ class FlyingSessionsController < ApplicationController
       request.body = "ctrl=do&do=checkout_connect_user&email=#{CGI.escape(email)}&password=#{CGI.escape(password)}&token="
       response = http.request(request)
 
-      # Check login success and log result
-      if login_successful?(response)
-        Rails.logger.info "✅ LOGIN SUCCESSFUL - Authentication completed"
-      else
-        Rails.logger.error "❌ LOGIN FAILED - Authentication failed"
-      end
-
       response
     end
 
-    def login_successful?(login_response)
-      # Check if the response is JSON with status "valid"
-      begin
-        json_response = JSON.parse(login_response.body)
-        if json_response["status"] == "valid"
-          Rails.logger.info "Login successful - JSON response with status: valid"
-          Rails.logger.info "User ID: #{json_response['user_id']}" if json_response["user_id"]
-          true
+    def follow_redirects_manually(login_response)
+      current_response = login_response
+      redirect_count = 0
+      max_redirects = 5
+      cookies = WINDWERK_COOKIE
+      
+      Rails.logger.info "=== MANUAL REDIRECT HANDLING ==="
+      
+      while redirect_count < max_redirects
+        Rails.logger.info "Redirect #{redirect_count}: Response code #{current_response.code}"
+        
+        # Check if this is a redirect response (3xx status codes)
+        if current_response.code.start_with?("3") && current_response["location"]
+          redirect_count += 1
+          redirect_location = current_response["location"]
+          
+          Rails.logger.info "Following redirect #{redirect_count} to: #{redirect_location}"
+          
+          # Handle relative vs absolute URLs
+          if redirect_location.start_with?("http")
+            # Absolute URL
+            uri = URI(redirect_location)
+          else
+            # Relative URL - construct full URL
+            if redirect_location.start_with?("/")
+              # Absolute path
+              uri = URI("https://booking.windwerk.ch#{redirect_location}")
+            else
+              # Relative path
+              uri = URI("https://booking.windwerk.ch/#{redirect_location}")
+            end
+          end
+          
+          Rails.logger.info "Requesting: #{uri}"
+          
+          # Determine which cookies to use based on domain
+          if uri.host == "media.windwerk.ch"
+            cookies = WINDWERK_MEDIA_COOKIE
+            Rails.logger.info "Switched to media.windwerk.ch - using WINDWERK_MEDIA_COOKIE"
+          elsif uri.host == "booking.windwerk.ch"
+            cookies = WINDWERK_COOKIE
+            Rails.logger.info "Using booking.windwerk.ch - using WINDWERK_COOKIE"
+          end
+          
+          # Make the redirect request
+          http = Net::HTTP.new(uri.host, uri.port)
+          http.use_ssl = true
+          
+          request = Net::HTTP::Get.new(uri)
+          request["Origin"] = "https://#{uri.host}"
+          request["Connection"] = "keep-alive"
+          request["Cookie"] = cookies
+          request["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:143.0) Gecko/20100101 Firefox/143.0"
+          
+          current_response = http.request(request)
+          Rails.logger.info "Redirect response: #{current_response.code}"
+          
+          # Update cookies if new ones are set
+          if current_response["Set-Cookie"]
+            new_cookies = current_response["Set-Cookie"]
+            Rails.logger.info "Received new cookies: #{new_cookies[0..100]}..."
+            # You might want to update the cookie for subsequent requests
+          end
+          
         else
-          Rails.logger.warn "Login failed - JSON response status: #{json_response['status']}"
-          false
+          # Not a redirect, we're done
+          Rails.logger.info "✅ Final destination reached with status: #{current_response.code}"
+          break
         end
-      rescue JSON::ParserError
-        Rails.logger.warn "Login failed - response is not valid JSON"
-        Rails.logger.info "Response body: #{login_response.body}"
-        false
       end
-    end
-
-    def follow_login_redirect(login_response)
-      # After successful login, follow the redirect to /proflyer on the same domain
-      redirect_location = login_response["location"]
-      Rails.logger.info "Following redirect to: #{redirect_location}"
-
-      # Construct the full URL for the redirect
-      uri = URI("https://booking.windwerk.ch#{redirect_location}")
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-
-      request = Net::HTTP::Get.new(uri)
-      request["Origin"] = "https://booking.windwerk.ch"
-      request["Connection"] = "keep-alive"
-      # Use the same cookies that worked for login
-      request["Cookie"] = WINDWERK_COOKIE
-
-      response = http.request(request)
-      Rails.logger.info "Redirect follow response: #{response.code}"
-      Rails.logger.info "Response body preview: #{response.body[0..500]}..." if response.body
-
-      # If this redirects us again or we need to go to media.windwerk.ch, handle that
-      if response.code.start_with?("3") && response["location"]
-        Rails.logger.info "Got another redirect to: #{response['location']}"
-        # If it redirects to media.windwerk.ch, follow that
-        if response["location"].include?("media.windwerk.ch")
-          return fetch_flying_sessions_with_cookie(WINDWERK_COOKIE)
+      
+      if redirect_count >= max_redirects
+        Rails.logger.error "❌ Too many redirects (#{redirect_count}), stopping"
+        raise "Too many redirects"
+      end
+      
+      Rails.logger.info "=== REDIRECT HANDLING COMPLETE ==="
+      current_response
         end
       end
 
@@ -208,10 +240,10 @@ class FlyingSessionsController < ApplicationController
       request["Origin"] = "https://media.windwerk.ch"
       request["Connection"] = "keep-alive"
       request["Cookie"] = cookie
+      request["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:143.0) Gecko/20100101 Firefox/143.0"
 
       response = http.request(request)
       Rails.logger.info "Flying sessions fetch response: #{response.code}"
-      puts "-----RESPONSE BODY: #{response.body}"
 
       # Check for login failure indicators
       if response.body&.include?("Forgotten or need to create password?")
