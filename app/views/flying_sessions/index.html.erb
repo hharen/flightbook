@@ -59,4 +59,9 @@
   </table>
 </div>
 
-<%= link_to "New flying session", new_flying_session_path %>
+<div class="action-buttons">
+  <%= link_to "New flying session", new_flying_session_path, class: "btn btn-primary" %>
+  <%= button_to "Get flying sessions", get_flying_sessions_flying_sessions_path, 
+                method: :post, class: "btn btn-secondary", 
+                data: { confirm: "This will fetch flight data from Windwerk. Continue?" } %>
+</div>
