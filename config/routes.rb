@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :flights, except: [ :show ]
+  resources :flights, except: [:show]
   resources :flying_sessions do
     collection do
       post :get_flying_sessions
@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   end
   resources :instructors
   resources :users do
-    resources :flying_sessions, only: [ :index, :show ], path: "sessions"
+    resources :flying_sessions, only: [:index, :show], path: "sessions"
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

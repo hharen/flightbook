@@ -8,7 +8,7 @@ require "stringio"
 require "openssl"
 
 class FlyingSessionsController < ApplicationController
-  before_action :set_flying_session, only: %i[ show edit update destroy ]
+  before_action :set_flying_session, only: %i[show edit update destroy]
 
   # GET /flying_sessions
   def index
@@ -122,7 +122,7 @@ class FlyingSessionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def flying_session_params
-      params.expect(flying_session: [ :date, :time, :date_time, :flight_time, :note, :user_id, :instructor_id ])
+      params.expect(flying_session: [:date, :time, :date_time, :note, :user_id, :instructor_id])
     end
 
     def parse_and_create_sessions(html_content)
@@ -351,7 +351,7 @@ class FlyingSessionsController < ApplicationController
       return nil unless date_text || time_text
 
       # Try different date/time formats
-      combined_text = [ date_text, time_text ].compact.join(" ")
+      combined_text = [date_text, time_text].compact.join(" ")
 
       # Common European date formats
       patterns = [

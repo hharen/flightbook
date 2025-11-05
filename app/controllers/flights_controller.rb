@@ -1,5 +1,5 @@
 class FlightsController < ApplicationController
-  before_action :set_flight, only: %i[ edit update destroy ]
+  before_action :set_flight, only: %i[edit update destroy]
 
   # GET /flights
   def index
@@ -68,6 +68,6 @@ class FlightsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def flight_params
-      params.expect(flight: [ :duration, :note, :flying_session_id ])
+      params.expect(flight: [:duration, :note, :flying_session_id])
     end
 end

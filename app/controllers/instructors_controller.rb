@@ -1,5 +1,5 @@
 class InstructorsController < ApplicationController
-  before_action :set_instructor, only: %i[ show edit update destroy ]
+  before_action :set_instructor, only: %i[show edit update destroy]
 
   # GET /instructors
   def index
@@ -53,6 +53,6 @@ class InstructorsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def instructor_params
-      params.expect(instructor: [ :name ])
+      params.expect(instructor: [:name])
     end
 end
