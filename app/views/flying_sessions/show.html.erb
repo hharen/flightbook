@@ -18,7 +18,7 @@
         <tbody>
           <% @flying_session.flights.order(:duration).each do |flight| %>
             <tr>
-              <td><%= flight.duration %> min</td>
+              <td><%= flight.show_duration %> min</td>
               <td><%= flight.note.present? ? flight.note : "—" %></td>
               <td class="actions">
                 <%= link_to "Edit", edit_flight_path(flight), class: "btn btn-small" %>

@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema[8.0].define(version: 2025_10_27_192430) do
   create_table "flights", force: :cascade do |t|
-    t.integer "duration"
+    t.float "duration"
     t.string "note"
     t.integer "flying_session_id", null: false
     t.datetime "created_at", null: false

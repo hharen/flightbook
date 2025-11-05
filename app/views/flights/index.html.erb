@@ -41,7 +41,7 @@
     <tbody>
       <% @flights.each do |flight| %>
         <tr>
-          <td><%= flight.duration %> min</td>
+          <td><%= flight.duration.to_i %> min</td>
           <td>
             <% if flight.flying_session %>
               <div>
