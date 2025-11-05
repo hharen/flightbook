@@ -25,11 +25,12 @@
     <%= form.label :flying_session_id, "Flying Session", style: "display: block" %>
     <%= form.select :flying_session_id,
         options_from_collection_for_select(
-          FlyingSession.includes(:user, :instructor).order(:date_time),
+          FlyingSession.includes(:user, :instructor),
           :id,
           -> (session) {
             session_date = session.date_time.to_date
-            "#{session_date.day.ordinalize} of #{session_date.strftime('%B %Y')} - #{session.date_time.strftime('%R')} with #{session.instructor.name} (#{session.user.name})"
+            instructor_name = session.instructor&.name || "No instructor"
+            "#{session_date.day.ordinalize} of #{session_date.strftime('%B %Y')} - #{session.date_time.strftime('%R')} with #{instructor_name} (#{session.user.name})"
           },
           flight.flying_session_id
         ),

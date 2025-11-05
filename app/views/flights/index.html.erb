@@ -19,7 +19,20 @@
           <td><%= flight.duration %> min</td>
           <td>
             <% if flight.flying_session %>
-              <%= link_to "Session ##{flight.flying_session.id}", flying_session_path(flight.flying_session) %>
+              <div>
+                <%= link_to flying_session_path(flight.flying_session) do %>
+                  <strong><%= flight.flying_session.date_time.strftime("%B %d, %Y at %I:%M %p") %></strong>
+                <% end %>
+              </div>
+              <% if flight.flying_session.instructor %>
+                <div class="text-muted">
+                  Instructor: <%= flight.flying_session.instructor.name %>
+                </div>
+              <% else %>
+                <div class="text-muted">
+                  No instructor assigned
+                </div>
+              <% end %>
             <% else %>
               No session
             <% end %>

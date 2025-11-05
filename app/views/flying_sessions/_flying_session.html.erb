@@ -1,7 +1,8 @@
 <div id="<%= dom_id flying_session %>">
   <p>
     <% session_date = flying_session.date_time.to_date %>
-    <strong><%= "#{session_date.day.ordinalize} of #{session_date.strftime('%B %Y')} - #{flying_session.date_time.strftime("%R")} with #{flying_session.instructor.name}" %></strong> 
+    <% instructor_name = flying_session.instructor&.name || "No instructor assigned" %>
+    <strong><%= "#{session_date.day.ordinalize} of #{session_date.strftime('%B %Y')} - #{flying_session.date_time.strftime("%R")} with #{instructor_name}" %></strong> 
   </p>
 
   <p>

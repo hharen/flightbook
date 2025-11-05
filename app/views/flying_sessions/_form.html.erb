@@ -32,13 +32,19 @@
   </div>
 
   <div>
-    <%= form.label :user_id, style: "display: block" %>
-    <%= form.text_field :user_id %>
+    <%= form.label :user_id, "User", style: "display: block" %>
+    <%= form.select :user_id, 
+        options_from_collection_for_select(@users, :id, :name, flying_session.user_id),
+        { prompt: "Select a user" },
+        { style: "display: block" } %>
   </div>
 
   <div>
-    <%= form.label :instructor_id, style: "display: block" %>
-    <%= form.text_field :instructor_id %>
+    <%= form.label :instructor_id, "Instructor", style: "display: block" %>
+    <%= form.select :instructor_id, 
+        options_from_collection_for_select(@instructors, :id, :name, flying_session.instructor_id),
+        { prompt: "Select an instructor (optional)" },
+        { style: "display: block" } %>
   </div>
 
   <div>

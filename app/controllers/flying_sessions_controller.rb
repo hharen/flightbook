@@ -3,6 +3,9 @@ require "uri"
 require "nokogiri"
 require "cgi"
 require "json"
+require "zlib"
+require "stringio"
+require "openssl"
 
 class FlyingSessionsController < ApplicationController
   before_action :set_flying_session, only: %i[ show edit update destroy ]
@@ -15,7 +18,7 @@ class FlyingSessionsController < ApplicationController
     else
       @flying_sessions = FlyingSession.all.includes(:user, :instructor)
     end
-    @users = User.all.order(:name)
+    @users = User.all
   end
 
   # GET /flying_sessions/1
@@ -25,10 +28,14 @@ class FlyingSessionsController < ApplicationController
   # GET /flying_sessions/new
   def new
     @flying_session = FlyingSession.new
+    @users = User.all
+    @instructors = Instructor.all
   end
 
   # GET /flying_sessions/1/edit
   def edit
+    @users = User.all
+    @instructors = Instructor.all
   end
 
   # POST /flying_sessions
@@ -71,24 +78,27 @@ class FlyingSessionsController < ApplicationController
 
   # POST /flying_sessions/get_flying_sessions
   def get_flying_sessions
+    cookie = params[:cookie]
+    
+    if cookie.blank?
+      redirect_to flying_sessions_path, alert: "Cookie is required to fetch flight data."
+      return
+    end
+
     begin
-      # Step 1: Login to booking.windwerk.ch
-      login_response = login_to_media
-      Rails.logger.info "Login response: #{login_response.code}"
-puts "-----------------_________#{login_response.body}"
-      # Step 2: Follow redirect after successful login
-      final_response = follow_login_redirect(login_response)
-      Rails.logger.info "Final response: #{final_response.code}"
-
-      # Step 3: Parse the HTML response and create flying sessions
-      created_sessions = parse_and_create_sessions(final_response.body)
-
-      success_message = "Flying sessions data fetched successfully! Login: #{login_response.code}, Final: #{final_response.code}. Created #{created_sessions} sessions."
-      redirect_to flying_sessions_path, notice: success_message
-
+      # Make the request to Windwerk with the provided cookie
+      html_content = fetch_windwerk_data(cookie)
+      
+      if html_content.present?
+        created_count = parse_and_create_sessions(html_content)
+        redirect_to flying_sessions_path, notice: "Successfully imported #{created_count} flying sessions from Windwerk."
+      else
+        redirect_to flying_sessions_path, alert: "Failed to fetch data from Windwerk. Please check your cookie and try again."
+      end
     rescue => e
-      Rails.logger.error "Error fetching flying sessions: #{e.message}"
-      redirect_to flying_sessions_path, alert: "Failed to fetch flying sessions: #{e.message}"
+      Rails.logger.error "Error fetching Windwerk data: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
+      redirect_to flying_sessions_path, alert: "An error occurred while fetching data: #{e.message}"
     end
   end
 
@@ -106,201 +116,6 @@ puts "-----------------_________#{login_response.body}"
     # Only allow a list of trusted parameters through.
     def flying_session_params
       params.expect(flying_session: [ :date, :time, :date_time, :flight_time, :note, :user_id, :instructor_id ])
-    end
-
-    def login_to_media
-      # Login directly to media.windwerk.ch/proflyer
-      uri = URI("https://media.windwerk.ch/proflyer")
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-
-      request = Net::HTTP::Post.new(uri)
-      request["Accept"] = "application/json, text/javascript, */*; q=0.01"
-      request["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8"
-      request["Origin"] = "https://media.windwerk.ch"
-      request["Connection"] = "keep-alive"
-      request["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:143.0) Gecko/20100101 Firefox/143.0"
-
-      # Get credentials from Rails credentials
-      email = Rails.application.credentials.email
-      password = Rails.application.credentials.password
-
-      raise "Email not configured in credentials" unless email
-      raise "Password not configured in credentials" unless password
-
-      # Login directly to proflyer page
-      request.body = "ctrl=do&do=login&login=#{CGI.escape(email)}&password=#{CGI.escape(password)}"
-
-      Rails.logger.info "=== LOGIN DIRECTLY TO PROFLYER ==="
-      Rails.logger.info "URL: #{uri}"
-      Rails.logger.info "Body: #{request.body}"
-
-      response = http.request(request)
-
-      Rails.logger.info "Login response code: #{response.code}"
-      Rails.logger.info "Login response headers: #{response.to_hash}"
-      Rails.logger.info "Response body preview: #{response.body[0..500]}..." if response.body
-
-      response
-    end
-
-    def follow_login_redirect(login_response)
-      current_response = login_response
-      cookies = extract_cookies_from_response(login_response)
-      max_redirects = 5  # Prevent infinite redirect loops
-      redirect_count = 0
-
-      Rails.logger.info "=== REDIRECT HANDLING ==="
-      Rails.logger.info "Initial response code: #{current_response.code}"
-      Rails.logger.info "Initial cookies: #{cookies}"
-
-      # Follow redirects until we get a non-redirect response or reach max redirects
-      while current_response.code.start_with?("3") && current_response["location"] && redirect_count < max_redirects
-        redirect_count += 1
-        redirect_location = current_response["location"]
-
-        Rails.logger.info "=== REDIRECT #{redirect_count} ==="
-        Rails.logger.info "Redirecting to: #{redirect_location}"
-
-        # Handle relative vs absolute URLs
-        if redirect_location.start_with?("http")
-          uri = URI(redirect_location)
-        else
-          # Relative redirect - construct full URL based on media domain
-          if redirect_location.start_with?("/")
-            # Use the media domain for absolute paths since we're starting there
-            uri = URI("https://media.windwerk.ch#{redirect_location}")
-          else
-            # Relative path - this is uncommon but handle it
-            base_uri = URI("https://media.windwerk.ch/")
-            uri = base_uri + redirect_location
-          end
-        end
-
-        Rails.logger.info "Final redirect URI: #{uri}"
-        Rails.logger.info "Domain: #{uri.host}"
-
-        # Make the redirect request
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = true
-
-        request = Net::HTTP::Get.new(uri)
-        request["Origin"] = "https://#{uri.host}"
-        request["Connection"] = "keep-alive"
-        request["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:143.0) Gecko/20100101 Firefox/143.0"
-
-        # Use cookies from login and any set by previous redirects
-        request["Cookie"] = cookies if cookies.present?
-
-        current_response = http.request(request)
-
-        Rails.logger.info "Redirect response code: #{current_response.code}"
-        Rails.logger.info "Response headers: #{current_response.to_hash.select { |k, v| k.downcase.include?('location') || k.downcase.include?('cookie') }}"
-
-        # Update cookies with any new ones from this response
-        new_cookies = extract_cookies_from_response(current_response)
-        cookies = merge_cookies(cookies, new_cookies) if new_cookies.present?
-
-        # Log what we got
-        if current_response.body&.include?("Flugsession")
-          Rails.logger.info "✅ Found 'Flugsession' in response - reached target page!"
-          break
-        elsif current_response.body&.include?("Forgotten or need to create password?")
-          Rails.logger.error "❌ Got login page - authentication failed"
-          break
-        end
-      end
-
-      if redirect_count >= max_redirects
-        Rails.logger.error "❌ Too many redirects (#{redirect_count}) - stopping"
-      end
-
-      # If we don't have 'Flugsession' in the final response, try redirecting to /proflyer
-      if !current_response.body&.include?("Flugsession") && !current_response.body&.include?("Forgotten or need to create password?")
-        Rails.logger.info "=== MANUAL REDIRECT TO PROFLYER ==="
-        Rails.logger.info "Final response doesn't contain 'Flugsession', redirecting to /proflyer"
-
-        # Make manual GET request to /proflyer with the cookies we have
-        uri = URI("https://media.windwerk.ch/proflyer")
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = true
-
-        request = Net::HTTP::Get.new(uri)
-        request["Origin"] = "https://media.windwerk.ch"
-        request["Connection"] = "keep-alive"
-        request["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:143.0) Gecko/20100101 Firefox/143.0"
-        request["Cookie"] = cookies if cookies.present?
-
-        proflyer_response = http.request(request)
-
-        Rails.logger.info "Proflyer redirect response code: #{proflyer_response.code}"
-        Rails.logger.info "Proflyer response contains 'Flugsession': #{proflyer_response.body&.include?('Flugsession')}"
-
-        # Use the proflyer response if it's better than what we had
-        if proflyer_response.body&.include?("Download selected")
-          Rails.logger.info "✅ Successfully got proflyer page with flight data!"
-          current_response = proflyer_response
-        end
-      end
-
-      Rails.logger.info "=== FINAL RESPONSE ==="
-      Rails.logger.info "Final response code: #{current_response.code}"
-      Rails.logger.info "Final cookies: #{cookies}"
-      Rails.logger.info "Body contains 'Flugsession': #{current_response.body&.include?('Flugsession')}"
-
-      current_response
-    end
-
-    def extract_cookies_from_response(response)
-      # Extract Set-Cookie headers and convert to Cookie format
-      set_cookies = response.get_fields("Set-Cookie") || []
-      return nil if set_cookies.empty?
-
-      # Convert Set-Cookie to Cookie format (name=value pairs only)
-      cookie_pairs = set_cookies.map do |cookie|
-        cookie.split(";").first  # Take only the name=value part, ignore attributes
-      end
-
-      cookie_pairs.join("; ")
-    end
-
-    def merge_cookies(existing_cookies, new_cookies)
-      return new_cookies if existing_cookies.blank?
-      return existing_cookies if new_cookies.blank?
-
-      # Simple merge - new cookies override existing ones with same name
-      existing_pairs = existing_cookies.split("; ").map { |pair| pair.split("=", 2) }.to_h
-      new_pairs = new_cookies.split("; ").map { |pair| pair.split("=", 2) }.to_h
-
-      merged = existing_pairs.merge(new_pairs)
-      merged.map { |name, value| "#{name}=#{value}" }.join("; ")
-    end
-
-    def fetch_flying_sessions_with_cookie(cookie)
-      uri = URI("https://media.windwerk.ch/proflyer")
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-
-      request = Net::HTTP::Get.new(uri)
-      request["Origin"] = "https://media.windwerk.ch"
-      request["Connection"] = "keep-alive"
-      request["Cookie"] = cookie
-      request["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:143.0) Gecko/20100101 Firefox/143.0"
-
-      response = http.request(request)
-      Rails.logger.info "Flying sessions fetch response: #{response.code}"
-
-      # Check for login failure indicators
-      if response.body&.include?("Forgotten or need to create password?")
-        Rails.logger.error "❌ LOGIN/REDIRECT FAILED - Found 'Forgotten or need to create password?' text"
-        Rails.logger.error "This indicates we're seeing a login page instead of the proflyer page"
-        Rails.logger.error "Authentication may have failed or session expired"
-        return response
-      else
-        Rails.logger.info "✅ we got to the media"
-      end
-
-      response
     end
 
     def parse_and_create_sessions(html_content)
@@ -422,18 +237,20 @@ puts "-----------------_________#{login_response.body}"
 
         Rails.logger.info "Creating session from timestamp #{timestamp} -> #{date_time}"
 
-        # Check if this session already exists for the current user
-        existing_session = current_user.flying_sessions.find_by(date_time: date_time)
+        # Find the user named Hana
+        user = User.find_by(name: "Hana")
+        return nil unless user
+
+        # Check if this session already exists for the user
+        existing_session = user.flying_sessions.find_by(date_time: date_time)
         if existing_session
           Rails.logger.info "Flying session already exists for #{date_time}"
           return existing_session
         end
 
         # Create new flying session
-        flying_session = current_user.flying_sessions.create!(
-          date_time: date_time,
-          location: "Windwerk", # Default location
-          notes: "Imported from Windwerk on #{Date.current}"
+        flying_session = user.flying_sessions.create!(
+          date_time: date_time
         )
 
         Rails.logger.info "Created flying session: #{flying_session.id} for #{date_time}"
@@ -472,18 +289,20 @@ puts "-----------------_________#{login_response.body}"
 
         Rails.logger.info "Parsed date_time: #{date_time}"
 
-        # Check if this session already exists for the current user
-        existing_session = current_user.flying_sessions.find_by(date_time: date_time)
+        # Find the user named Hana
+        user = User.find_by(name: "Hana")
+        return nil unless user
+
+        # Check if this session already exists for the user
+        existing_session = user.flying_sessions.find_by(date_time: date_time)
         if existing_session
           Rails.logger.info "Flying session already exists for #{date_time}"
           return existing_session
         end
 
         # Create new flying session
-        flying_session = current_user.flying_sessions.create!(
-          date_time: date_time,
-          location: "Windwerk", # Default location
-          notes: "Imported from Windwerk on #{Date.current}"
+        flying_session = user.flying_sessions.create!(
+          date_time: date_time
         )
 
         Rails.logger.info "Created flying session: #{flying_session.id} for #{date_time}"
@@ -665,25 +484,69 @@ puts "-----------------_________#{login_response.body}"
       Rails.logger.info "HTML structure for debugging:"
       Rails.logger.info "Title: #{doc.css('title').text}"
       Rails.logger.info "Main div classes: #{doc.css('div').map { |d| d['class'] }.compact.first(20)}"
+      
+      return 0
+    end
 
-      # Look for any table or list structures that might contain flight data
-      tables = doc.css("table")
-      if tables.any?
-        Rails.logger.info "Found #{tables.count} tables - investigating content"
-        tables.each_with_index do |table, i|
-          Rails.logger.info "Table #{i}: #{table.text.strip[0..100]}..."
-        end
+    def fetch_windwerk_data(cookie)
+      uri = URI('https://media.windwerk.ch/proflyer')
+      
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      
+      # Configure SSL to match curl's behavior
+      # In development, we'll be more lenient with SSL verification
+      if Rails.env.development?
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        Rails.logger.warn "SSL verification disabled for development"
+      else
+        http.verify_mode = OpenSSL::SSL::VERIFY_PEER
       end
+      
+      request = Net::HTTP::Get.new(uri)
+      request['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:144.0) Gecko/20100101 Firefox/144.0'
+      request['Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+      request['Accept-Language'] = 'en-US,en;q=0.5'
+      request['Accept-Encoding'] = 'gzip, deflate, br, zstd'
+      request['Referer'] = 'https://media.windwerk.ch/proflyer'
+      request['Connection'] = 'keep-alive'
+      request['Cookie'] = cookie
+      request['Upgrade-Insecure-Requests'] = '1'
+      request['Sec-Fetch-Dest'] = 'document'
+      request['Sec-Fetch-Mode'] = 'navigate'
+      request['Sec-Fetch-Site'] = 'same-origin'
+      request['Sec-Fetch-User'] = '?1'
+      request['Priority'] = 'u=0, i'
 
-      # Look for divs that might contain session data
-      content_divs = doc.css('div.content, div.session, div.flight, div[class*="session"], div[class*="flight"]')
-      if content_divs.any?
-        Rails.logger.info "Found potential content divs: #{content_divs.count}"
-        content_divs.each_with_index do |div, i|
-          Rails.logger.info "Content div #{i}: #{div.text.strip[0..100]}..."
+      Rails.logger.info "Making GET request to Windwerk with provided cookie..."
+      
+      response = http.request(request)
+      
+      if response.code.to_i == 200
+        Rails.logger.info "✅ Successfully fetched data from Windwerk"
+        
+        # Handle compressed response (matching --compressed flag)
+        content = case response['content-encoding']
+        when 'gzip'
+          Zlib::GzipReader.new(StringIO.new(response.body)).read
+        when 'deflate'
+          Zlib::Inflate.inflate(response.body)
+        when 'br'
+          # Brotli decompression would need additional gem
+          Rails.logger.warn "Brotli compression detected but not supported, using raw body"
+          response.body
+        else
+          response.body
         end
+        
+        return content
+      else
+        Rails.logger.error "❌ Failed to fetch data from Windwerk. Status: #{response.code}"
+        Rails.logger.error "Response: #{response.body[0..500]}"
+        return nil
       end
-
-      0
+    rescue => e
+      Rails.logger.error "❌ Error making request to Windwerk: #{e.message}"
+      raise e
     end
 end
