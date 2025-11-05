@@ -73,14 +73,13 @@ class FlyingSessionsController < ApplicationController
   def get_flying_sessions
     begin
       # Step 1: Login to booking.windwerk.ch
-      login_response = login_with_hardcoded_cookie
-      
-      # Check if login was successful
-      raise "Login didn't succeed" unless login_successful?(login_response)
-      
-      # Step 2: Follow any redirects manually to get to the flight data
-      final_response = follow_redirects_manually(login_response)
-      
+      login_response = login_to_media
+      Rails.logger.info "Login response: #{login_response.code}"
+puts "-----------------_________#{login_response.body}"
+      # Step 2: Follow redirect after successful login
+      final_response = follow_login_redirect(login_response)
+      Rails.logger.info "Final response: #{final_response.code}"
+
       # Step 3: Parse the HTML response and create flying sessions
       created_sessions = parse_and_create_sessions(final_response.body)
 
@@ -109,7 +108,8 @@ class FlyingSessionsController < ApplicationController
       params.expect(flying_session: [ :date, :time, :date_time, :flight_time, :note, :user_id, :instructor_id ])
     end
 
-    def login
+    def login_to_media
+      # Login directly to media.windwerk.ch/proflyer
       uri = URI("https://media.windwerk.ch/proflyer")
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
@@ -117,22 +117,9 @@ class FlyingSessionsController < ApplicationController
       request = Net::HTTP::Post.new(uri)
       request["Accept"] = "application/json, text/javascript, */*; q=0.01"
       request["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8"
-      request["Origin"] = "https://booking.windwerk.ch"
+      request["Origin"] = "https://media.windwerk.ch"
       request["Connection"] = "keep-alive"
       request["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:143.0) Gecko/20100101 Firefox/143.0"
-
-
-      #       curl 'https://booking.windwerk.ch/index.php' \
-      # --compressed \
-      # -X POST \
-      # -H 'Accept: application/json, text/javascript, */*; q=0.01' \
-      # -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
-      # -H 'Origin: https://booking.windwerk.ch' \
-      # -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:143.0) Gecko/20100101 Firefox/143.0' \
-      # -H 'Connection: keep-alive' \
-      # --data-raw 'ctrl=do&do=checkout_connect_user&email=h.harencarova%40gmail.com&password=woodpaper498WW_&token=' \
-      # -v
-
 
       # Get credentials from Rails credentials
       email = Rails.application.credentials.email
@@ -141,94 +128,152 @@ class FlyingSessionsController < ApplicationController
       raise "Email not configured in credentials" unless email
       raise "Password not configured in credentials" unless password
 
-      request.body = "ctrl=do&do=checkout_connect_user&email=#{CGI.escape(email)}&password=#{CGI.escape(password)}&token="
+      # Login directly to proflyer page
+      request.body = "ctrl=do&do=login&login=#{CGI.escape(email)}&password=#{CGI.escape(password)}"
+
+      Rails.logger.info "=== LOGIN DIRECTLY TO PROFLYER ==="
+      Rails.logger.info "URL: #{uri}"
+      Rails.logger.info "Body: #{request.body}"
+
       response = http.request(request)
+
+      Rails.logger.info "Login response code: #{response.code}"
+      Rails.logger.info "Login response headers: #{response.to_hash}"
+      Rails.logger.info "Response body preview: #{response.body[0..500]}..." if response.body
 
       response
     end
 
-    def follow_redirects_manually(login_response)
+    def follow_login_redirect(login_response)
       current_response = login_response
+      cookies = extract_cookies_from_response(login_response)
+      max_redirects = 5  # Prevent infinite redirect loops
       redirect_count = 0
-      max_redirects = 5
-      cookies = WINDWERK_COOKIE
-      
-      Rails.logger.info "=== MANUAL REDIRECT HANDLING ==="
-      
-      while redirect_count < max_redirects
-        Rails.logger.info "Redirect #{redirect_count}: Response code #{current_response.code}"
-        
-        # Check if this is a redirect response (3xx status codes)
-        if current_response.code.start_with?("3") && current_response["location"]
-          redirect_count += 1
-          redirect_location = current_response["location"]
-          
-          Rails.logger.info "Following redirect #{redirect_count} to: #{redirect_location}"
-          
-          # Handle relative vs absolute URLs
-          if redirect_location.start_with?("http")
-            # Absolute URL
-            uri = URI(redirect_location)
-          else
-            # Relative URL - construct full URL
-            if redirect_location.start_with?("/")
-              # Absolute path
-              uri = URI("https://booking.windwerk.ch#{redirect_location}")
-            else
-              # Relative path
-              uri = URI("https://booking.windwerk.ch/#{redirect_location}")
-            end
-          end
-          
-          Rails.logger.info "Requesting: #{uri}"
-          
-          # Determine which cookies to use based on domain
-          if uri.host == "media.windwerk.ch"
-            cookies = WINDWERK_MEDIA_COOKIE
-            Rails.logger.info "Switched to media.windwerk.ch - using WINDWERK_MEDIA_COOKIE"
-          elsif uri.host == "booking.windwerk.ch"
-            cookies = WINDWERK_COOKIE
-            Rails.logger.info "Using booking.windwerk.ch - using WINDWERK_COOKIE"
-          end
-          
-          # Make the redirect request
-          http = Net::HTTP.new(uri.host, uri.port)
-          http.use_ssl = true
-          
-          request = Net::HTTP::Get.new(uri)
-          request["Origin"] = "https://#{uri.host}"
-          request["Connection"] = "keep-alive"
-          request["Cookie"] = cookies
-          request["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:143.0) Gecko/20100101 Firefox/143.0"
-          
-          current_response = http.request(request)
-          Rails.logger.info "Redirect response: #{current_response.code}"
-          
-          # Update cookies if new ones are set
-          if current_response["Set-Cookie"]
-            new_cookies = current_response["Set-Cookie"]
-            Rails.logger.info "Received new cookies: #{new_cookies[0..100]}..."
-            # You might want to update the cookie for subsequent requests
-          end
-          
+
+      Rails.logger.info "=== REDIRECT HANDLING ==="
+      Rails.logger.info "Initial response code: #{current_response.code}"
+      Rails.logger.info "Initial cookies: #{cookies}"
+
+      # Follow redirects until we get a non-redirect response or reach max redirects
+      while current_response.code.start_with?("3") && current_response["location"] && redirect_count < max_redirects
+        redirect_count += 1
+        redirect_location = current_response["location"]
+
+        Rails.logger.info "=== REDIRECT #{redirect_count} ==="
+        Rails.logger.info "Redirecting to: #{redirect_location}"
+
+        # Handle relative vs absolute URLs
+        if redirect_location.start_with?("http")
+          uri = URI(redirect_location)
         else
-          # Not a redirect, we're done
-          Rails.logger.info "✅ Final destination reached with status: #{current_response.code}"
+          # Relative redirect - construct full URL based on media domain
+          if redirect_location.start_with?("/")
+            # Use the media domain for absolute paths since we're starting there
+            uri = URI("https://media.windwerk.ch#{redirect_location}")
+          else
+            # Relative path - this is uncommon but handle it
+            base_uri = URI("https://media.windwerk.ch/")
+            uri = base_uri + redirect_location
+          end
+        end
+
+        Rails.logger.info "Final redirect URI: #{uri}"
+        Rails.logger.info "Domain: #{uri.host}"
+
+        # Make the redirect request
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true
+
+        request = Net::HTTP::Get.new(uri)
+        request["Origin"] = "https://#{uri.host}"
+        request["Connection"] = "keep-alive"
+        request["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:143.0) Gecko/20100101 Firefox/143.0"
+
+        # Use cookies from login and any set by previous redirects
+        request["Cookie"] = cookies if cookies.present?
+
+        current_response = http.request(request)
+
+        Rails.logger.info "Redirect response code: #{current_response.code}"
+        Rails.logger.info "Response headers: #{current_response.to_hash.select { |k, v| k.downcase.include?('location') || k.downcase.include?('cookie') }}"
+
+        # Update cookies with any new ones from this response
+        new_cookies = extract_cookies_from_response(current_response)
+        cookies = merge_cookies(cookies, new_cookies) if new_cookies.present?
+
+        # Log what we got
+        if current_response.body&.include?("Flugsession")
+          Rails.logger.info "✅ Found 'Flugsession' in response - reached target page!"
+          break
+        elsif current_response.body&.include?("Forgotten or need to create password?")
+          Rails.logger.error "❌ Got login page - authentication failed"
           break
         end
       end
-      
+
       if redirect_count >= max_redirects
-        Rails.logger.error "❌ Too many redirects (#{redirect_count}), stopping"
-        raise "Too many redirects"
+        Rails.logger.error "❌ Too many redirects (#{redirect_count}) - stopping"
       end
-      
-      Rails.logger.info "=== REDIRECT HANDLING COMPLETE ==="
-      current_response
+
+      # If we don't have 'Flugsession' in the final response, try redirecting to /proflyer
+      if !current_response.body&.include?("Flugsession") && !current_response.body&.include?("Forgotten or need to create password?")
+        Rails.logger.info "=== MANUAL REDIRECT TO PROFLYER ==="
+        Rails.logger.info "Final response doesn't contain 'Flugsession', redirecting to /proflyer"
+
+        # Make manual GET request to /proflyer with the cookies we have
+        uri = URI("https://media.windwerk.ch/proflyer")
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true
+
+        request = Net::HTTP::Get.new(uri)
+        request["Origin"] = "https://media.windwerk.ch"
+        request["Connection"] = "keep-alive"
+        request["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:143.0) Gecko/20100101 Firefox/143.0"
+        request["Cookie"] = cookies if cookies.present?
+
+        proflyer_response = http.request(request)
+
+        Rails.logger.info "Proflyer redirect response code: #{proflyer_response.code}"
+        Rails.logger.info "Proflyer response contains 'Flugsession': #{proflyer_response.body&.include?('Flugsession')}"
+
+        # Use the proflyer response if it's better than what we had
+        if proflyer_response.body&.include?("Download selected")
+          Rails.logger.info "✅ Successfully got proflyer page with flight data!"
+          current_response = proflyer_response
         end
       end
 
-      response
+      Rails.logger.info "=== FINAL RESPONSE ==="
+      Rails.logger.info "Final response code: #{current_response.code}"
+      Rails.logger.info "Final cookies: #{cookies}"
+      Rails.logger.info "Body contains 'Flugsession': #{current_response.body&.include?('Flugsession')}"
+
+      current_response
+    end
+
+    def extract_cookies_from_response(response)
+      # Extract Set-Cookie headers and convert to Cookie format
+      set_cookies = response.get_fields("Set-Cookie") || []
+      return nil if set_cookies.empty?
+
+      # Convert Set-Cookie to Cookie format (name=value pairs only)
+      cookie_pairs = set_cookies.map do |cookie|
+        cookie.split(";").first  # Take only the name=value part, ignore attributes
+      end
+
+      cookie_pairs.join("; ")
+    end
+
+    def merge_cookies(existing_cookies, new_cookies)
+      return new_cookies if existing_cookies.blank?
+      return existing_cookies if new_cookies.blank?
+
+      # Simple merge - new cookies override existing ones with same name
+      existing_pairs = existing_cookies.split("; ").map { |pair| pair.split("=", 2) }.to_h
+      new_pairs = new_cookies.split("; ").map { |pair| pair.split("=", 2) }.to_h
+
+      merged = existing_pairs.merge(new_pairs)
+      merged.map { |name, value| "#{name}=#{value}" }.join("; ")
     end
 
     def fetch_flying_sessions_with_cookie(cookie)
