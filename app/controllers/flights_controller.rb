@@ -7,7 +7,14 @@ class FlightsController < ApplicationController
 
     if params[:user_id].present?
       @selected_user = User.find(params[:user_id])
-      @flights = Flight.joins(:flying_session).where(flying_sessions: { user_id: params[:user_id] })
+    else
+      # Preselect user 'Hana' by default
+      @selected_user = User.find_by(name: "Hana")
+    end
+
+    if @selected_user
+      @flights = Flight.joins(:flying_session).where(flying_sessions: { user_id: @selected_user.id })
+      @total_flight_time = @selected_user.flying_sessions.total_flight_time
     else
       @flights = Flight.all
     end

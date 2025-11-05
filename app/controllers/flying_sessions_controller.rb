@@ -14,7 +14,14 @@ class FlyingSessionsController < ApplicationController
   def index
     if params[:user_id].present?
       @selected_user = User.find(params[:user_id])
+    else
+      # Preselect user 'Hana' by default
+      @selected_user = User.find_by(name: "Hana")
+    end
+
+    if @selected_user
       @flying_sessions = FlyingSession.where(user: @selected_user).includes(:user, :instructor)
+      @total_flight_time = @flying_sessions.total_flight_time
     else
       @flying_sessions = FlyingSession.all.includes(:user, :instructor)
     end
@@ -449,7 +456,7 @@ class FlyingSessionsController < ApplicationController
         created_count += 1
       end
 
-      # Update the session's total flight time
+      # Update the session's Total flight time
       flying_session.update!(flight_time: total_duration)
 
       created_count
