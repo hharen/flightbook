@@ -3,7 +3,14 @@ class FlightsController < ApplicationController
 
   # GET /flights
   def index
-    @flights = Flight.all
+    @users = User.all
+
+    if params[:user_id].present?
+      @selected_user = User.find(params[:user_id])
+      @flights = Flight.joins(:flying_session).where(flying_sessions: { user_id: params[:user_id] })
+    else
+      @flights = Flight.all
+    end
   end
 
   # GET /flights/new

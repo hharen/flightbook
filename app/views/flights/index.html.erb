@@ -4,6 +4,21 @@
 
 <h1>Flights</h1>
 
+<div class="filter-controls">
+  <%= form_with url: flights_path, method: :get, local: true do |form| %>
+    <%= form.select :user_id, 
+        options_from_collection_for_select(@users, :id, :name, params[:user_id]), 
+        { prompt: "All users" }, 
+        { onchange: "this.form.submit();" } %>
+  <% end %>
+  
+  <% if @selected_user %>
+    <p>Showing flights for: <strong><%= @selected_user.name %></strong></p>
+  <% else %>
+    <p>Showing flights for all users</p>
+  <% end %>
+</div>
+
 <div class="table-container">
   <table class="data-table">
     <thead>
