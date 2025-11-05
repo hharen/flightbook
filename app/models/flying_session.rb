@@ -11,6 +11,6 @@ class FlyingSession < ApplicationRecord
   end
 
   def self.total_flight_time
-    joins(:flights).sum('flights.duration')
+    joins(:flights).sum("flights.duration")
   end
 end

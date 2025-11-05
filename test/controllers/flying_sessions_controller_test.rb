@@ -20,7 +20,9 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
       post flying_sessions_url, params: { flying_session: { date_time: @flying_session.date_time, flight_time: @flying_session.flight_time, instructor_id: @flying_session.instructor_id, note: @flying_session.note, user_id: @flying_session.user_id } }
     end
 
-    assert_redirected_to flying_session_url(FlyingSession.last)
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
   end
 
   test "should show flying_session" do

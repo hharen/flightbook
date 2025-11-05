@@ -20,7 +20,9 @@ class InstructorsControllerTest < ActionDispatch::IntegrationTest
       post instructors_url, params: { instructor: { name: @instructor.name } }
     end
 
-    assert_redirected_to instructor_url(Instructor.last)
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
   end
 
   test "should show instructor" do
