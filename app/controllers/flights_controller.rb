@@ -16,7 +16,7 @@ class FlightsController < ApplicationController
   # GET /flights/new
   def new
     @flight = Flight.new
-    
+
     # Pre-select flying session if passed as parameter
     if params[:flying_session_id].present?
       @flight.flying_session_id = params[:flying_session_id]

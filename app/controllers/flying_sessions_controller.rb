@@ -79,7 +79,7 @@ class FlyingSessionsController < ApplicationController
   # POST /flying_sessions/get_flying_sessions
   def get_flying_sessions
     cookie = params[:cookie]
-    
+
     if cookie.blank?
       redirect_to flying_sessions_path, alert: "Cookie is required to fetch flight data."
       return
@@ -88,7 +88,7 @@ class FlyingSessionsController < ApplicationController
     begin
       # Make the request to Windwerk with the provided cookie
       html_content = fetch_windwerk_data(cookie)
-      
+
       if html_content.present?
         created_count = parse_and_create_sessions(html_content)
         redirect_to flying_sessions_path, notice: "Successfully imported #{created_count} flying sessions from Windwerk."
@@ -484,16 +484,16 @@ class FlyingSessionsController < ApplicationController
       Rails.logger.info "HTML structure for debugging:"
       Rails.logger.info "Title: #{doc.css('title').text}"
       Rails.logger.info "Main div classes: #{doc.css('div').map { |d| d['class'] }.compact.first(20)}"
-      
-      return 0
+
+      0
     end
 
     def fetch_windwerk_data(cookie)
-      uri = URI('https://media.windwerk.ch/proflyer')
-      
+      uri = URI("https://media.windwerk.ch/proflyer")
+
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
-      
+
       # Configure SSL to match curl's behavior
       # In development, we'll be more lenient with SSL verification
       if Rails.env.development?
@@ -502,48 +502,48 @@ class FlyingSessionsController < ApplicationController
       else
         http.verify_mode = OpenSSL::SSL::VERIFY_PEER
       end
-      
+
       request = Net::HTTP::Get.new(uri)
-      request['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:144.0) Gecko/20100101 Firefox/144.0'
-      request['Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-      request['Accept-Language'] = 'en-US,en;q=0.5'
-      request['Accept-Encoding'] = 'gzip, deflate, br, zstd'
-      request['Referer'] = 'https://media.windwerk.ch/proflyer'
-      request['Connection'] = 'keep-alive'
-      request['Cookie'] = cookie
-      request['Upgrade-Insecure-Requests'] = '1'
-      request['Sec-Fetch-Dest'] = 'document'
-      request['Sec-Fetch-Mode'] = 'navigate'
-      request['Sec-Fetch-Site'] = 'same-origin'
-      request['Sec-Fetch-User'] = '?1'
-      request['Priority'] = 'u=0, i'
+      request["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:144.0) Gecko/20100101 Firefox/144.0"
+      request["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+      request["Accept-Language"] = "en-US,en;q=0.5"
+      request["Accept-Encoding"] = "gzip, deflate, br, zstd"
+      request["Referer"] = "https://media.windwerk.ch/proflyer"
+      request["Connection"] = "keep-alive"
+      request["Cookie"] = cookie
+      request["Upgrade-Insecure-Requests"] = "1"
+      request["Sec-Fetch-Dest"] = "document"
+      request["Sec-Fetch-Mode"] = "navigate"
+      request["Sec-Fetch-Site"] = "same-origin"
+      request["Sec-Fetch-User"] = "?1"
+      request["Priority"] = "u=0, i"
 
       Rails.logger.info "Making GET request to Windwerk with provided cookie..."
-      
+
       response = http.request(request)
-      
+
       if response.code.to_i == 200
         Rails.logger.info "✅ Successfully fetched data from Windwerk"
-        
+
         # Handle compressed response (matching --compressed flag)
-        content = case response['content-encoding']
-        when 'gzip'
+        content = case response["content-encoding"]
+        when "gzip"
           Zlib::GzipReader.new(StringIO.new(response.body)).read
-        when 'deflate'
+        when "deflate"
           Zlib::Inflate.inflate(response.body)
-        when 'br'
+        when "br"
           # Brotli decompression would need additional gem
           Rails.logger.warn "Brotli compression detected but not supported, using raw body"
           response.body
         else
           response.body
         end
-        
-        return content
+
+        content
       else
         Rails.logger.error "❌ Failed to fetch data from Windwerk. Status: #{response.code}"
         Rails.logger.error "Response: #{response.body[0..500]}"
-        return nil
+        nil
       end
     rescue => e
       Rails.logger.error "❌ Error making request to Windwerk: #{e.message}"
