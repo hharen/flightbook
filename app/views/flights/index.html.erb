@@ -5,11 +5,12 @@
 <h1>Flights</h1>
 
 <div class="filter-controls">
-  <%= form_with url: flights_path, method: :get, local: true do |form| %>
-    <%= form.select :user_id, 
-        options_from_collection_for_select(@users, :id, :name, @selected_user&.id), 
-        { prompt: "All users" }, 
-        { onchange: "this.form.submit();" } %>
+  <%= form_with url: flights_path, method: :get, local: true, class: "user-filter-form" do |form| %>
+    <%= form.select :user_id,
+        options_from_collection_for_select(@users, :id, :name, @selected_user&.id),
+        { prompt: "All users" },
+        { class: "form-select", onchange: "this.form.submit();" }
+    %>
   <% end %>
   
   <% if @selected_user %>
@@ -35,13 +36,14 @@
       <tr>
         <th>Duration</th>
         <th>Flying Session</th>
+        <th>Note</th>
         <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       <% @flights.each do |flight| %>
         <tr>
-          <td><%= flight.duration.to_i %> min</td>
+          <td><%= flight.show_duration %> min</td>
           <td>
             <% if flight.flying_session %>
               <div>
@@ -61,6 +63,9 @@
             <% else %>
               No session
             <% end %>
+          </td>
+          <td>
+            <%= flight.note.present? ? flight.note : "—" %>
           </td>
           <td class="actions">
             <%= link_to "Edit", edit_flight_path(flight), class: "btn btn-small" %>

@@ -49,7 +49,7 @@
       <% @flying_sessions.each do |flying_session| %>
         <tr>
           <td><%= flying_session.date_time&.strftime("%d.%m.%Y - %H:%M") %></td>
-          <td><%= flying_session.flight_time %></td>
+          <td><%= flying_session.show_flight_time %></td>
           <td><%= flying_session.flights.count %></td>
           <td><%= flying_session.user&.name %></td>
           <td><%= flying_session.instructor&.name %></td>
