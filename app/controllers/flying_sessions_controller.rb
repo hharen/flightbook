@@ -6,6 +6,7 @@ require "json"
 require "zlib"
 require "stringio"
 require "openssl"
+require "set"
 
 class FlyingSessionsController < ApplicationController
   before_action :set_flying_session, only: %i[show edit update destroy]
@@ -98,7 +99,16 @@ class FlyingSessionsController < ApplicationController
 
       if html_content.present?
         created_count = parse_and_create_sessions(html_content)
-        redirect_to flying_sessions_path, notice: "Successfully imported #{created_count} flying sessions from Windwerk."
+
+        # Also update existing sessions without flights
+        sessions_updated = update_existing_sessions_without_flights(html_content)
+
+        message = "Successfully imported #{created_count} flying sessions from Windwerk."
+        if sessions_updated > 0
+          message += " Updated #{sessions_updated} existing sessions with flight data."
+        end
+
+        redirect_to flying_sessions_path, notice: message
       else
         redirect_to flying_sessions_path, alert: "Failed to fetch data from Windwerk. Please check your cookie and try again."
       end
@@ -150,8 +160,8 @@ class FlyingSessionsController < ApplicationController
           filter_value = link["href"]&.match(/filter_value=(\d+)/)&.[](1)
 
           Rails.logger.info "Session #{index + 1}: #{session_text}"
-          Rails.logger.info "  Filter value: #{filter_value}" if filter_value
-          Rails.logger.info "  Full href: #{link['href']}" if link["href"]
+          Rails.logger.info "Filter value: #{filter_value}" if filter_value
+          Rails.logger.info "Full href: #{link['href']}" if link["href"]
 
           # Use Unix timestamp from filter_value for accurate date/time parsing
           if filter_value
@@ -160,35 +170,39 @@ class FlyingSessionsController < ApplicationController
               timestamp = filter_value.to_i
               date_time = Time.at(timestamp).to_datetime
 
-              Rails.logger.info "  ✅ Parsed from timestamp: #{date_time}"
+              Rails.logger.info "✅ Parsed from timestamp: #{date_time}"
 
               # Create the flying session using the precise timestamp
               session_data = create_session_from_timestamp(timestamp)
               if session_data
+                # Create flights for this session based on video data
+                flights_created = extract_and_create_flights(html_content, session_data, filter_value)
                 created_count += 1
-                Rails.logger.info "  ✅ Created flying session"
+                Rails.logger.info "✅ Created flying session with #{flights_created} flights"
               else
-                Rails.logger.warn "  ❌ Failed to create session"
+                Rails.logger.warn "❌ Failed to create session"
               end
             rescue => e
-              Rails.logger.error "  ❌ Error parsing timestamp #{filter_value}: #{e.message}"
+              Rails.logger.error "❌ Error parsing timestamp #{filter_value}: #{e.message}"
 
               # Fallback to text parsing if timestamp fails
-              Rails.logger.info "  🔄 Falling back to text parsing"
+              Rails.logger.info "🔄 Falling back to text parsing"
               if match = session_text.match(/(\d{1,2}\s+\w+\.?\s+\d{4})\s+bis\s+(\d{1,2}:\d{2})/)
                 date_str = match[1]
                 time_str = match[2]
-                Rails.logger.info "  ✅ Fallback parsed: #{date_str} at #{time_str}"
+                Rails.logger.info "✅ Fallback parsed: #{date_str} at #{time_str}"
 
                 session_data = create_session_from_date_time(date_str, time_str)
                 if session_data
+                  # Create flights for this session based on video data
+                  flights_created = extract_and_create_flights(html_content, session_data, filter_value)
                   created_count += 1
-                  Rails.logger.info "  ✅ Created flying session (fallback)"
+                  Rails.logger.info "✅ Created flying session (fallback) with #{flights_created} flights"
                 end
               end
             end
           else
-            Rails.logger.warn "  ❌ No filter_value found in href"
+            Rails.logger.warn "❌ No filter_value found in href"
           end
 
           Rails.logger.info "---"
@@ -235,6 +249,101 @@ class FlyingSessionsController < ApplicationController
       Rails.logger.info "=== PARSING COMPLETE ==="
       Rails.logger.info "Total sessions created: #{created_count}"
       created_count
+    end
+
+    def extract_and_create_flights(html_content, flying_session, session_filter_value = nil)
+      return 0 unless flying_session
+
+      doc = Nokogiri::HTML(html_content)
+      created_flights = 0
+
+      Rails.logger.info "=== EXTRACTING FLIGHTS FOR SESSION #{flying_session.id} ==="
+
+      # Look for media containers that have video information
+      media_containers = doc.css(".media_container_responsive")
+      Rails.logger.info "Found #{media_containers.length} media containers"
+
+      # Extract flight numbers from the HTML structure
+      flight_numbers = Set.new
+
+      media_containers.each do |container|
+        # Look for flight number in the filename attribute or in bold tags
+        flight_number = extract_flight_number_from_container(container)
+
+        if flight_number
+          flight_numbers.add(flight_number)
+          Rails.logger.info "Found flight ##{flight_number}"
+        end
+      end
+
+      Rails.logger.info "Unique flight numbers found: #{flight_numbers.to_a.sort}"
+
+      # Create one flight per unique flight number
+      flight_numbers.each do |flight_number|
+        # Create empty flight (duration and note will be set manually later)
+        flight = flying_session.flights.create!
+
+        created_flights += 1
+        Rails.logger.info "✅ Created flight for ##{flight_number}"
+      end
+
+      Rails.logger.info "=== CREATED #{created_flights} FLIGHTS FOR SESSION ==="
+      created_flights
+    end
+
+    def extract_flight_number_from_container(container)
+      flight_number = nil
+
+      # Look for flight number in data-filename attribute (e.g., "#1_20251103_171034_Top.mp4")
+      filename_input = container.css("input.media-select[data-filename]").first
+      if filename_input
+        filename = filename_input["data-filename"]
+        if filename && match = filename.match(/#(\d+)_/)
+          flight_number = match[1].to_i
+        end
+      end
+
+      flight_number
+    end
+
+    def update_sessions_without_flights(html_content)
+      # This is called automatically during session creation
+      # Find a few recent sessions that don't have flights
+      sessions_without_flights = FlyingSession.left_joins(:flights)
+                                            .where(flights: { id: nil })
+                                            .order(date_time: :desc)
+
+      sessions_without_flights.each do |session|
+        Rails.logger.info "Auto-updating session #{session.id} (#{session.date_time})"
+        flights_created = extract_and_create_flights(html_content, session)
+        Rails.logger.info "✅ Added #{flights_created} flights to existing session" if flights_created > 0
+      end
+    end
+
+    def update_existing_sessions_without_flights(html_content)
+      # This is called manually to update all sessions without flights
+      sessions_without_flights = FlyingSession.left_joins(:flights)
+                                            .where(flights: { id: nil })
+                                            .order(date_time: :desc)
+
+      Rails.logger.info "Found #{sessions_without_flights.count} sessions without flights"
+      updated_count = 0
+
+      sessions_without_flights.each do |session|
+        Rails.logger.info "Updating session #{session.id} (#{session.date_time})"
+
+        # Try to extract flights from the HTML content using actual video data
+        flights_created = extract_and_create_flights(html_content, session)
+
+        if flights_created > 0
+          updated_count += 1
+          Rails.logger.info "✅ Added #{flights_created} flights to session"
+        else
+          Rails.logger.info "⚠️ No flights found for session #{session.id} - no video data available"
+        end
+      end
+
+      updated_count
     end
 
     def create_session_from_timestamp(timestamp)
