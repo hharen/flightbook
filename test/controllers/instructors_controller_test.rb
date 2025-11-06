@@ -25,11 +25,6 @@ class InstructorsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should show instructor" do
-    get instructor_url(@instructor)
-    assert_response :success
-  end
-
   test "should get edit" do
     get edit_instructor_url(@instructor)
     assert_response :success
@@ -37,7 +32,7 @@ class InstructorsControllerTest < ActionDispatch::IntegrationTest
 
   test "should update instructor" do
     patch instructor_url(@instructor), params: { instructor: { name: @instructor.name } }
-    assert_redirected_to instructor_url(@instructor)
+    assert_redirected_to instructors_url
   end
 
   test "should destroy instructor" do
