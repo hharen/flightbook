@@ -1,0 +1,22 @@
+<div id="<%= dom_id flying_session %>">
+  <p>
+    <% session_date = flying_session.date_time.to_date %>
+    <% instructor_name = flying_session.instructor&.name || "No instructor assigned" %>
+    <strong><%= "#{session_date.day.ordinalize} of #{session_date.strftime('%B %Y')} - #{flying_session.date_time.strftime("%R")} with #{instructor_name}" %></strong> 
+  </p>
+
+  <p>
+    <strong>Flight time:</strong>
+    <%= "#{flying_session.show_flight_time} min" %>
+  </p>
+
+  <p>
+    <strong>Note:</strong>
+    <%= flying_session.note %>
+  </p>
+
+  <p>
+    <strong>User:</strong>
+    <%= flying_session.user.name %>
+  </p>
+</div>

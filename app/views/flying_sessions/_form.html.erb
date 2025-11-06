@@ -1,0 +1,48 @@
+<%= form_with(model: flying_session) do |form| %>
+  <% if flying_session.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(flying_session.errors.count, "error") %> prohibited this flying_session from being saved:</h2>
+
+      <ul>
+        <% flying_session.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :date, style: "display: block" %>
+    <%= form.date_field :date, value: flying_session.date_time&.to_date %>
+  </div>
+
+  <div>
+    <%= form.label :time, style: "display: block" %>
+    <%= form.time_field :time, value: flying_session.date_time&.strftime("%H:%M") %>
+  </div>
+
+  <div>
+    <%= form.label :note, style: "display: block" %>
+    <%= form.text_field :note %>
+  </div>
+
+  <div>
+    <%= form.label :user_id, "User", style: "display: block" %>
+    <%= form.select :user_id, 
+        options_from_collection_for_select(@users, :id, :name, flying_session.user_id),
+        { prompt: "Select a user" },
+        { style: "display: block" } %>
+  </div>
+
+  <div>
+    <%= form.label :instructor_id, "Instructor", style: "display: block" %>
+    <%= form.select :instructor_id, 
+        options_from_collection_for_select(@instructors, :id, :name, flying_session.instructor_id),
+        { prompt: "Select an instructor (optional)" },
+        { style: "display: block" } %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

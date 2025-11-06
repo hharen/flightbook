@@ -1,0 +1,89 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Flying sessions" %>
+
+<div class="user-filter-section">
+  <h1>Flying sessions</h1>
+
+  <div class="filter-controls">
+    <%= form_with url: flying_sessions_path, method: :get, local: true, class: "user-filter-form" do |form| %>
+      <%= form.select :user_id,
+          options_from_collection_for_select(@users, :id, :name, @selected_user&.id),
+          { prompt: "All users" },
+          { class: "form-select", onchange: "this.form.submit();" }
+      %>
+    <% end %>
+
+    <% if @selected_user %>
+      <div class="filter-info">
+        Showing sessions for: <strong><%= @selected_user.name %></strong>
+        (<%= pluralize(@flying_sessions.count, 'session') %>)
+        <% if @total_flight_time && @total_flight_time > 0 %>
+          <br>
+          Total flight time: <strong><%= (@total_flight_time / 60.0).round(1) %> hours</strong> 
+          (<%= @total_flight_time %> minutes)
+        <% end %>
+      </div>
+    <% else %>
+      <div class="filter-info">
+        Showing all sessions (<%= pluralize(@flying_sessions.count, 'session') %>)
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="table-container">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Date & Time</th>
+        <th>Flight Time (min)</th>
+        <th>Flights</th>
+        <th>User</th>
+        <th>Instructor</th>
+        <th>Note</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @flying_sessions.each do |flying_session| %>
+        <tr>
+          <td><%= flying_session.date_time&.strftime("%d.%m.%Y - %H:%M") %></td>
+          <td><%= flying_session.show_flight_time %></td>
+          <td><%= flying_session.flights.count %></td>
+          <td><%= flying_session.user&.name %></td>
+          <td><%= flying_session.instructor&.name %></td>
+          <td><%= flying_session.note %></td>
+          <td class="actions">
+            <%= link_to "Show", flying_session, class: "btn btn-small" %>
+            <%= link_to "Edit", edit_flying_session_path(flying_session), class: "btn btn-small" %>
+            <%= link_to "Delete", flying_session_path(flying_session), method: :delete, 
+                        confirm: "Are you sure?", class: "btn btn-small btn-danger" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div class="action-buttons">
+  <%= link_to "New flying session", new_flying_session_path, class: "btn btn-primary" %>
+</div>
+
+<div class="filter-controls">
+  <%= form_with url: get_flying_sessions_flying_sessions_path, method: :post, local: true do |form| %>
+    <div style="flex-grow: 1;">
+      <%= form.label :cookie, "Windwerk Cookie:" %>
+      <%= form.text_area :cookie, 
+          placeholder: "Paste your Windwerk session cookie here...", 
+          class: "form-select cookie-input",
+          rows: 3,
+          required: true,
+          style: "margin-top: 0.5rem;" %>
+      <small style="font-size: 0.875rem; color: #6c757d; display: block; margin-top: 0.25rem;">
+        Copy the full cookie string from your browser's developer tools after logging into Windwerk.
+      </small>
+    </div>
+    <%= form.submit "Get flying sessions", class: "btn btn-secondary" %>
+  <% end %>
+</div>

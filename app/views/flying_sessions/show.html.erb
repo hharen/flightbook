@@ -1,0 +1,48 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @flying_session %>
+
+<div class="flights-section">
+  <h2>Flights in this session</h2>
+  
+  <% if @flying_session.flights.any? %>
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Duration</th>
+            <th>Note</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @flying_session.flights.order(:duration).each do |flight| %>
+            <tr>
+              <td><%= flight.show_duration %> min</td>
+              <td><%= flight.note.present? ? flight.note : "—" %></td>
+              <td class="actions">
+                <%= link_to "Edit", edit_flight_path(flight), class: "btn btn-small" %>
+                <%= button_to "Delete", flight_path(flight), method: :delete,
+                              class: "btn btn-small btn-danger",
+                              form: { style: "display: inline;" } %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p class="no-data">No flights recorded for this session yet.</p>
+  <% end %>
+  
+  <div class="flight-actions">
+    <%= link_to "Add new flight", new_flight_path(flying_session_id: @flying_session.id), class: "btn btn-primary" %>
+  </div>
+</div>
+
+<div>
+  <%= link_to "Edit this flying session", edit_flying_session_path(@flying_session) %> |
+  <%= link_to "Back to flying sessions", flying_sessions_path %>
+
+  <%= button_to "Destroy this flying session", @flying_session, method: :delete %>
+</div>
