@@ -18,23 +18,22 @@ class UsersTest < ApplicationSystemTestCase
     click_on "Create User"
 
     assert_text "User was successfully created"
-    click_on "Back"
   end
 
   test "should update User" do
-    visit user_url(@user)
-    click_on "Edit this user", match: :first
+    visit users_url
+    click_on "Edit", match: :first
 
     fill_in "Name", with: @user.name
     click_on "Update User"
 
     assert_text "User was successfully updated"
-    click_on "Back"
+    assert_current_path users_path
   end
 
   test "should destroy User" do
-    visit user_url(@user)
-    click_on "Destroy this user", match: :first
+    visit users_url
+    click_on "Delete", match: :first
 
     assert_text "User was successfully destroyed"
   end
