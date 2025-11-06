@@ -18,23 +18,25 @@ class InstructorsTest < ApplicationSystemTestCase
     click_on "Create Instructor"
 
     assert_text "Instructor was successfully created"
-    click_on "Back"
   end
 
   test "should update Instructor" do
-    visit instructor_url(@instructor)
-    click_on "Edit this instructor", match: :first
+    visit instructors_url
+    click_on "Edit", match: :first
 
     fill_in "Name", with: @instructor.name
     click_on "Update Instructor"
 
     assert_text "Instructor was successfully updated"
-    click_on "Back"
   end
 
   test "should destroy Instructor" do
-    visit instructor_url(@instructor)
-    click_on "Destroy this instructor", match: :first
+    visit instructors_url
+
+    # Find the row containing Dominique and click its Delete button
+    within "tr", text: "Dominique" do
+      click_on "Delete"
+    end
 
     assert_text "Instructor was successfully destroyed"
   end
