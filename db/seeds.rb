@@ -106,8 +106,12 @@ flying_sessions_data.each do |session_data|
 
   # Create flights for this session if specified
   if session_data[:flights_count] > 0 && session.flights.empty?
-    session_data[:flights_count].times do
-      session.flights.create!(duration: session_data[:flight_duration])
+    session_data[:flights_count].times do |i|
+      flight_number = i + 1
+      session.flights.create!(
+        duration: session_data[:flight_duration],
+        number: flight_number
+      )
     end
     puts "Created #{session_data[:flights_count]} flights for session on #{session_data[:date_time]}"
   end

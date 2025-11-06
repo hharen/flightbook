@@ -10,36 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_27_192430) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_06_100900) do
   create_table "flights", force: :cascade do |t|
-    t.float "duration"
-    t.string "note"
-    t.integer "flying_session_id", null: false
     t.datetime "created_at", null: false
+    t.float "duration"
+    t.integer "flying_session_id", null: false
+    t.string "note"
+    t.integer "number"
     t.datetime "updated_at", null: false
     t.index ["flying_session_id"], name: "index_flights_on_flying_session_id"
   end
 
   create_table "flying_sessions", force: :cascade do |t|
-    t.datetime "date_time", null: false
-    t.string "note"
-    t.integer "user_id", null: false
-    t.integer "instructor_id"
     t.datetime "created_at", null: false
+    t.datetime "date_time", null: false
+    t.integer "instructor_id"
+    t.string "note"
     t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
     t.index ["instructor_id"], name: "index_flying_sessions_on_instructor_id"
     t.index ["user_id"], name: "index_flying_sessions_on_user_id"
   end
 
   create_table "instructors", force: :cascade do |t|
-    t.string "name"
     t.datetime "created_at", null: false
+    t.string "name"
     t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "name"
     t.datetime "created_at", null: false
+    t.string "name"
     t.datetime "updated_at", null: false
   end
 

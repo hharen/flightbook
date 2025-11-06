@@ -30,7 +30,7 @@ class FlightsControllerTest < ActionDispatch::IntegrationTest
 
   test "should update flight" do
     patch flight_url(@flight), params: { flight: { flying_session_id: @flight.flying_session_id, duration: @flight.duration } }
-    assert_redirected_to flights_url
+    assert_redirected_to @flight.flying_session
   end
 
   test "should destroy flight" do
@@ -38,6 +38,6 @@ class FlightsControllerTest < ActionDispatch::IntegrationTest
       delete flight_url(@flight)
     end
 
-    assert_redirected_to flights_url
+    assert_redirected_to @flight.flying_session
   end
 end

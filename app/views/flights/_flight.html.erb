@@ -1,5 +1,10 @@
 <div id="<%= dom_id flight %>">
   <p>
+    <strong>Flight #:</strong>
+    <%= flight.number.present? ? "##{flight.number}" : "Not set" %>
+  </p>
+
+  <p>
     <strong>Duration:</strong>
     <%= flight.duration %> min
   </p>
