@@ -25,11 +25,6 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should show user" do
-    get user_url(@user)
-    assert_response :success
-  end
-
   test "should get edit" do
     get edit_user_url(@user)
     assert_response :success
@@ -37,7 +32,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
   test "should update user" do
     patch user_url(@user), params: { user: { name: @user.name } }
-    assert_redirected_to user_url(@user)
+    assert_redirected_to users_url
   end
 
   test "should destroy user" do

@@ -15,9 +15,8 @@
     <tbody>
       <% @instructors.each do |instructor| %>
         <tr>
-          <td><%= instructor.name %></td>
+          <td><%= link_to instructor.name, edit_instructor_path(instructor) %></td>
           <td class="actions">
-            <%= link_to "Show", instructor, class: "btn btn-small" %>
             <%= link_to "Edit", edit_instructor_path(instructor), class: "btn btn-small" %>
             <%= link_to "Delete", instructor_path(instructor), method: :delete, 
                         confirm: "Are you sure?", class: "btn btn-small btn-danger" %>
