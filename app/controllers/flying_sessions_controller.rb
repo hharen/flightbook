@@ -281,7 +281,7 @@ class FlyingSessionsController < ApplicationController
       # Create one flight per unique flight number
       flight_numbers.each do |flight_number|
         # Create empty flight (duration and note will be set manually later)
-        flight = flying_session.flights.create!
+        flight = flying_session.flights.create!(number: flight_number.to_s)
 
         created_flights += 1
         Rails.logger.info "✅ Created flight for ##{flight_number}"

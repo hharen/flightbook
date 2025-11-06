@@ -48,7 +48,7 @@ class FlightsController < ApplicationController
   # PATCH/PUT /flights/1
   def update
     if @flight.update(flight_params)
-      redirect_to flights_path, notice: "Flight was successfully updated.", status: :see_other
+      redirect_to @flight.flying_session, notice: "Flight was successfully updated.", status: :see_other
     else
       render :edit, status: :unprocessable_entity
     end
@@ -57,7 +57,7 @@ class FlightsController < ApplicationController
   # DELETE /flights/1
   def destroy
     @flight.destroy!
-    redirect_to flights_path, notice: "Flight was successfully destroyed.", status: :see_other
+    redirect_to @flight.flying_session, notice: "Flight was successfully deleted.", status: :see_other
   end
 
   private

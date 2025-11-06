@@ -48,14 +48,16 @@
     <tbody>
       <% @flying_sessions.each do |flying_session| %>
         <tr>
-          <td><%= flying_session.date_time&.strftime("%d.%m.%Y - %H:%M") %></td>
+          <td>
+            <%= link_to flying_session.date_time&.strftime("%d.%m.%Y - %H:%M"), flying_session, 
+                        class: "text-link" %>
+          </td>
           <td><%= flying_session.show_flight_time %></td>
           <td><%= flying_session.flights.count %></td>
           <td><%= flying_session.user&.name %></td>
           <td><%= flying_session.instructor&.name %></td>
           <td><%= flying_session.note %></td>
           <td class="actions">
-            <%= link_to "Show", flying_session, class: "btn btn-small" %>
             <%= link_to "Edit", edit_flying_session_path(flying_session), class: "btn btn-small" %>
             <%= link_to "Delete", flying_session_path(flying_session), method: :delete, 
                         confirm: "Are you sure?", class: "btn btn-small btn-danger" %>
