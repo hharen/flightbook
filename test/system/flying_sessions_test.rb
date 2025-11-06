@@ -16,10 +16,9 @@ class FlyingSessionsTest < ApplicationSystemTestCase
 
     fill_in "Date", with: @flying_session.date_time.to_date
     fill_in "Time", with: @flying_session.date_time.strftime("%H:%M")
-    fill_in "Flight time", with: @flying_session.flight_time
     fill_in "Note", with: @flying_session.note
-    fill_in "User", with: @flying_session.user_id
-    fill_in "Instructor", with: @flying_session.instructor_id
+    select @flying_session.user.name, from: "User"
+    select @flying_session.instructor.name, from: "Instructor" if @flying_session.instructor
     click_on "Create Flying session"
 
     assert_text "Flying session was successfully created"
@@ -32,10 +31,9 @@ class FlyingSessionsTest < ApplicationSystemTestCase
 
     fill_in "Date", with: (@flying_session.date_time + 1.day).to_date
     fill_in "Time", with: @flying_session.date_time.strftime("%H:%M")
-    fill_in "Flight time", with: @flying_session.flight_time + 5
     fill_in "Note", with: "Updated: #{@flying_session.note}"
-    fill_in "User", with: @flying_session.user_id
-    fill_in "Instructor", with: @flying_session.instructor_id
+    select @flying_session.user.name, from: "User"
+    select @flying_session.instructor.name, from: "Instructor" if @flying_session.instructor
     click_on "Update Flying session"
 
     assert_text "Flying session was successfully updated"
