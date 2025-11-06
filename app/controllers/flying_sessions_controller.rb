@@ -105,7 +105,9 @@ class FlyingSessionsController < ApplicationController
 
         message = "Successfully imported #{created_count} flying sessions from Windwerk."
         if sessions_updated > 0
-          message += " Updated #{sessions_updated} existing sessions with flight data."
+          message += "Added flight data to #{sessions_updated} current session(s)."
+        else
+          message += "Flight data will only be added to the currently active session visible on the page."
         end
 
         redirect_to flying_sessions_path, notice: message
@@ -146,6 +148,7 @@ class FlyingSessionsController < ApplicationController
       # Look specifically for the dropdown menu with flight sessions
       dropdown_menu = doc.css("ul.dropdown-menu").first
 
+
       if dropdown_menu
         Rails.logger.info "✅ Found dropdown menu!"
 
@@ -153,7 +156,7 @@ class FlyingSessionsController < ApplicationController
         session_links = dropdown_menu.css("li a")
         Rails.logger.info "Found #{session_links.length} session links in dropdown"
 
-        # Log all sessions found
+        # Log all sessions found and create session records (without flights)
         Rails.logger.info "=== ALL SESSIONS FOUND ==="
         session_links.each_with_index do |link, index|
           session_text = link.text.strip
@@ -172,13 +175,11 @@ class FlyingSessionsController < ApplicationController
 
               Rails.logger.info "✅ Parsed from timestamp: #{date_time}"
 
-              # Create the flying session using the precise timestamp
+              # Create the flying session using the precise timestamp (without flights)
               session_data = create_session_from_timestamp(timestamp)
               if session_data
-                # Create flights for this session based on video data
-                flights_created = extract_and_create_flights(html_content, session_data, filter_value)
                 created_count += 1
-                Rails.logger.info "✅ Created flying session with #{flights_created} flights"
+                Rails.logger.info "✅ Created flying session record (flights will be added only for newest session)"
               else
                 Rails.logger.warn "❌ Failed to create session"
               end
@@ -194,10 +195,8 @@ class FlyingSessionsController < ApplicationController
 
                 session_data = create_session_from_date_time(date_str, time_str)
                 if session_data
-                  # Create flights for this session based on video data
-                  flights_created = extract_and_create_flights(html_content, session_data, filter_value)
                   created_count += 1
-                  Rails.logger.info "✅ Created flying session (fallback) with #{flights_created} flights"
+                  Rails.logger.info "✅ Created flying session record (fallback, flights will be added only for newest session)"
                 end
               end
             end
@@ -208,39 +207,27 @@ class FlyingSessionsController < ApplicationController
           Rails.logger.info "---"
         end
 
-        # Also check for current session in button (if any)
-        current_button = doc.css("button").find { |btn| btn.text.include?("Flugsession") }
-        if current_button
-          Rails.logger.info "=== CURRENT SESSION FROM BUTTON ==="
-          strong_element = current_button.css("strong").first
-          if strong_element
-            current_text = strong_element.text.strip
-            Rails.logger.info "Current session: #{current_text}"
-
-            if match = current_text.match(/(\d{1,2}\s+\w+\.?\s+\d{4})\s+bis\s+(\d{1,2}:\d{2})/)
-              date_str = match[1]
-              time_str = match[2]
-
-              Rails.logger.info "✅ Parsed current: #{date_str} at #{time_str}"
-
-              session_data = create_session_from_date_time(date_str, time_str)
-              if session_data
-                created_count += 1
-                Rails.logger.info "✅ Created current flying session"
-              end
-            end
-          end
+        # After creating all session records, add flights only to the newest session
+        Rails.logger.info "=== ADDING FLIGHTS TO NEWEST SESSION ==="
+        # Find the most recent session that doesn't have flights yet
+        newest_session = FlyingSession.where(user: User.find_by(name: "Hana"))
+                                    .left_joins(:flights)
+                                    .where(flights: { id: nil })
+                                    .order(date_time: :desc)
+                                    .first
+        if newest_session
+          flights_created = extract_and_create_flights(html_content, newest_session)
+          Rails.logger.info "✅ Added #{flights_created} flights to newest session #{newest_session.id} (#{newest_session.date_time})"
+        else
+          Rails.logger.info "⚠️ No sessions found without flights, or no sessions exist"
         end
-
       else
         Rails.logger.warn "❌ Could not find ul.dropdown-menu in HTML"
-
         # Debug: Show what we actually have
         Rails.logger.info "=== DEBUG INFO ==="
         Rails.logger.info "HTML contains 'dropdown-menu': #{html_content.include?('dropdown-menu')}"
         Rails.logger.info "HTML contains 'Flugsession': #{html_content.include?('Flugsession')}"
         Rails.logger.info "HTML contains 'bis': #{html_content.include?('bis')}"
-
         # Show first 2000 characters of HTML for debugging
         Rails.logger.info "HTML preview (first 2000 chars):"
         Rails.logger.info html_content[0..2000]
@@ -307,43 +294,16 @@ class FlyingSessionsController < ApplicationController
     end
 
     def update_sessions_without_flights(html_content)
-      # This is called automatically during session creation
-      # Find a few recent sessions that don't have flights
-      sessions_without_flights = FlyingSession.left_joins(:flights)
-                                            .where(flights: { id: nil })
-                                            .order(date_time: :desc)
-
-      sessions_without_flights.each do |session|
-        Rails.logger.info "Auto-updating session #{session.id} (#{session.date_time})"
-        flights_created = extract_and_create_flights(html_content, session)
-        Rails.logger.info "✅ Added #{flights_created} flights to existing session" if flights_created > 0
-      end
+      # This method is no longer used since we only create flights for the current session
+      # that actually has video data available on the page
+      Rails.logger.info "⚠️ update_sessions_without_flights called but disabled - flights only created for current session"
     end
 
     def update_existing_sessions_without_flights(html_content)
-      # This is called manually to update all sessions without flights
-      sessions_without_flights = FlyingSession.left_joins(:flights)
-                                            .where(flights: { id: nil })
-                                            .order(date_time: :desc)
-
-      Rails.logger.info "Found #{sessions_without_flights.count} sessions without flights"
-      updated_count = 0
-
-      sessions_without_flights.each do |session|
-        Rails.logger.info "Updating session #{session.id} (#{session.date_time})"
-
-        # Try to extract flights from the HTML content using actual video data
-        flights_created = extract_and_create_flights(html_content, session)
-
-        if flights_created > 0
-          updated_count += 1
-          Rails.logger.info "✅ Added #{flights_created} flights to session"
-        else
-          Rails.logger.info "⚠️ No flights found for session #{session.id} - no video data available"
-        end
-      end
-
-      updated_count
+      # This method is called when importing sessions, but flights are already handled
+      # in parse_and_create_sessions, so we don't need to do anything here
+      Rails.logger.info "⚠️ update_existing_sessions_without_flights called but flights already handled in parse_and_create_sessions"
+      0
     end
 
     def create_session_from_timestamp(timestamp)
