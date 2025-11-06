@@ -62,8 +62,8 @@ class FlightsTest < ApplicationSystemTestCase
     flight_count_after = Flight.count
     assert_equal flight_count_before - 1, flight_count_after, "Flight count should decrease by 1"
 
-    # We should be redirected to flights index, not the flying session page
-    assert_current_path flights_path
-    assert_text "Flight was successfully destroyed"
+    # We should be redirected back to the flying session page
+    assert_current_path flying_session_path(@flying_session)
+    assert_text "Flight was successfully deleted"
   end
 end
