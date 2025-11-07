@@ -1,0 +1,1232 @@
+<div class="container-fluid">
+  <!-- Row: Filters + Actions -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="clearfix" style="padding:5px 15px;background:#DEDEDE;">
+          <div class="text-center">
+            <span class="show_responsive" style="margin:0 10px 5px 0;">Filter</span>
+
+            <div class="btn-group hide_responsive" style="margin:0 10px 0 0;">
+              <div class="btn-group" role="group">
+                <button type="button"
+                        class="btn btn-sm btn-default dropdown-toggle"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                  Flugsession                  <strong>
+                    6 Nov. 2025 bis 17:30                  </strong>
+                  <span class="caret"></span>
+                </button>
+
+                <ul class="dropdown-menu" style="z-index: 999;">
+                                      <li>
+                      <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=timeslot&filter_value=1762185600">
+                        3 Nov. 2025 bis 17:00                      </a>
+                    </li>
+                                      <li>
+                      <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=timeslot&filter_value=1762183800">
+                        3 Nov. 2025 bis 16:30                      </a>
+                    </li>
+                                      <li>
+                      <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=timeslot&filter_value=1761843600">
+                        30 Okt. 2025 bis 18:00                      </a>
+                    </li>
+                                      <li>
+                      <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=timeslot&filter_value=1761840000">
+                        30 Okt. 2025 bis 17:00                      </a>
+                    </li>
+                                      <li>
+                      <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=timeslot&filter_value=1761744600">
+                        29 Okt. 2025 bis 14:30                      </a>
+                    </li>
+                                      <li>
+                      <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=timeslot&filter_value=1761418800">
+                        25 Okt. 2025 bis 21:00                      </a>
+                    </li>
+                                  </ul>
+              </div>
+
+              <div class="btn-group" role="group">
+                <button type="button"
+                        class="btn btn-sm btn-default dropdown-toggle"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                  Medium                  <strong>
+                    Videos                  </strong>
+                  <span class="caret"></span>
+                </button>
+
+                <ul class="dropdown-menu" style="z-index: 999;">
+                                      <li>
+                      <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=type&filter_value=all">
+                        Alle                      </a>
+                    </li>
+                                      <li>
+                      <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=type&filter_value=photo">
+                        Fotos                      </a>
+                    </li>
+                                  </ul>
+              </div>
+              <div class="btn-group" role="group">
+                <button type="button"
+                        class="btn btn-sm btn-default dropdown-toggle"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                  Camera type                  <strong>
+                                      </strong>
+                  <span class="caret"></span>
+                </button>
+
+                <ul class="dropdown-menu" style="z-index: 999;">
+                                      <li>
+                      <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=camera&filter_value=all">
+                        Alle                      </a>
+                    </li>
+                                      <li>
+                      <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=camera&filter_value=Firsttimer">
+                        Firsttimer                      </a>
+                    </li>
+                                      <li>
+                      <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=camera&filter_value=Ring">
+                        Ring                      </a>
+                    </li>
+                                      <li>
+                      <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=camera&filter_value=Roof">
+                        Roof                      </a>
+                    </li>
+                                      <li>
+                      <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=camera&filter_value=Top">
+                        Top                      </a>
+                    </li>
+                                  </ul>
+              </div>
+            </div>
+
+            <div class="btn-group" role="group" aria-label="Actions" style="margin:0 10px 0 0;">
+              <a href="index.php?ctrl=do&do=reset_filter&namespace=proflyer"
+                 class="btn btn-sm btn-danger"
+                 title="Filter zurücksetzen"
+                 style="padding:1rem 2rem;font-size:1.8rem;">
+                <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+              </a>
+            </div>
+
+            <!-- Mass Download -->
+            <div class="btn-group" role="group" aria-label="Mass download" style="margin:0 10px 0 0;">
+              <button id="download_selected_btn"
+                      class="btn btn-sm btn-primary"
+                      disabled
+                      style="padding:1rem 2rem;font-size:1.6rem;">
+                <span class="glyphicon glyphicon-download-alt"></span>
+                Download selected                (<span id="selected_count">0</span>)
+              </button>
+            </div>
+
+            <!-- Select all -->
+            <div class="checkbox" style="display:inline-block; margin:0 10px 0 0; font-size:1.4rem;">
+              <label style="margin:0; cursor:pointer;">
+                <input type="checkbox" id="select_all_media" style="margin-right:6px;">
+                Select all media              </label>
+            </div>
+          </div>
+
+          <div class="pull-right text-center show_responsive">
+            <div class="btn-group" role="group" aria-label="Actions" id="div_filters_button_plus">
+              <a data-toggle="collapse"
+                 href="#filters_body"
+                 class="btn btn-sm btn-default"
+                 id="filters_button_plus"
+                 title="Show filters">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+              </a>
+            </div>
+            <div class="btn-group" role="group" aria-label="Actions" id="div_filters_button_minus" style="display:none;">
+              <a data-toggle="collapse"
+                 href="#filters_body"
+                 class="btn btn-sm btn-default"
+                 id="filters_button_minus"
+                 title="Hide filters">
+                <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div id="filters_body" class="panel-collapse collapse show_responsive">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="btn-group btn-group-justified">
+                  <div class="btn-group" role="group">
+                    <button type="button"
+                            class="btn btn-default dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                            style="padding: 6px 10px;">
+                      Flugsession                      <strong>
+                        6 Nov. 2025 bis 17:30                      </strong>
+                      <span class="caret"></span>
+                    </button>
+
+                    <ul class="dropdown-menu" style="z-index: 999;">
+                                              <li>
+                          <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=timeslot&filter_value=1762185600">
+                            3 Nov. 2025 bis 17:00                          </a>
+                        </li>
+                                              <li>
+                          <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=timeslot&filter_value=1762183800">
+                            3 Nov. 2025 bis 16:30                          </a>
+                        </li>
+                                              <li>
+                          <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=timeslot&filter_value=1761843600">
+                            30 Okt. 2025 bis 18:00                          </a>
+                        </li>
+                                              <li>
+                          <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=timeslot&filter_value=1761840000">
+                            30 Okt. 2025 bis 17:00                          </a>
+                        </li>
+                                              <li>
+                          <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=timeslot&filter_value=1761744600">
+                            29 Okt. 2025 bis 14:30                          </a>
+                        </li>
+                                              <li>
+                          <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=timeslot&filter_value=1761418800">
+                            25 Okt. 2025 bis 21:00                          </a>
+                        </li>
+                                          </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row" style="margin-top:10px;">
+              <div class="col-md-12">
+                <div class="btn-group btn-group-justified">
+                  <div class="btn-group" role="group">
+                    <button type="button"
+                            class="btn btn-default dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                            style="padding: 6px 10px;">
+                      Medium                      <strong>
+                        Videos                      </strong>
+                      <span class="caret"></span>
+                    </button>
+
+                    <ul class="dropdown-menu" style="z-index: 999;">
+                                              <li>
+                          <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=type&filter_value=all">
+                            Alle                          </a>
+                        </li>
+                                              <li>
+                          <a href="index.php?ctrl=do&do=set_filter&namespace=proflyer&filter_name=type&filter_value=photo">
+                            Fotos                          </a>
+                        </li>
+                                          </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /.panel-body -->
+        </div><!-- /#filters_body -->
+      </div><!-- /.panel -->
+    </div><!-- /.col-md-12 -->
+  </div><!-- /.row -->
+
+  <!-- Row: Media grid -->
+  <div class="row">
+    <div class="col-md-12 text-center">
+      
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="032b8a59e8d71b3ca776706d6b79dd4969ae07a7"
+                  data-filename="#1_20251106_173746_Roof.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media4.tunn3l.com/preview.php?site_id=windwerk&media_token=ff657f9eaff1967c83bea4962c2d2107f7258890" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Roof                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5649994, 'ff657f9eaff1967c83bea4962c2d2107f7258890', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#1</b> -               17:37:46              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=032b8a59e8d71b3ca776706d6b79dd4969ae07a7&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="823605a94806bd0cf8c0eb49e4a7ab3d27eea3dd"
+                  data-filename="#1_20251106_173746_Top.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media5.tunn3l.com/preview.php?site_id=windwerk&media_token=55d752d2519b7c4ea25b4ba4250c4e42d008975f" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Top                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5649995, '55d752d2519b7c4ea25b4ba4250c4e42d008975f', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#1</b> -               17:37:46              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=823605a94806bd0cf8c0eb49e4a7ab3d27eea3dd&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="750df25b13dfe5d32d9f656cb2caa649fac6e66a"
+                  data-filename="#1_20251106_173746_Firsttimer.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media1.tunn3l.com/preview.php?site_id=windwerk&media_token=6ffebe2be18dae7598dd92abde0d6ff13c8e72d9" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Firsttimer                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5649996, '6ffebe2be18dae7598dd92abde0d6ff13c8e72d9', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#1</b> -               17:37:46              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=750df25b13dfe5d32d9f656cb2caa649fac6e66a&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="e78e13970d05775d25dd862804875a70c01781e1"
+                  data-filename="#1_20251106_173746_Ring.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media2.tunn3l.com/preview.php?site_id=windwerk&media_token=123a7203787da401295a1c973994f68e3e8c5b0d" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Ring                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5649997, '123a7203787da401295a1c973994f68e3e8c5b0d', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#1</b> -               17:37:46              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=e78e13970d05775d25dd862804875a70c01781e1&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="d3986434422cfabec145f533d97a21d3aef4a505"
+                  data-filename="#2_20251106_174310_Top.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media2.tunn3l.com/preview.php?site_id=windwerk&media_token=c6d4996d153b63a7b14b117897d094f6f585e9b1" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Top                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650003, 'c6d4996d153b63a7b14b117897d094f6f585e9b1', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#2</b> -               17:43:10              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=d3986434422cfabec145f533d97a21d3aef4a505&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="b12038d641bff0edc52f16c085fa80cc8b6fea68"
+                  data-filename="#2_20251106_174310_Ring.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media3.tunn3l.com/preview.php?site_id=windwerk&media_token=f55a16c6dd7682f3c877f626cfca6689caf07c22" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Ring                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650004, 'f55a16c6dd7682f3c877f626cfca6689caf07c22', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#2</b> -               17:43:10              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=b12038d641bff0edc52f16c085fa80cc8b6fea68&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="ef2f98e01610003bb6e2313df3479c8a9f0c4e48"
+                  data-filename="#2_20251106_174310_Firsttimer.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media4.tunn3l.com/preview.php?site_id=windwerk&media_token=d065cd02fd05230ddf4d67bb729ba214210e424a" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Firsttimer                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650005, 'd065cd02fd05230ddf4d67bb729ba214210e424a', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#2</b> -               17:43:10              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=ef2f98e01610003bb6e2313df3479c8a9f0c4e48&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="60f5e8f5c1c48e4e82f4e1d5af24a68ba2d0dfa3"
+                  data-filename="#2_20251106_174310_Roof.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media5.tunn3l.com/preview.php?site_id=windwerk&media_token=a738d776124ea80143bcc9bdc633292e609d625f" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Roof                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650007, 'a738d776124ea80143bcc9bdc633292e609d625f', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#2</b> -               17:43:10              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=60f5e8f5c1c48e4e82f4e1d5af24a68ba2d0dfa3&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="c5653c08b33d19199be4c220f00186f54dea55f4"
+                  data-filename="#3_20251106_174835_Firsttimer.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media5.tunn3l.com/preview.php?site_id=windwerk&media_token=56257b3cc930a4a5d1e084a0cf637db3680b82ca" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Firsttimer                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650013, '56257b3cc930a4a5d1e084a0cf637db3680b82ca', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#3</b> -               17:48:35              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=c5653c08b33d19199be4c220f00186f54dea55f4&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="986042826b292f2f5d2685e40044eff305a407b0"
+                  data-filename="#3_20251106_174835_Ring.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media1.tunn3l.com/preview.php?site_id=windwerk&media_token=a60c5fb65032c24e5d8eb09d07b2505c44cdbe71" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Ring                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650014, 'a60c5fb65032c24e5d8eb09d07b2505c44cdbe71', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#3</b> -               17:48:35              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=986042826b292f2f5d2685e40044eff305a407b0&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="165f729a72668b5cfdf6ad3ae9d9abd03f4796aa"
+                  data-filename="#3_20251106_174835_Roof.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media2.tunn3l.com/preview.php?site_id=windwerk&media_token=8f025ae0f090eeda0e600f81e8722a5c9f45e3a2" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Roof                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650016, '8f025ae0f090eeda0e600f81e8722a5c9f45e3a2', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#3</b> -               17:48:35              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=165f729a72668b5cfdf6ad3ae9d9abd03f4796aa&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="ae4761fd453d06b8ca3be8e87a3261e52873eddf"
+                  data-filename="#3_20251106_174835_Top.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media3.tunn3l.com/preview.php?site_id=windwerk&media_token=f5ff07c03f5cf962d136aa8d23ce41ab2ba07d01" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Top                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650017, 'f5ff07c03f5cf962d136aa8d23ce41ab2ba07d01', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#3</b> -               17:48:35              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=ae4761fd453d06b8ca3be8e87a3261e52873eddf&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="108134a2849d4b788af720155407f80966d1d6fa"
+                  data-filename="#4_20251106_175401_Ring.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media3.tunn3l.com/preview.php?site_id=windwerk&media_token=e63df9176e3ead01fc49f4877870ae04266069b1" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Ring                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650023, 'e63df9176e3ead01fc49f4877870ae04266069b1', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#4</b> -               17:54:01              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=108134a2849d4b788af720155407f80966d1d6fa&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="364fb635b2d7f5232d21df5631e53b60b5a8c792"
+                  data-filename="#4_20251106_175401_Top.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media4.tunn3l.com/preview.php?site_id=windwerk&media_token=56eb6f690c2db00b6bac38bfa7986c11e86343c5" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Top                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650025, '56eb6f690c2db00b6bac38bfa7986c11e86343c5', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#4</b> -               17:54:01              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=364fb635b2d7f5232d21df5631e53b60b5a8c792&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="c21696e6758e071ab4895f5dd0b948ed7abc0d9c"
+                  data-filename="#4_20251106_175401_Roof.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media5.tunn3l.com/preview.php?site_id=windwerk&media_token=e3f09ebe96fff359041d4b8a2dc7bff3199a985a" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Roof                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650026, 'e3f09ebe96fff359041d4b8a2dc7bff3199a985a', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#4</b> -               17:54:01              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=c21696e6758e071ab4895f5dd0b948ed7abc0d9c&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="c1466f76737219ea25a621e639171b34cf71bb64"
+                  data-filename="#4_20251106_175401_Firsttimer.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media1.tunn3l.com/preview.php?site_id=windwerk&media_token=6d6de44c77b471e8bffc9fa415bca1db926e8d38" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Firsttimer                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650027, '6d6de44c77b471e8bffc9fa415bca1db926e8d38', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#4</b> -               17:54:01              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=c1466f76737219ea25a621e639171b34cf71bb64&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="083aa13a23aac69ac0f241854c8df53d6d55f1f4"
+                  data-filename="#5_20251106_175922_Ring.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media1.tunn3l.com/preview.php?site_id=windwerk&media_token=ed4c8e1e718575fb75b9567f81de64b9d4519c71" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Ring                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650033, 'ed4c8e1e718575fb75b9567f81de64b9d4519c71', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#5</b> -               17:59:22              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=083aa13a23aac69ac0f241854c8df53d6d55f1f4&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="899ed5eca72bf9644cd89725ddb205208c9a7110"
+                  data-filename="#5_20251106_175922_Roof.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media2.tunn3l.com/preview.php?site_id=windwerk&media_token=e2df08904e685d8bb1c5e68b6eaf4997d22abfb9" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Roof                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650034, 'e2df08904e685d8bb1c5e68b6eaf4997d22abfb9', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#5</b> -               17:59:22              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=899ed5eca72bf9644cd89725ddb205208c9a7110&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="beed7a0472cb1d790131a4ec7a1fca9b23c2769d"
+                  data-filename="#5_20251106_175922_Firsttimer.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media3.tunn3l.com/preview.php?site_id=windwerk&media_token=2e8e5cc9284a82c56e022ea2e19e4831b4f95e7b" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Firsttimer                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650035, '2e8e5cc9284a82c56e022ea2e19e4831b4f95e7b', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#5</b> -               17:59:22              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=beed7a0472cb1d790131a4ec7a1fca9b23c2769d&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="6f7f00285ad36753aadf4523da00014df61f2a64"
+                  data-filename="#5_20251106_175922_Top.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media4.tunn3l.com/preview.php?site_id=windwerk&media_token=d7e769aa78a4861aa63e071145d6f7e5bffe37af" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Top                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650036, 'd7e769aa78a4861aa63e071145d6f7e5bffe37af', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#5</b> -               17:59:22              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=6f7f00285ad36753aadf4523da00014df61f2a64&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="c6a97f5ec195fe4f5a404a8ea01e6408c3b288e2"
+                  data-filename="#6_20251106_180448_Firsttimer.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media4.tunn3l.com/preview.php?site_id=windwerk&media_token=0f4d4e49c14e7d6361d92dceb590dab22c7545b4" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Firsttimer                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650043, '0f4d4e49c14e7d6361d92dceb590dab22c7545b4', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#6</b> -               18:04:48              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=c6a97f5ec195fe4f5a404a8ea01e6408c3b288e2&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="3d5db4655de35b5c735b2d83253212dc3c7248c2"
+                  data-filename="#6_20251106_180448_Roof.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media5.tunn3l.com/preview.php?site_id=windwerk&media_token=531bede2dbe16b2d368162494453baa41784b2dc" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Roof                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650044, '531bede2dbe16b2d368162494453baa41784b2dc', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#6</b> -               18:04:48              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=3d5db4655de35b5c735b2d83253212dc3c7248c2&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="eacf530a0322cd0b777d7626ded188956cd18794"
+                  data-filename="#6_20251106_180448_Ring.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media1.tunn3l.com/preview.php?site_id=windwerk&media_token=cc66d8adeb3fc3e2294a80de81e65e07099c3135" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Ring                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650046, 'cc66d8adeb3fc3e2294a80de81e65e07099c3135', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#6</b> -               18:04:48              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=eacf530a0322cd0b777d7626ded188956cd18794&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  <div class="media_container_responsive" style="display:inline-block; margin:10px; vertical-align:top;">
+            <div class="media_container_responsive" style="position:relative;">
+                            <div class="media-select-box">
+                <label>
+                  <span class="glyphicon glyphicon-ok checkmark" aria-hidden="true"></span>
+                  <input
+                  type="checkbox"
+                  class="media-select"
+                  data-token="358ef32952655c8f5490500904d4594a49b0cc98"
+                  data-filename="#6_20251106_180448_Top.mp4"
+                  >
+                  <span>Select</span>
+                </label>
+              </div>
+
+
+                              <img src="https://media2.tunn3l.com/preview.php?site_id=windwerk&media_token=e9a7955ab716fb1d11cb6dc29cdba9f71cbbfcac" class="media_container_responsive" style="width:465px;border-radius:10px;">
+                <div class="link text-center"
+                     style="position:absolute; left:0; top:0; background:#CCC; color:black; border-top-left-radius:10px; border-bottom-right-radius:10px">
+                  <span style="margin:10px;font-size:2rem;">
+                    <span class="glyphicon glyphicon-facetime-video"></span>&nbsp;Top                  </span>
+                </div>
+                <div class="link text-center"
+                     style="position:absolute; top:0; left:0; right:0; bottom:0;"
+                     title="Preview video"
+                     onClick="showMediaPreview(5650047, 'e9a7955ab716fb1d11cb6dc29cdba9f71cbbfcac', 'aeb112af6a741195c236bcdaedea2c1dba2b91fc');">
+                  <span class="glyphicon glyphicon-eye-open"
+                        style="font-size:4em; color:#ddd; position:relative; top:102px;"></span>
+                </div>
+                          </div>
+
+            <div class="clearfix text-center">
+              <b>#6</b> -               18:04:48              <a class="btn btn-link download_link"
+                 href="https://booking.windwerk.ch/index.php?ctrl=do&do=download_media&media_token=358ef32952655c8f5490500904d4594a49b0cc98&source=media_kiosk"
+                 target="_blank"
+                 download>
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="tab_toggle_text">Download</span>
+              </a>
+            </div>
+          </div>
+                  </div>
+  </div><!-- /.row -->
+</div><!-- /.container-fluid -->
