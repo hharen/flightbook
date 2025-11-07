@@ -99,15 +99,7 @@ class FlyingSessionsController < ApplicationController
 
       if html_content.present?
         created_count = parse_and_create_sessions(html_content)
-
-        # Also update existing sessions without flights
-        sessions_updated = update_existing_sessions_without_flights(html_content)
-
         message = "Successfully imported #{created_count} flying sessions from Windwerk."
-        if sessions_updated > 0
-          message += " Updated #{sessions_updated} existing sessions with flight data."
-        end
-
         redirect_to flying_sessions_path, notice: message
       else
         redirect_to flying_sessions_path, alert: "Failed to fetch data from Windwerk. Please check your cookie and try again."
@@ -153,7 +145,7 @@ class FlyingSessionsController < ApplicationController
         session_links = dropdown_menu.css("li a")
         Rails.logger.info "Found #{session_links.length} session links in dropdown"
 
-        # Log all sessions found
+        # Log all sessions found and create session records (without flights)
         Rails.logger.info "=== ALL SESSIONS FOUND ==="
         session_links.each_with_index do |link, index|
           session_text = link.text.strip
@@ -172,13 +164,11 @@ class FlyingSessionsController < ApplicationController
 
               Rails.logger.info "✅ Parsed from timestamp: #{date_time}"
 
-              # Create the flying session using the precise timestamp
+              # Create the flying session using the precise timestamp (without flights)
               session_data = create_session_from_timestamp(timestamp)
               if session_data
-                # Create flights for this session based on video data
-                flights_created = extract_and_create_flights(html_content, session_data, filter_value)
                 created_count += 1
-                Rails.logger.info "✅ Created flying session with #{flights_created} flights"
+                Rails.logger.info "✅ Created flying session record (flights will be added only for current session)"
               else
                 Rails.logger.warn "❌ Failed to create session"
               end
@@ -194,10 +184,8 @@ class FlyingSessionsController < ApplicationController
 
                 session_data = create_session_from_date_time(date_str, time_str)
                 if session_data
-                  # Create flights for this session based on video data
-                  flights_created = extract_and_create_flights(html_content, session_data, filter_value)
                   created_count += 1
-                  Rails.logger.info "✅ Created flying session (fallback) with #{flights_created} flights"
+                  Rails.logger.info "✅ Created flying session record (fallback, flights will be added only for current session)"
                 end
               end
             end
@@ -208,28 +196,49 @@ class FlyingSessionsController < ApplicationController
           Rails.logger.info "---"
         end
 
-        # Also check for current session in button (if any)
+        # After creating all session records, add flights only to the current session
+        Rails.logger.info "=== ADDING FLIGHTS TO CURRENT SESSION ==="
+
+        # Look for the current session button to identify which session has video data
         current_button = doc.css("button").find { |btn| btn.text.include?("Flugsession") }
+        current_session = nil
+
         if current_button
-          Rails.logger.info "=== CURRENT SESSION FROM BUTTON ==="
           strong_element = current_button.css("strong").first
           if strong_element
             current_text = strong_element.text.strip
-            Rails.logger.info "Current session: #{current_text}"
+            Rails.logger.info "Current session from button: #{current_text}"
 
             if match = current_text.match(/(\d{1,2}\s+\w+\.?\s+\d{4})\s+bis\s+(\d{1,2}:\d{2})/)
               date_str = match[1]
               time_str = match[2]
-
               Rails.logger.info "✅ Parsed current: #{date_str} at #{time_str}"
 
-              session_data = create_session_from_date_time(date_str, time_str)
-              if session_data
-                created_count += 1
-                Rails.logger.info "✅ Created current flying session"
+              # First try to find existing session
+              current_session = find_session_from_date_time(date_str, time_str)
+              if current_session
+                Rails.logger.info "✅ Found existing current session for flight extraction: #{current_session.id}"
+              else
+                Rails.logger.info "Current session not found in dropdown, creating it"
+                # Create the current session since it's not in the dropdown
+                current_session = create_session_from_date_time(date_str, time_str)
+                if current_session
+                  created_count += 1
+                  Rails.logger.info "✅ Created current session for flight extraction: #{current_session.id}"
+                else
+                  Rails.logger.warn "❌ Failed to create current session"
+                end
               end
             end
           end
+        end
+
+        # Add flights only to the current session
+        if current_session
+          flights_created = extract_and_create_flights(html_content, current_session)
+          Rails.logger.info "✅ Added #{flights_created} flights to current session #{current_session.id} (#{current_session.date_time})"
+        else
+          Rails.logger.info "⚠️ No current session found for flight extraction"
         end
 
       else
@@ -251,7 +260,7 @@ class FlyingSessionsController < ApplicationController
       created_count
     end
 
-    def extract_and_create_flights(html_content, flying_session, session_filter_value = nil)
+    def extract_and_create_flights(html_content, flying_session)
       return 0 unless flying_session
 
       doc = Nokogiri::HTML(html_content)
@@ -320,31 +329,6 @@ class FlyingSessionsController < ApplicationController
       end
     end
 
-    def update_existing_sessions_without_flights(html_content)
-      # This is called manually to update all sessions without flights
-      sessions_without_flights = FlyingSession.left_joins(:flights)
-                                            .where(flights: { id: nil })
-                                            .order(date_time: :desc)
-
-      Rails.logger.info "Found #{sessions_without_flights.count} sessions without flights"
-      updated_count = 0
-
-      sessions_without_flights.each do |session|
-        Rails.logger.info "Updating session #{session.id} (#{session.date_time})"
-
-        # Try to extract flights from the HTML content using actual video data
-        flights_created = extract_and_create_flights(html_content, session)
-
-        if flights_created > 0
-          updated_count += 1
-          Rails.logger.info "✅ Added #{flights_created} flights to session"
-        else
-          Rails.logger.info "⚠️ No flights found for session #{session.id} - no video data available"
-        end
-      end
-
-      updated_count
-    end
 
     def create_session_from_timestamp(timestamp)
       # Convert Unix timestamp directly to DateTime
@@ -374,6 +358,57 @@ class FlyingSessionsController < ApplicationController
 
       rescue => e
         Rails.logger.error "Error creating session from timestamp '#{timestamp}': #{e.message}"
+        nil
+      end
+    end
+
+    def find_session_from_date_time(date_str, time_str)
+      # Parse German date format "30 Okt. 2025" to find existing session
+      begin
+        # Convert German month abbreviations to English
+        german_months = {
+          "Jan." => "Jan", "Feb." => "Feb", "März" => "Mar", "Apr." => "Apr",
+          "Mai" => "May", "Juni" => "Jun", "Juli" => "Jul", "Aug." => "Aug",
+          "Sept." => "Sep", "Okt." => "Oct", "Nov." => "Nov", "Dez." => "Dec"
+        }
+
+        # Replace German month with English equivalent
+        english_date_str = date_str
+        german_months.each do |german, english|
+          english_date_str = english_date_str.gsub(german, english)
+        end
+
+        # Parse the date: "30 Oct 2025"
+        date = Date.strptime(english_date_str, "%d %b %Y")
+
+        # Parse the time: "18:00"
+        time = Time.strptime(time_str, "%H:%M")
+
+        # Combine date and time and handle timezone
+        # The timestamps from Windwerk are in CET/CEST, so we need to match that
+        target_date_time = Time.zone.local(date.year, date.month, date.day, time.hour, time.min)
+
+        Rails.logger.info "Looking for existing session with date_time: #{target_date_time} (in UTC: #{target_date_time.utc})"
+
+        # Find the user named Hana
+        user = User.find_by(name: "Hana")
+        return nil unless user
+
+        # Look for session within a reasonable time window (2 hours) to handle timezone differences
+        start_time = target_date_time.utc - 2.hours
+        end_time = target_date_time.utc + 2.hours
+
+        existing_session = user.flying_sessions.where(date_time: start_time..end_time).first
+        if existing_session
+          Rails.logger.info "Found existing session: #{existing_session.id} at #{existing_session.date_time}"
+          existing_session
+        else
+          Rails.logger.warn "No existing session found for #{target_date_time}"
+          nil
+        end
+
+      rescue => e
+        Rails.logger.error "Error finding session from date_time '#{date_str} #{time_str}': #{e.message}"
         nil
       end
     end
