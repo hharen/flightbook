@@ -40,4 +40,22 @@ class FlightsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to @flight.flying_session
   end
+
+  test "should auto-assign assign incremental flight numbers on create" do
+    # flying_session :one already has flights with numbers 1 and 2 from fixtures
+    # The next flight should get number 3
+    assert_difference("Flight.count") do
+      post flights_url, params: {
+        flight: {
+          flying_session_id: @flight.flying_session_id,
+          duration: 5.0,
+          note: "Test flight"
+        }
+      }
+    end
+
+    new_flight = Flight.last
+    assert_equal 3, new_flight.number
+    assert_redirected_to flights_url
+  end
 end
