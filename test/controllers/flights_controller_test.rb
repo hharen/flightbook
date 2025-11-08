@@ -20,7 +20,8 @@ class FlightsControllerTest < ActionDispatch::IntegrationTest
       post flights_url, params: { flight: { flying_session_id: @flight.flying_session_id, duration: @flight.duration } }
     end
 
-    assert_redirected_to flights_url
+    new_flight = Flight.last
+    assert_redirected_to new_flight.flying_session
   end
 
   test "should get edit" do
@@ -56,6 +57,6 @@ class FlightsControllerTest < ActionDispatch::IntegrationTest
 
     new_flight = Flight.last
     assert_equal 3, new_flight.number
-    assert_redirected_to flights_url
+    assert_redirected_to new_flight.flying_session
   end
 end

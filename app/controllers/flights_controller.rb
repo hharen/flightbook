@@ -39,7 +39,7 @@ class FlightsController < ApplicationController
     @flight = Flight.new(flight_params)
 
     if @flight.save
-      redirect_to flights_path, notice: "Flight was successfully created."
+      redirect_to @flight.flying_session, notice: "Flight was successfully created."
     else
       render :new, status: :unprocessable_entity
     end
