@@ -12,18 +12,13 @@
   <% end %>
 
   <div>
-    <%= form.label :number, style: "display: block" %>
-    <%= form.number_field :number, placeholder: "Flight number", min: 1 %>
-  </div>
-
-  <div>
     <%= form.label :duration, style: "display: block" %>
     <%= form.number_field :duration, step: 0.1, min: 0, placeholder: "Duration in minutes" %>
   </div>
 
   <div>
     <%= form.label :note, style: "display: block" %>
-    <%= form.text_field :note, placeholder: "Optional note about this flight" %>
+    <%= form.text_area :note, placeholder: "Optional note about this flight", rows: 4, cols: 50 %>
   </div>
 
   <div>

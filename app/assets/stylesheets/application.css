@@ -9,16 +9,48 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
+/* Color Palette */
+:root {
+  --barn-red: #780000;
+  --blue-green: #219ebc;
+  --prussian-blue: #023047;
+  --selective-yellow: #ffb703;
+  --ut-orange: #fb8500;
+  
+  /* Lighter/darker variants for palette colors */
+  --barn-red-dark: #5a0000;
+  --blue-green-dark: #1a7c95;
+  --prussian-blue-light: #034561;
+  --selective-yellow-dark: #e6a400;
+  --ut-orange-dark: #e07500;
+}
+
 /* Global font settings */
 body {
-  font-family: sans-serif;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 300;
+}
+
+/* Link styles */
+a {
+  color: var(--barn-red);
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: var(--prussian-blue);
+}
+
+.text-link {
+  font-weight: 400;
 }
 
 /* Navbar Styles */
 .navbar {
-  background-color: #2c3e50;
+  background-color: var(--prussian-blue);
   padding: 1rem 0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(2, 48, 71, 0.3); /* prussian-blue shadow */
 }
 
 .navbar-container {
@@ -32,13 +64,13 @@ body {
 
 .navbar-brand {
   font-size: 1.5rem;
-  font-weight: bold;
-  color: #ecf0f1;
+  font-weight: 400;
+  color: white;
   text-decoration: none;
 }
 
 .navbar-brand:hover {
-  color: #3498db;
+  color: var(--selective-yellow);
   text-decoration: none;
 }
 
@@ -48,16 +80,16 @@ body {
 }
 
 .navbar-item {
-  color: #ecf0f1;
+  color: white;
   text-decoration: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.3s;
 }
 
 .navbar-item:hover {
-  background-color: #34495e;
-  color: #3498db;
+  background-color: var(--prussian-blue-light);
+  color: var(--selective-yellow);
   text-decoration: none;
 }
 
@@ -72,42 +104,27 @@ body {
 .table-container {
   overflow-x: auto;
   margin: 2rem 0;
-  background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(2, 48, 71, 0.2); /* prussian-blue shadow */
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
-.data-table th {
-  background-color: #34495e;
+th {
+  background-color: var(--prussian-blue);
   color: white;
-  padding: 1rem;
+  font-weight: 400;
   text-align: left;
-  font-weight: 600;
-  border-bottom: 2px solid #2c3e50;
+  padding: 15px 10px;
 }
 
-.data-table td {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #e0e0e0;
-  vertical-align: middle;
-}
-
-.data-table tbody tr:hover {
-  background-color: #f8f9fa;
-}
-
-.data-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.data-table tbody tr:nth-child(even):hover {
-  background-color: #f1f3f4;
+td {
+  border-bottom: 1px solid var(--blue-green);
+  padding: 5px 10px;
 }
 
 /* Action buttons */
@@ -121,8 +138,7 @@ body {
   margin: 0 0.2rem;
   text-decoration: none;
   border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: 500;
+  font-weight: 400;
   transition: background-color 0.3s, transform 0.1s;
 }
 
@@ -137,28 +153,48 @@ body {
 }
 
 .btn {
-  background-color: #3498db;
+  background-color: var(--blue-green);
   color: white;
 }
 
 .btn:hover {
-  background-color: #2980b9;
+  background-color: var(--blue-green-dark);
   color: white;
 }
 
 .btn-danger {
-  background-color: #e74c3c;
+  background-color: var(--barn-red);
   color: white;
 }
 
 .btn-danger:hover {
-  background-color: #c0392b;
+  background-color: var(--barn-red-dark);
   color: white;
+}
+
+.btn-show {
+  background-color: var(--blue-green);
+  color: white;
+}
+
+.btn-show:hover {
+  background-color: var(--blue-green-dark);
+  color: white;
+}
+
+.btn-submit {
+  background-color: var(--selective-yellow);
+  color: var(--prussian-blue);
+}
+
+.btn-submit:hover {
+  background-color: var(--selective-yellow-dark);
+  color: var(--prussian-blue);
 }
 
 /* Page headers */
 h1 {
-  color: #2c3e50;
+  color: var(--prussian-blue);
   margin-bottom: 1rem;
 }
 
@@ -167,17 +203,17 @@ a[href*="new"] {
   display: inline-block;
   margin-top: 1rem;
   padding: 0.75rem 1.5rem;
-  background-color: #27ae60;
-  color: white;
+  background-color: var(--selective-yellow);
+  color: var(--prussian-blue);
   text-decoration: none;
   border-radius: 6px;
-  font-weight: 500;
+  font-weight: 400;
   transition: background-color 0.3s, transform 0.1s;
 }
 
 a[href*="new"]:hover {
-  background-color: #229954;
-  color: white;
+  background-color: var(--selective-yellow-dark);
+  color: var(--prussian-blue);
   text-decoration: none;
   transform: translateY(-1px);
 }
@@ -217,19 +253,18 @@ a[href*="new"]:hover {
 .flights-section {
   margin: 2rem 0;
   padding: 1.5rem;
-  background-color: #f8f9fa;
   border-radius: 8px;
 }
 
 .flights-section h2 {
   margin-top: 0;
-  color: #2c3e50;
-  border-bottom: 2px solid #ecf0f1;
+  color: var(--prussian-blue);
+  border-bottom: 2px solid var(--blue-green);
   padding-bottom: 0.5rem;
 }
 
 .no-data {
-  color: #7f8c8d;
+  color: var(--prussian-blue);
   font-style: italic;
   margin: 1rem 0;
 }
@@ -239,17 +274,16 @@ a[href*="new"]:hover {
 }
 
 .btn-primary {
-  background-color: #3498db;
+  background-color: var(--blue-green);
   color: white;
   padding: 0.75rem 1.5rem;
   text-decoration: none;
   border-radius: 6px;
-  font-weight: 500;
   transition: background-color 0.3s, transform 0.1s;
 }
 
 .btn-primary:hover {
-  background-color: #2980b9;
+  background-color: var(--blue-green-dark);
   color: white;
   text-decoration: none;
   transform: translateY(-1px);
@@ -259,17 +293,16 @@ a[href*="new"]:hover {
 .form-select {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--blue-green);
   border-radius: 4px;
   font-size: 1rem;
-  background-color: white;
   margin-top: 0.25rem;
 }
 
 .form-select:focus {
   outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  border-color: var(--blue-green);
+  box-shadow: 0 0 0 2px rgba(33, 158, 188, 0.2);
 }
 
 /* User filter section */
@@ -281,10 +314,11 @@ a[href*="new"]:hover {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 1rem;
+  margin: 1rem 0;
   padding: 1rem;
-  background-color: #f8f9fa;
+  background-color: rgba(33, 158, 188, 0.05); /* very light blue-green */
   border-radius: 8px;
+  font-size: 1rem;
 }
 
 .user-filter-form {
@@ -297,12 +331,11 @@ a[href*="new"]:hover {
 }
 
 .filter-info {
-  color: #6c757d;
-  font-size: 0.9rem;
+  color: var(--prussian-blue);
 }
 
 .filter-info strong {
-  color: #2c3e50;
+  color: var(--barn-red);
 }
 
 /* Action buttons section */
@@ -314,7 +347,7 @@ a[href*="new"]:hover {
 }
 
 .btn-secondary {
-  background-color: #6c757d;
+  background-color: var(--prussian-blue);
   color: white;
   padding: 0.5rem 1rem;
   border: none;
@@ -326,9 +359,26 @@ a[href*="new"]:hover {
 }
 
 .btn-secondary:hover {
-  background-color: #5a6268;
+  background-color: var(--barn-red-dark);
   color: white;
   text-decoration: none;
+  transform: translateY(-1px);
+}
+
+/* Form submit buttons */
+input[type="submit"] {
+  background-color: var(--selective-yellow);
+  color: var(--prussian-blue);
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+input[type="submit"]:hover {
+  background-color: var(--selective-yellow-dark);
   transform: translateY(-1px);
 }
 
@@ -338,4 +388,9 @@ a[href*="new"]:hover {
   font-size: 0.875rem;
   resize: vertical;
   min-height: 100px;
+}
+
+/* Form field spacing */
+form div {
+  margin-bottom: 10px;
 }

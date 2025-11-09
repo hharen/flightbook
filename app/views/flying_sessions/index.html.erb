@@ -36,6 +36,7 @@
   <table class="data-table">
     <thead>
       <tr>
+        <th>#</th>
         <th>Date & Time</th>
         <th>Flight Time (min)</th>
         <th>Flights</th>
@@ -46,8 +47,9 @@
       </tr>
     </thead>
     <tbody>
-      <% @flying_sessions.each do |flying_session| %>
+      <% @flying_sessions.each_with_index do |flying_session, index| %>
         <tr>
+          <td><%= index + 1 %></td>
           <td>
             <%= link_to flying_session.date_time&.strftime("%d.%m.%Y - %H:%M"), flying_session, 
                         class: "text-link" %>
@@ -57,10 +59,12 @@
           <td><%= flying_session.user&.name %></td>
           <td><%= flying_session.instructor&.name %></td>
           <td><%= flying_session.note %></td>
-          <td class="actions">
-            <%= link_to "Edit", edit_flying_session_path(flying_session), class: "btn btn-small" %>
-            <%= link_to "Delete", flying_session_path(flying_session), method: :delete, 
-                        confirm: "Are you sure?", class: "btn btn-small btn-danger" %>
+          <td>
+            <div class="actions">
+              <%= link_to "Edit", edit_flying_session_path(flying_session), class: "btn btn-small" %>
+              <%= link_to "Delete", flying_session_path(flying_session), method: :delete, 
+                          confirm: "Are you sure?", class: "btn btn-small btn-danger" %>
+            </div>
           </td>
         </tr>
       <% end %>
