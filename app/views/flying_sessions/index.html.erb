@@ -59,10 +59,12 @@
           <td><%= flying_session.user&.name %></td>
           <td><%= flying_session.instructor&.name %></td>
           <td><%= flying_session.note %></td>
-          <td class="actions">
-            <%= link_to "Edit", edit_flying_session_path(flying_session), class: "btn btn-small" %>
-            <%= link_to "Delete", flying_session_path(flying_session), method: :delete, 
-                        confirm: "Are you sure?", class: "btn btn-small btn-danger" %>
+          <td>
+            <div class="actions">
+              <%= link_to "Edit", edit_flying_session_path(flying_session), class: "btn btn-small" %>
+              <%= link_to "Delete", flying_session_path(flying_session), method: :delete, 
+                          confirm: "Are you sure?", class: "btn btn-small btn-danger" %>
+            </div>
           </td>
         </tr>
       <% end %>
