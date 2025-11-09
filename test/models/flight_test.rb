@@ -19,7 +19,6 @@ class FlightTest < ActiveSupport::TestCase
 
     flight = Flight.new(
       flying_session: new_session,
-      duration: 5.0,
       note: "Test flight"
     )
 
@@ -32,7 +31,7 @@ class FlightTest < ActiveSupport::TestCase
     # The next flight should get number 3
     flight = Flight.create!(
       flying_session: @flying_session_one,
-      duration: 4.0
+      note: "Test flight"
     )
     assert_equal 3, flight.number
   end
@@ -42,7 +41,7 @@ class FlightTest < ActiveSupport::TestCase
     # Try to create another flight with same number in same session
     duplicate_flight = Flight.new(
       flying_session: @flying_session_one,
-      duration: 4.0,
+      note: "Duplicate flight",
       number: 1
     )
 
@@ -67,25 +66,17 @@ class FlightTest < ActiveSupport::TestCase
     # flying_session_one already has flights 1 and 2, next should be 3
     new_flight_session1 = Flight.create!(
       flying_session: @flying_session_one,
-      duration: 3.0
+      note: "Test flight 1"
     )
 
     # flying_session_two already has flight 1, next should be 2
     new_flight_session2 = Flight.create!(
       flying_session: @flying_session_two,
-      duration: 5.0
+      note: "Test flight 2"
     )
 
     # Each session should continue numbering from its highest existing number
     assert_equal 3, new_flight_session1.number
     assert_equal 2, new_flight_session2.number
-  end
-
-  test "show_duration returns formatted string or dash" do
-    flight_with_duration = Flight.new(duration: 5.5)
-    assert_equal "5.5", flight_with_duration.show_duration
-
-    flight_without_duration = Flight.new(duration: nil)
-    assert_equal "-", flight_without_duration.show_duration
   end
 end
