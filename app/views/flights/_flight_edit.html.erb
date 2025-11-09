@@ -1,0 +1,36 @@
+  <%= turbo_frame_tag "flight_#{flight.id}" do %>
+  <tr id="<%= dom_id(flight) %>">
+    <%= form_with model: flight, class: "inline-edit-form" do |form| %>
+      <td><%= flight.number.present? ? "##{flight.number}" : "—" %></td>
+      <td>
+        <% if flight.flying_session %>
+          <div>
+            <%= link_to flying_session_path(flight.flying_session) do %>
+              <strong><%= flight.flying_session.date_time.strftime("%B %d, %Y at %I:%M %p") %></strong>
+            <% end %>
+          </div>
+          <% if flight.flying_session.instructor %>
+            <div class="text-muted">
+              Instructor: <%= flight.flying_session.instructor.name %>
+            </div>
+          <% else %>
+            <div class="text-muted">
+              No instructor assigned
+            </div>
+          <% end %>
+        <% else %>
+          No session
+        <% end %>
+      </td>
+      <td>
+        <%= form.text_field :note, value: flight.note, class: "form-input inline-edit-input", placeholder: "Add a note..." %>
+      </td>
+      <td class="actions">
+        <%= form.submit "Save", class: "btn btn-small btn-success" %>
+        <%= link_to "Cancel", flight_path(flight), 
+            data: { turbo_frame: "flight_#{flight.id}" },
+            class: "btn btn-small btn-secondary" %>
+      </td>
+    <% end %>
+  </tr>
+<% end %>

@@ -394,3 +394,55 @@ input[type="submit"]:hover {
 form div {
   margin-bottom: 10px;
 }
+
+/* Inline editing styles */
+.inline-edit-form {
+  margin: 0;
+}
+
+/* Make turbo-frame behave properly in table contexts */
+turbo-frame {
+  display: contents;
+}
+
+.inline-edit-input {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.inline-edit-input:focus {
+  outline: none;
+  border-color: var(--blue-green);
+  box-shadow: 0 0 0 2px rgba(33, 158, 188, 0.2);
+}
+
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+}
+
+/* Fix turbo-frame display in table context */
+turbo-frame {
+  display: contents;
+}

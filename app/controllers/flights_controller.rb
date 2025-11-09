@@ -1,5 +1,5 @@
 class FlightsController < ApplicationController
-  before_action :set_flight, only: %i[edit update destroy]
+  before_action :set_flight, only: %i[show edit update destroy]
 
   # GET /flights
   def index
@@ -30,8 +30,18 @@ class FlightsController < ApplicationController
     end
   end
 
+  # GET /flights/1
+  def show
+    if turbo_frame_request?
+      render partial: 'flight_row', locals: { flight: @flight }
+    else
+      redirect_to @flight.flying_session
+    end
+  end
+
   # GET /flights/1/edit
   def edit
+    # The edit view will handle rendering based on turbo_frame_request?
   end
 
   # POST /flights
@@ -48,9 +58,15 @@ class FlightsController < ApplicationController
   # PATCH/PUT /flights/1
   def update
     if @flight.update(flight_params)
-      redirect_to @flight.flying_session, notice: "Flight was successfully updated.", status: :see_other
+      respond_to do |format|
+        format.html { redirect_to @flight.flying_session, notice: "Flight was successfully updated.", status: :see_other }
+        format.turbo_stream # Will render update.turbo_stream.erb
+      end
     else
-      render :edit, status: :unprocessable_entity
+      respond_to do |format|
+        format.html { render :edit, status: :unprocessable_entity }
+        format.turbo_stream { render :edit, status: :unprocessable_entity }
+      end
     end
   end
 

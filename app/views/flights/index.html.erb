@@ -42,37 +42,7 @@
     </thead>
     <tbody>
       <% @flights.each do |flight| %>
-        <tr>
-          <td><%= flight.number.present? ? "##{flight.number}" : "—" %></td>
-          <td>
-            <% if flight.flying_session %>
-              <div>
-                <%= link_to flying_session_path(flight.flying_session) do %>
-                  <strong><%= flight.flying_session.date_time.strftime("%B %d, %Y at %I:%M %p") %></strong>
-                <% end %>
-              </div>
-              <% if flight.flying_session.instructor %>
-                <div class="text-muted">
-                  Instructor: <%= flight.flying_session.instructor.name %>
-                </div>
-              <% else %>
-                <div class="text-muted">
-                  No instructor assigned
-                </div>
-              <% end %>
-            <% else %>
-              No session
-            <% end %>
-          </td>
-          <td>
-            <%= flight.note.present? ? flight.note : "—" %>
-          </td>
-          <td class="actions">
-            <%= link_to "Edit", edit_flight_path(flight), class: "btn btn-small" %>
-            <%= link_to "Delete", flight_path(flight), method: :delete, 
-                        confirm: "Are you sure?", class: "btn btn-small btn-danger" %>
-          </td>
-        </tr>
+        <%= render 'flight_row', flight: flight %>
       <% end %>
     </tbody>
   </table>

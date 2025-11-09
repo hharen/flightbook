@@ -1,11 +1,15 @@
-<% content_for :title, "Editing flight" %>
+<% if turbo_frame_request? %>
+  <%= render 'flight_edit', flight: @flight %>
+<% else %>
+  <% content_for :title, "Editing flight" %>
 
-<h1>Editing flight</h1>
+  <h1>Editing flight</h1>
 
-<%= render "form", flight: @flight %>
+  <%= render "form", flight: @flight %>
 
-<br>
+  <br>
 
-<div>
-  <%= link_to "Back to flights", flights_path %>
-</div>
+  <div>
+    <%= link_to "Back to flights", flights_path %>
+  </div>
+<% end %>
