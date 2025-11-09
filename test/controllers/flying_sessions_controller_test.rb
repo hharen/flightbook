@@ -36,7 +36,7 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update flying_session" do
-    patch flying_session_url(@flying_session), params: { flying_session: { date_time: @flying_session.date_time, instructor_id: @flying_session.instructor_id, note: @flying_session.note, user_id: @flying_session.user_id } }
+    patch flying_session_url(@flying_session), params: { flying_session: { date_time: @flying_session.date_time, instructor_id: @flying_session.instructor_id, note: @flying_session.note, user_id: @flying_session.user_id, duration: @flying_session.duration } }
     assert_redirected_to flying_session_url(@flying_session)
   end
 

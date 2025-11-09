@@ -10,7 +10,7 @@ class FlightsTest < ApplicationSystemTestCase
     visit flying_session_url(@flying_session)
 
     assert_selector "h2", text: "Flights in this session"
-    assert_text "#{@flight.duration} min"
+    assert_text "##{@flight.number}" if @flight.number.present?
     assert_text @flight.note if @flight.note.present?
   end
 
@@ -19,7 +19,6 @@ class FlightsTest < ApplicationSystemTestCase
 
     click_on "Add new flight"
 
-    fill_in "Duration", with: "5"
     fill_in "Note", with: "Great flight!"
 
     # Select the current flying session from the dropdown
@@ -29,18 +28,16 @@ class FlightsTest < ApplicationSystemTestCase
 
     assert_text "Flight was successfully created"
     visit flying_session_url(@flying_session)
-    assert_text "5 min"
     assert_text "Great flight!"
   end
 
   test "should update flight from flying session show page" do
     visit flying_session_url(@flying_session)
 
-    within("table tbody tr", text: "#{@flight.duration} min") do
+    within("table tbody tr", text: "##{@flight.number}") do
       click_on "Edit"
     end
 
-    fill_in "Duration", with: @flight.duration + 2
     fill_in "Note", with: "Updated: #{@flight.note}"
     click_on "Update Flight"
 

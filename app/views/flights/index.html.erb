@@ -34,7 +34,7 @@
   <table class="data-table">
     <thead>
       <tr>
-        <th>Duration</th>
+        <th>Flight #</th>
         <th>Flying Session</th>
         <th>Note</th>
         <th>Actions</th>
@@ -43,7 +43,7 @@
     <tbody>
       <% @flights.each do |flight| %>
         <tr>
-          <td><%= flight.show_duration %> min</td>
+          <td><%= flight.number.present? ? "##{flight.number}" : "—" %></td>
           <td>
             <% if flight.flying_session %>
               <div>

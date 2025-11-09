@@ -5,12 +5,6 @@ class Flight < ApplicationRecord
 
   validates :number, presence: true, uniqueness: { scope: :flying_session_id }, numericality: { greater_than: 0, only_integer: true }
 
-  def show_duration
-    return "-" if duration.nil?
-
-    "%.1f" % duration
-  end
-
   private
 
   def set_flight_number

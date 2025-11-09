@@ -124,7 +124,7 @@ class FlyingSessionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def flying_session_params
-      params.expect(flying_session: [:date, :time, :date_time, :note, :user_id, :instructor_id])
+      params.expect(flying_session: [:date, :time, :date_time, :note, :user_id, :instructor_id, :duration])
     end
 
     def parse_and_create_sessions(html_content)

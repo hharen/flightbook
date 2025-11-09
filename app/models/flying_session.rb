@@ -7,7 +7,7 @@ class FlyingSession < ApplicationRecord
   default_scope { order(date_time: :desc) }
 
   def flight_time
-    flights.sum(:duration)
+    duration || 0
   end
 
   def show_flight_time
@@ -15,6 +15,6 @@ class FlyingSession < ApplicationRecord
   end
 
   def self.total_flight_time
-    joins(:flights).sum("flights.duration")
+    sum(:duration)
   end
 end
