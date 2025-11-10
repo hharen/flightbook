@@ -234,7 +234,9 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
     session = controller.send(:create_session_from_timestamp, timestamp)
 
     assert_not_nil session
-    assert_equal Time.at(timestamp).to_datetime, session.date_time
+    # Use timezone-aware conversion for comparison
+    expected_time = Time.at(timestamp).utc.in_time_zone("Europe/Zurich")
+    assert_equal expected_time, session.date_time
     assert_equal "Hana", session.user.name
 
     # Test duplicate session creation (should return existing)
@@ -254,7 +256,9 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
     session = controller.send(:create_session_from_date_time, "30 Okt. 2025", "18:00")
 
     assert_not_nil session
-    assert_equal DateTime.new(2025, 10, 30, 18, 0), session.date_time
+    # Use Time.zone to create timezone-aware datetime for comparison
+    expected_time = Time.zone.parse("2025-10-30 18:00:00")
+    assert_equal expected_time, session.date_time
     assert_equal "Hana", session.user.name
 
     # Test invalid date format
