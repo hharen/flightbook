@@ -102,6 +102,8 @@ flying_sessions_data.each do |session_data|
   ) do |fs|
     fs.note = session_data[:note]
     fs.instructor = instructor
+    # Set the total duration for the session (flights_count * flight_duration in minutes)
+    fs.duration = (session_data[:flights_count] * session_data[:flight_duration]).to_i if session_data[:flights_count] > 0
   end
 
   # Create flights for this session if specified
@@ -109,7 +111,6 @@ flying_sessions_data.each do |session_data|
     session_data[:flights_count].times do |i|
       flight_number = i + 1
       session.flights.create!(
-        duration: session_data[:flight_duration],
         number: flight_number
       )
     end

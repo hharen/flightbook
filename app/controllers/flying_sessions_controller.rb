@@ -86,15 +86,16 @@ class FlyingSessionsController < ApplicationController
 
   # POST /flying_sessions/get_flying_sessions
   def get_flying_sessions
-    cookie = params[:cookie]
-
-    if cookie.blank?
-      redirect_to flying_sessions_path, alert: "Cookie is required to fetch flight data."
-      return
-    end
-
     begin
-      # Make the request to Windwerk with the provided cookie
+      # First, authenticate and get the cookie
+      cookie = authenticate_and_get_cookie
+
+      if cookie.blank?
+        redirect_to flying_sessions_path, alert: "Failed to authenticate with Windwerk. Please check your credentials."
+        return
+      end
+
+      # Make the request to Windwerk with the obtained cookie
       html_content = fetch_windwerk_data(cookie)
 
       if html_content.present?
@@ -102,7 +103,7 @@ class FlyingSessionsController < ApplicationController
         message = "Successfully imported #{created_count} flying sessions from Windwerk."
         redirect_to flying_sessions_path, notice: message
       else
-        redirect_to flying_sessions_path, alert: "Failed to fetch data from Windwerk. Please check your cookie and try again."
+        redirect_to flying_sessions_path, alert: "Failed to fetch data from Windwerk after authentication."
       end
     rescue => e
       Rails.logger.error "Error fetching Windwerk data: #{e.message}"
@@ -698,6 +699,114 @@ class FlyingSessionsController < ApplicationController
       end
     rescue => e
       Rails.logger.error "❌ Error making request to Windwerk: #{e.message}"
+      raise e
+    end
+
+    def authenticate_and_get_cookie
+      uri = URI("https://media.windwerk.ch/proflyer")
+
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+
+      # Configure SSL to match curl's behavior
+      if Rails.env.development?
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        Rails.logger.warn "SSL verification disabled for development"
+      else
+        http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+      end
+
+      request = Net::HTTP::Post.new(uri)
+      request["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:144.0) Gecko/20100101 Firefox/144.0"
+      request["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+      request["Accept-Language"] = "en-US,en;q=0.5"
+      request["Content-Type"] = "application/x-www-form-urlencoded"
+      request["Origin"] = "https://media.windwerk.ch"
+      request["Connection"] = "keep-alive"
+      request["Referer"] = "https://media.windwerk.ch/proflyer"
+      request["Upgrade-Insecure-Requests"] = "1"
+      request["Sec-Fetch-Dest"] = "document"
+      request["Sec-Fetch-Mode"] = "navigate"
+      request["Sec-Fetch-Site"] = "same-origin"
+      request["Sec-Fetch-User"] = "?1"
+      request["Priority"] = "u=0, i"
+
+      # Get credentials from Rails secrets
+      email = Rails.application.credentials.email
+      password = Rails.application.credentials.password
+
+      if email.blank? || password.blank?
+        Rails.logger.error "❌ Windwerk email or password not found in Rails secrets"
+        raise "Windwerk credentials not configured"
+      end
+
+      # Set the POST body data
+      request.body = "ctrl=do&do=login&goto=proflyer&login=#{CGI.escape(email)}&password=#{CGI.escape(password)}"
+
+      Rails.logger.info "Making POST authentication request to Windwerk..."
+
+      response = http.request(request)
+
+      if response.code.to_i == 200 || response.code.to_i == 302
+        Rails.logger.info "✅ Authentication request completed with status: #{response.code}"
+
+        # Extract cookie from Set-Cookie headers
+        cookies = response.get_fields("Set-Cookie")
+        if cookies&.any?
+          # Combine all cookies into a single string
+          cookie_string = cookies.map { |cookie| cookie.split(";").first }.join("; ")
+          Rails.logger.info "✅ Successfully obtained authentication cookie"
+
+          # Handle redirect (302) - make follow-up GET request
+          if response.code.to_i == 302
+            Rails.logger.info "🔄 Handling redirect, making follow-up GET request..."
+
+            # Make the follow-up GET request with the obtained cookie
+            get_request = Net::HTTP::Get.new(uri)
+            get_request["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:144.0) Gecko/20100101 Firefox/144.0"
+            get_request["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+            get_request["Accept-Language"] = "en-US,en;q=0.5"
+            get_request["Accept-Encoding"] = "gzip, deflate, br, zstd"
+            get_request["Referer"] = "https://media.windwerk.ch/proflyer"
+            get_request["Connection"] = "keep-alive"
+            get_request["Cookie"] = cookie_string
+            get_request["Upgrade-Insecure-Requests"] = "1"
+            get_request["Sec-Fetch-Dest"] = "document"
+            get_request["Sec-Fetch-Mode"] = "navigate"
+            get_request["Sec-Fetch-Site"] = "same-origin"
+            get_request["Sec-Fetch-User"] = "?1"
+            get_request["Priority"] = "u=0, i"
+
+            get_response = http.request(get_request)
+
+            if get_response.code.to_i == 200
+              Rails.logger.info "✅ Follow-up GET request successful"
+
+              # Check if there are additional cookies from the GET response
+              additional_cookies = get_response.get_fields("Set-Cookie")
+              if additional_cookies&.any?
+                # Merge additional cookies with existing ones
+                additional_cookie_string = additional_cookies.map { |cookie| cookie.split(";").first }.join("; ")
+                cookie_string = "#{cookie_string}; #{additional_cookie_string}"
+                Rails.logger.info "✅ Updated cookie string with additional cookies from GET response"
+              end
+            else
+              Rails.logger.warn "⚠️ Follow-up GET request returned status: #{get_response.code}"
+            end
+          end
+
+          cookie_string
+        else
+          Rails.logger.error "❌ No cookies found in authentication response"
+          nil
+        end
+      else
+        Rails.logger.error "❌ Authentication failed. Status: #{response.code}"
+        Rails.logger.error "Response: #{response.body[0..500]}"
+        nil
+      end
+    rescue => e
+      Rails.logger.error "❌ Error during authentication: #{e.message}"
       raise e
     end
 end
