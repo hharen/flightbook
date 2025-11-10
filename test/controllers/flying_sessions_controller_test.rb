@@ -58,7 +58,7 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
     # Mock the fetch_windwerk_data method to return nil
     FlyingSessionsController.any_instance.stubs(:fetch_windwerk_data).returns(nil)
 
-    post get_flying_sessions_flying_sessions_url, params: { cookie: "test_cookie" }
+    post get_flying_sessions_flying_sessions_url
     assert_redirected_to flying_sessions_url
     assert_match "Failed to fetch data", flash[:alert]
   end
@@ -79,7 +79,7 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
 
     assert_difference("FlyingSession.count", 7) do # 6 sessions from dropdown + 1 current session
       assert_difference("Flight.count", 6) do # 6 flights for the current session (Nov 6, 2025)
-        post get_flying_sessions_flying_sessions_url, params: { cookie: "test_cookie" }
+        post get_flying_sessions_flying_sessions_url
       end
     end
 
@@ -120,7 +120,7 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
     FlyingSessionsController.any_instance.stubs(:fetch_windwerk_data).returns(html_content)
 
     assert_no_difference(["FlyingSession.count", "Flight.count"]) do
-      post get_flying_sessions_flying_sessions_url, params: { cookie: "test_cookie" }
+      post get_flying_sessions_flying_sessions_url
     end
 
     assert_redirected_to flying_sessions_url
@@ -146,7 +146,7 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
 
     assert_difference("FlyingSession.count", 6) do # 6 new sessions from dropdown (current session already exists)
       assert_difference("Flight.count", 6) do # Should add 6 flights to the existing current session
-        post get_flying_sessions_flying_sessions_url, params: { cookie: "test_cookie" }
+        post get_flying_sessions_flying_sessions_url
       end
     end
 
@@ -165,7 +165,7 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
   test "get_flying_sessions should handle network errors gracefully" do
     FlyingSessionsController.any_instance.stubs(:fetch_windwerk_data).raises(StandardError.new("Network error"))
 
-    post get_flying_sessions_flying_sessions_url, params: { cookie: "test_cookie" }
+    post get_flying_sessions_flying_sessions_url
     assert_redirected_to flying_sessions_url
     assert_match "An error occurred while fetching data: Network error", flash[:alert]
   end

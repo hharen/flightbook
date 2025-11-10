@@ -117,15 +117,15 @@ class FlyingSessionsController < ApplicationController
     def set_flying_session
       if params[:user_id].present?
         @selected_user = User.find(params[:user_id])
-        @flying_session = @selected_user.flying_sessions.find(params.expect(:id))
+        @flying_session = @selected_user.flying_sessions.find(params[:id])
       else
-        @flying_session = FlyingSession.find(params.expect(:id))
+        @flying_session = FlyingSession.find(params[:id])
       end
     end
 
     # Only allow a list of trusted parameters through.
     def flying_session_params
-      params.expect(flying_session: [:date, :time, :date_time, :note, :user_id, :instructor_id, :duration])
+      params.require(:flying_session).permit(:date, :time, :date_time, :note, :user_id, :instructor_id, :duration)
     end
 
     def parse_and_create_sessions(html_content)

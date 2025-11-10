@@ -9,6 +9,10 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
+button {
+  all: unset;
+}
+
 /* Color Palette */
 :root {
   --barn-red: #780000;
@@ -382,15 +386,32 @@ input[type="submit"]:hover {
   transform: translateY(-1px);
 }
 
-/* Cookie input specific styles */
-.cookie-input {
-  font-family: monospace;
-  font-size: 0.875rem;
-  resize: vertical;
-  min-height: 100px;
-}
-
 /* Form field spacing */
 form div {
   margin-bottom: 10px;
+}
+
+/* Style button_to forms to display inline with other buttons */
+.action-buttons form {
+  display: inline-block;
+  margin: 0;
+}
+
+.action-buttons form input[type="submit"].btn-secondary {
+  background-color: var(--prussian-blue);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.action-buttons form input[type="submit"].btn-secondary:hover {
+  background-color: var(--barn-red-dark);
+  color: white;
+  transform: translateY(-1px);
 }
