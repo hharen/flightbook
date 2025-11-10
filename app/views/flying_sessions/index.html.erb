@@ -74,22 +74,5 @@
 
 <div class="action-buttons">
   <%= link_to "New flying session", new_flying_session_path, class: "btn btn-primary" %>
-</div>
-
-<div class="filter-controls">
-  <%= form_with url: get_flying_sessions_flying_sessions_path, method: :post, local: true do |form| %>
-    <div style="flex-grow: 1;">
-      <%= form.label :cookie, "Windwerk Cookie:" %>
-      <%= form.text_area :cookie, 
-          placeholder: "Paste your Windwerk session cookie here...", 
-          class: "form-select cookie-input",
-          rows: 3,
-          required: true,
-          style: "margin-top: 0.5rem;" %>
-      <small style="font-size: 0.875rem; color: #6c757d; display: block; margin-top: 0.25rem;">
-        Copy the full cookie string from your browser's developer tools after logging into Windwerk.
-      </small>
-    </div>
-    <%= form.submit "Get flying sessions", class: "btn btn-secondary" %>
-  <% end %>
+  <%= button_to "Get flying sessions", get_flying_sessions_flying_sessions_path, method: :post, class: "btn btn-secondary" %>
 </div>

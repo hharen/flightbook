@@ -48,19 +48,23 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to flying_sessions_url
   end
 
-  test "get_flying_sessions should require cookie" do
+  test "get_flying_sessions should handle authentication failure" do
+    # Mock the authenticate_and_get_cookie method to return nil (authentication failed)
+    FlyingSessionsController.any_instance.stubs(:authenticate_and_get_cookie).returns(nil)
+
     post get_flying_sessions_flying_sessions_url
     assert_redirected_to flying_sessions_url
-    assert_match "Cookie is required", flash[:alert]
+    assert_match "Failed to authenticate with Windwerk", flash[:alert]
   end
 
   test "get_flying_sessions should handle empty HTML content" do
-    # Mock the fetch_windwerk_data method to return nil
+    # Mock successful authentication but empty fetch data
+    FlyingSessionsController.any_instance.stubs(:authenticate_and_get_cookie).returns("test_cookie")
     FlyingSessionsController.any_instance.stubs(:fetch_windwerk_data).returns(nil)
 
-    post get_flying_sessions_flying_sessions_url, params: { cookie: "test_cookie" }
+    post get_flying_sessions_flying_sessions_url
     assert_redirected_to flying_sessions_url
-    assert_match "Failed to fetch data", flash[:alert]
+    assert_match "Failed to fetch data from Windwerk after authentication", flash[:alert]
   end
 
   test "get_flying_sessions should parse HTML and create sessions" do
@@ -74,12 +78,13 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
     # Read the real HTML content from test file
     html_content = File.read(Rails.root.join("test", "controllers", "test.html"))
 
-    # Mock the fetch_windwerk_data method
+    # Mock successful authentication and data fetching
+    FlyingSessionsController.any_instance.stubs(:authenticate_and_get_cookie).returns("test_cookie")
     FlyingSessionsController.any_instance.stubs(:fetch_windwerk_data).returns(html_content)
 
     assert_difference("FlyingSession.count", 7) do # 6 sessions from dropdown + 1 current session
       assert_difference("Flight.count", 6) do # 6 flights for the current session (Nov 6, 2025)
-        post get_flying_sessions_flying_sessions_url, params: { cookie: "test_cookie" }
+        post get_flying_sessions_flying_sessions_url
       end
     end
 
@@ -117,10 +122,12 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
     User.find_or_create_by(name: "Hana")
 
     html_content = "<html><body><p>No dropdown menu here</p></body></html>"
+    # Mock successful authentication but HTML without dropdown
+    FlyingSessionsController.any_instance.stubs(:authenticate_and_get_cookie).returns("test_cookie")
     FlyingSessionsController.any_instance.stubs(:fetch_windwerk_data).returns(html_content)
 
     assert_no_difference(["FlyingSession.count", "Flight.count"]) do
-      post get_flying_sessions_flying_sessions_url, params: { cookie: "test_cookie" }
+      post get_flying_sessions_flying_sessions_url
     end
 
     assert_redirected_to flying_sessions_url
@@ -142,11 +149,13 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
 
     # Read the real HTML content from test file
     html_content = File.read(Rails.root.join("test", "controllers", "test.html"))
+    # Mock successful authentication and data fetching
+    FlyingSessionsController.any_instance.stubs(:authenticate_and_get_cookie).returns("test_cookie")
     FlyingSessionsController.any_instance.stubs(:fetch_windwerk_data).returns(html_content)
 
     assert_difference("FlyingSession.count", 6) do # 6 new sessions from dropdown (current session already exists)
       assert_difference("Flight.count", 6) do # Should add 6 flights to the existing current session
-        post get_flying_sessions_flying_sessions_url, params: { cookie: "test_cookie" }
+        post get_flying_sessions_flying_sessions_url
       end
     end
 
@@ -163,11 +172,22 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "get_flying_sessions should handle network errors gracefully" do
+    # Mock successful authentication but network error during data fetch
+    FlyingSessionsController.any_instance.stubs(:authenticate_and_get_cookie).returns("test_cookie")
     FlyingSessionsController.any_instance.stubs(:fetch_windwerk_data).raises(StandardError.new("Network error"))
 
-    post get_flying_sessions_flying_sessions_url, params: { cookie: "test_cookie" }
+    post get_flying_sessions_flying_sessions_url
     assert_redirected_to flying_sessions_url
     assert_match "An error occurred while fetching data: Network error", flash[:alert]
+  end
+
+  test "get_flying_sessions should handle authentication errors gracefully" do
+    # Mock authentication failure with exception
+    FlyingSessionsController.any_instance.stubs(:authenticate_and_get_cookie).raises(StandardError.new("Authentication failed"))
+
+    post get_flying_sessions_flying_sessions_url
+    assert_redirected_to flying_sessions_url
+    assert_match "An error occurred while fetching data: Authentication failed", flash[:alert]
   end
 
   test "should extract flight numbers from media containers correctly" do
@@ -214,7 +234,9 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
     session = controller.send(:create_session_from_timestamp, timestamp)
 
     assert_not_nil session
-    assert_equal Time.at(timestamp).to_datetime, session.date_time
+    # Use timezone-aware conversion for comparison
+    expected_time = Time.at(timestamp).utc.in_time_zone("Europe/Zurich")
+    assert_equal expected_time, session.date_time
     assert_equal "Hana", session.user.name
 
     # Test duplicate session creation (should return existing)
@@ -234,7 +256,9 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
     session = controller.send(:create_session_from_date_time, "30 Okt. 2025", "18:00")
 
     assert_not_nil session
-    assert_equal DateTime.new(2025, 10, 30, 18, 0), session.date_time
+    # Use Time.zone to create timezone-aware datetime for comparison
+    expected_time = Time.zone.parse("2025-10-30 18:00:00")
+    assert_equal expected_time, session.date_time
     assert_equal "Hana", session.user.name
 
     # Test invalid date format
