@@ -332,11 +332,14 @@ class FlyingSessionsController < ApplicationController
 
 
     def create_session_from_timestamp(timestamp)
-      # Convert Unix timestamp directly to DateTime
+      # Convert Unix timestamp to DateTime in the correct timezone
       begin
-        date_time = Time.at(timestamp.to_i).to_datetime
+        # Unix timestamps from Windwerk are in UTC but should be interpreted in Swiss time
+        utc_time = Time.at(timestamp.to_i).utc
+        swiss_time = utc_time.in_time_zone("Europe/Zurich")
+        date_time = swiss_time
 
-        Rails.logger.info "Creating session from timestamp #{timestamp} -> #{date_time}"
+        Rails.logger.info "Creating session from timestamp #{timestamp} -> #{date_time} (Swiss time)"
 
         # Find the user named Hana
         user = User.find_by(name: "Hana")
@@ -436,10 +439,10 @@ class FlyingSessionsController < ApplicationController
         # Parse the time: "18:00"
         time = Time.strptime(time_str, "%H:%M")
 
-        # Combine date and time
-        date_time = DateTime.new(date.year, date.month, date.day, time.hour, time.min)
+        # Combine date and time in Swiss timezone
+        date_time = Time.zone.local(date.year, date.month, date.day, time.hour, time.min)
 
-        Rails.logger.info "Parsed date_time: #{date_time}"
+        Rails.logger.info "Parsed date_time: #{date_time} (Swiss time)"
 
         # Find the user named Hana
         user = User.find_by(name: "Hana")
