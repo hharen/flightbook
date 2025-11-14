@@ -596,7 +596,7 @@ class FlyingSessionsController < ApplicationController
       flights_data.each do |flight_data|
         Flight.create!(
           flying_session: flying_session,
-          duration: flight_data[:duration],
+          number: flight_data[:number],
           note: flight_data[:note]
         )
 
@@ -605,7 +605,7 @@ class FlyingSessionsController < ApplicationController
       end
 
       # Update the session's Total flight time
-      flying_session.update!(flight_time: total_duration)
+      flying_session.update!(duration: total_duration)
 
       created_count
     end
