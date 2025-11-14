@@ -194,12 +194,16 @@ class ProductionTimezoneFix
       return
     end
 
-    print "Do you want to proceed? (yes/no): "
-    response = STDIN.gets.chomp.downcase
+    if ENV['FORCE_PRODUCTION_FIX'] == 'true'
+      puts "🚀 FORCE_PRODUCTION_FIX=true detected - proceeding automatically"
+    else
+      print "Do you want to proceed? (yes/no): "
+      response = STDIN.gets&.chomp&.downcase
 
-    unless ['yes', 'y'].include?(response)
-      puts "❌ Fix cancelled"
-      return
+      unless ['yes', 'y'].include?(response)
+        puts "❌ Fix cancelled"
+        return
+      end
     end
 
     fixed_count = 0
