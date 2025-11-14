@@ -15,7 +15,7 @@ puts "   System time: #{Time.now}"
 
 # 2. Analyze flying sessions by creation date
 puts "\n2. FLYING SESSIONS BY CREATION DATE:"
-creation_groups = FlyingSession.group_by { |s| s.created_at.to_date }
+creation_groups = FlyingSession.all.group_by { |s| s.created_at.to_date }
 creation_groups.keys.sort.each do |date|
   sessions = creation_groups[date]
   puts "   #{date}: #{sessions.count} sessions"
