@@ -58,7 +58,7 @@ class FlyingSessionsController < ApplicationController
     end
 
     if @flying_session.save
-      redirect_to @flying_session, notice: "Flying session was successfully created."
+      redirect_to flying_sessions_path, notice: "Flying session was successfully created."
     else
       render :new, status: :unprocessable_entity
     end
@@ -72,7 +72,7 @@ class FlyingSessionsController < ApplicationController
     end
 
     if @flying_session.update(flying_session_params.except(:date, :time))
-      redirect_to @flying_session, notice: "Flying session was successfully updated.", status: :see_other
+      redirect_to flying_sessions_path, notice: "Flying session was successfully updated.", status: :see_other
     else
       render :edit, status: :unprocessable_entity
     end
