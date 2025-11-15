@@ -10,16 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_15_182845) do
-  create_table "flights", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.integer "flying_session_id", null: false
-    t.string "note"
-    t.integer "number"
-    t.datetime "updated_at", null: false
-    t.index ["flying_session_id"], name: "index_flights_on_flying_session_id"
-  end
-
+ActiveRecord::Schema[8.1].define(version: 2025_11_15_185401) do
   create_table "flying_sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "date_time", null: false
@@ -46,7 +37,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_15_182845) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "flights", "flying_sessions"
   add_foreign_key "flying_sessions", "instructors"
   add_foreign_key "flying_sessions", "users"
 end
