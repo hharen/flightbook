@@ -27,6 +27,11 @@
   </div>
 
   <div>
+    <%= form.label :flights, "Number of flights", style: "display: block" %>
+    <%= form.number_field :flights, min: 0, step: 1, value: flying_session.flights || 0 %>
+  </div>
+
+  <div>
     <%= form.label :note, style: "display: block" %>
     <%= form.text_area :note, rows: 4, cols: 50 %>
   </div>

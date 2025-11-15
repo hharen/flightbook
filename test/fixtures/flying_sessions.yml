@@ -5,11 +5,13 @@ one:
   note: What a flying session!
   user: hana
   instructor: lena
-  duration: 5.5
+  duration: 15
+  flights: 2
 
 two:
   date_time: 2025-10-27 15:00:00
   note: More leg work.
   user: hana
   instructor: dominique
-  duration: 3
+  duration: 7
+  flights: 1
