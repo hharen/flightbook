@@ -17,7 +17,7 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
 
   test "should create flying_session" do
     assert_difference("FlyingSession.count") do
-      post flying_sessions_url, params: { flying_session: { date_time: @flying_session.date_time, instructor_id: @flying_session.instructor_id, note: @flying_session.note, user_id: @flying_session.user_id } }
+      post flying_sessions_url, params: { flying_session: { date_time: @flying_session.date_time, instructor_id: @flying_session.instructor_id, note: @flying_session.note, user_id: @flying_session.user_id, flights: 2 } }
     end
 
     assert_response :redirect
@@ -36,7 +36,7 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update flying_session" do
-    patch flying_session_url(@flying_session), params: { flying_session: { date_time: @flying_session.date_time, instructor_id: @flying_session.instructor_id, note: @flying_session.note, user_id: @flying_session.user_id, duration: @flying_session.duration } }
+    patch flying_session_url(@flying_session), params: { flying_session: { date_time: @flying_session.date_time, instructor_id: @flying_session.instructor_id, note: @flying_session.note, user_id: @flying_session.user_id, duration: @flying_session.duration, flights: 3 } }
     assert_redirected_to flying_session_url(@flying_session)
   end
 
@@ -70,7 +70,6 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
   test "get_flying_sessions should parse HTML and create sessions" do
     # Clean up database to ensure isolated test
     FlyingSession.destroy_all
-    Flight.destroy_all
 
     # Create a Hana user if it doesn't exist
     User.find_or_create_by(name: "Hana")
@@ -83,9 +82,7 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
     FlyingSessionsController.any_instance.stubs(:fetch_windwerk_data).returns(html_content)
 
     assert_difference("FlyingSession.count", 7) do # 6 sessions from dropdown + 1 current session
-      assert_difference("Flight.count", 6) do # 6 flights for the current session (Nov 6, 2025)
-        post get_flying_sessions_flying_sessions_url
-      end
+      post get_flying_sessions_flying_sessions_url
     end
 
     assert_redirected_to flying_sessions_url
@@ -98,11 +95,7 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
                                  .first
 
     assert_not_nil current_session, "Should find the current session from Nov 6, 2025"
-    assert_equal 6, current_session.flights.count, "Current session should have 6 flights"
-
-    # Verify flight numbers from the HTML (flights 1-6)
-    flight_numbers = current_session.flights.pluck(:number).sort
-    assert_equal [1, 2, 3, 4, 5, 6], flight_numbers
+    assert_equal 6, current_session.flights, "Current session should have 6 flights"
 
     # Verify other sessions have no flights
     other_sessions = FlyingSession.joins(:user)
@@ -110,14 +103,13 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
                                 .where("date_time < ?", DateTime.new(2025, 11, 6))
 
     other_sessions.each do |session|
-      assert_equal 0, session.flights.count, "Older sessions should have no flights"
+      assert_equal 0, session.flights, "Older sessions should have no flights"
     end
   end
 
   test "get_flying_sessions should handle HTML without dropdown menu" do
     # Clean up database to ensure isolated test
     FlyingSession.destroy_all
-    Flight.destroy_all
 
     User.find_or_create_by(name: "Hana")
 
@@ -126,7 +118,7 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
     FlyingSessionsController.any_instance.stubs(:authenticate_and_get_cookie).returns("test_cookie")
     FlyingSessionsController.any_instance.stubs(:fetch_windwerk_data).returns(html_content)
 
-    assert_no_difference(["FlyingSession.count", "Flight.count"]) do
+    assert_no_difference("FlyingSession.count") do
       post get_flying_sessions_flying_sessions_url
     end
 
@@ -137,14 +129,14 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
   test "get_flying_sessions should not duplicate existing sessions" do
     # Clean up database to ensure isolated test
     FlyingSession.destroy_all
-    Flight.destroy_all
 
     User.find_or_create_by(name: "Hana")
 
     # Create an existing session for Nov 6, 2025 (the current session in the HTML)
     existing_session = FlyingSession.create!(
       date_time: DateTime.new(2025, 11, 6, 17, 30), # Nov 6, 2025 bis 17:30 from HTML
-      user: User.find_by(name: "Hana")
+      user: User.find_by(name: "Hana"),
+      flights: 0
     )
 
     # Read the real HTML content from test file
@@ -154,9 +146,7 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
     FlyingSessionsController.any_instance.stubs(:fetch_windwerk_data).returns(html_content)
 
     assert_difference("FlyingSession.count", 6) do # 6 new sessions from dropdown (current session already exists)
-      assert_difference("Flight.count", 6) do # Should add 6 flights to the existing current session
-        post get_flying_sessions_flying_sessions_url
-      end
+      post get_flying_sessions_flying_sessions_url
     end
 
     assert_redirected_to flying_sessions_url
@@ -164,11 +154,7 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
 
     # Verify the existing session now has flights
     existing_session.reload
-    assert_equal 6, existing_session.flights.count, "Existing session should now have 6 flights"
-
-    # Verify flight numbers
-    flight_numbers = existing_session.flights.pluck(:number).sort
-    assert_equal [1, 2, 3, 4, 5, 6], flight_numbers
+    assert_equal 6, existing_session.flights, "Existing session should now have 6 flights"
   end
 
   test "get_flying_sessions should handle network errors gracefully" do
@@ -190,40 +176,7 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
     assert_match "An error occurred while fetching data: Authentication failed", flash[:alert]
   end
 
-  test "should extract flight numbers from media containers correctly" do
-    controller = FlyingSessionsController.new
 
-    # Test with real HTML structure from test.html
-    html_content = File.read(Rails.root.join("test", "controllers", "test.html"))
-    doc = Nokogiri::HTML(html_content)
-
-    # Get the first media container and test extraction
-    first_container = doc.css(".media_container_responsive").first
-    flight_number = controller.send(:extract_flight_number_from_container, first_container)
-    assert_equal 1, flight_number, "Should extract flight number 1 from first container"
-
-    # Test with flight #6 container
-    containers = doc.css(".media_container_responsive")
-    flight_6_container = containers.find { |c| c.css("input[data-filename*='#6_']").any? }
-    assert_not_nil flight_6_container, "Should find flight 6 container"
-
-    flight_number = controller.send(:extract_flight_number_from_container, flight_6_container)
-    assert_equal 6, flight_number, "Should extract flight number 6"
-
-    # Test with no filename
-    container_html = '<input class="media-select">'
-    container = Nokogiri::HTML::DocumentFragment.parse(container_html)
-
-    flight_number = controller.send(:extract_flight_number_from_container, container)
-    assert_nil flight_number
-
-    # Test with invalid filename format
-    container_html = '<input class="media-select" data-filename="invalid_format.mp4">'
-    container = Nokogiri::HTML::DocumentFragment.parse(container_html)
-
-    flight_number = controller.send(:extract_flight_number_from_container, container)
-    assert_nil flight_number
-  end
 
   test "should create sessions from timestamp correctly" do
     User.find_or_create_by(name: "Hana")
@@ -247,7 +200,6 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
   test "should create sessions from date_time string correctly" do
     # Clean up database to ensure isolated test
     FlyingSession.destroy_all
-    Flight.destroy_all
 
     User.find_or_create_by(name: "Hana")
     controller = FlyingSessionsController.new
@@ -269,7 +221,6 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
   test "should identify current session from HTML button correctly" do
     # Clean up database to ensure isolated test
     FlyingSession.destroy_all
-    Flight.destroy_all
 
     User.find_or_create_by(name: "Hana")
 

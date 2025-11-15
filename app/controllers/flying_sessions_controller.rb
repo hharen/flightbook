@@ -125,7 +125,7 @@ class FlyingSessionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def flying_session_params
-      params.require(:flying_session).permit(:date, :time, :date_time, :note, :user_id, :instructor_id, :duration)
+      params.require(:flying_session).permit(:date, :time, :date_time, :note, :user_id, :instructor_id, :duration, :flights)
     end
 
     def parse_and_create_sessions(html_content)
@@ -265,7 +265,6 @@ class FlyingSessionsController < ApplicationController
       return 0 unless flying_session
 
       doc = Nokogiri::HTML(html_content)
-      created_flights = 0
 
       Rails.logger.info "=== EXTRACTING FLIGHTS FOR SESSION #{flying_session.id} ==="
 
@@ -288,17 +287,14 @@ class FlyingSessionsController < ApplicationController
 
       Rails.logger.info "Unique flight numbers found: #{flight_numbers.to_a.sort}"
 
-      # Create one flight per unique flight number
-      flight_numbers.each do |flight_number|
-        # Create empty flight (duration and note will be set manually later)
-        flight = flying_session.flights.create!(number: flight_number)
+      # Update the flights count on the session
+      flights_count = flight_numbers.count
+      flying_session.update!(flights: flights_count)
 
-        created_flights += 1
-        Rails.logger.info "✅ Created flight for ##{flight_number}"
-      end
+      Rails.logger.info "✅ Updated session with #{flights_count} flights"
 
-      Rails.logger.info "=== CREATED #{created_flights} FLIGHTS FOR SESSION ==="
-      created_flights
+      Rails.logger.info "=== UPDATED #{flights_count} FLIGHTS FOR SESSION ==="
+      flights_count
     end
 
     def extract_flight_number_from_container(container)
@@ -354,7 +350,8 @@ class FlyingSessionsController < ApplicationController
 
         # Create new flying session
         flying_session = user.flying_sessions.create!(
-          date_time: date_time
+          date_time: date_time,
+          flights: 0
         )
 
         Rails.logger.info "Created flying session: #{flying_session.id} for #{date_time}"
@@ -457,7 +454,8 @@ class FlyingSessionsController < ApplicationController
 
         # Create new flying session
         flying_session = user.flying_sessions.create!(
-          date_time: date_time
+          date_time: date_time,
+          flights: 0
         )
 
         Rails.logger.info "Created flying session: #{flying_session.id} for #{date_time}"
