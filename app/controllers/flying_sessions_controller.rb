@@ -54,7 +54,7 @@ class FlyingSessionsController < ApplicationController
     if params.dig(:flying_session, :date).present? && params.dig(:flying_session, :time).present?
       date_str = params[:flying_session][:date]
       time_str = params[:flying_session][:time]
-      @flying_session.date_time = DateTime.parse("#{date_str} #{time_str}")
+      @flying_session.date_time = Time.zone.parse("#{date_str} #{time_str}")
     end
 
     if @flying_session.save
@@ -68,7 +68,7 @@ class FlyingSessionsController < ApplicationController
     if params.dig(:flying_session, :date).present? && params.dig(:flying_session, :time).present?
       date_str = params[:flying_session][:date]
       time_str = params[:flying_session][:time]
-      @flying_session.date_time = DateTime.parse("#{date_str} #{time_str}")
+      @flying_session.date_time = Time.zone.parse("#{date_str} #{time_str}")
     end
 
     if @flying_session.update(flying_session_params.except(:date, :time))
