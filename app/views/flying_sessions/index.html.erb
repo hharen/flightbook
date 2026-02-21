@@ -51,8 +51,8 @@
         <tr>
           <td><%= index + 1 %></td>
           <td>
-            <%= link_to flying_session.date_time&.strftime("%d.%m.%Y - %H:%M"), flying_session, 
-                        class: "text-link" %>
+            <%= link_to flying_session.date_time&.strftime("%d.%m.%Y - %H:%M"), edit_flying_session_path(flying_session),
+              class: "text-link" %>
           </td>
           <td><%= flying_session.show_flight_time %></td>
           <td><%= flying_session.flights %></td>
