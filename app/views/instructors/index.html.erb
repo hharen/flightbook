@@ -5,6 +5,10 @@
 <div class="user-filter-section">
   <h1>Instructors</h1>
 
+  <div class="action-buttons">
+    <%= link_to "New instructor", new_instructor_path, class: "btn btn-primary" %>
+  </div>
+
   <div class="filter-controls">
     <%= form_with url: instructors_path, method: :get, local: true, class: "user-filter-form" do |form| %>
       <%= form.select :user_id,
@@ -60,5 +64,3 @@
     </tbody>
   </table>
 </div>
-
-<%= link_to "New instructor", new_instructor_path %>

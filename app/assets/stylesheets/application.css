@@ -20,7 +20,7 @@ button {
   --prussian-blue: #023047;
   --selective-yellow: #ffb703;
   --ut-orange: #fb8500;
-  
+
   /* Lighter/darker variants for palette colors */
   --barn-red-dark: #5a0000;
   --blue-green-dark: #1a7c95;
@@ -228,24 +228,24 @@ a[href*="new"]:hover {
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .navbar-menu {
     gap: 1rem;
   }
-  
+
   .navbar-item {
     padding: 0.5rem;
   }
-  
+
   .data-table {
     font-size: 0.8rem;
   }
-  
+
   .data-table th,
   .data-table td {
     padding: 0.5rem;
   }
-  
+
   .actions {
     display: flex;
     flex-direction: column;
@@ -344,7 +344,6 @@ a[href*="new"]:hover {
 
 /* Action buttons section */
 .action-buttons {
-  margin-top: 2rem;
   display: flex;
   gap: 1rem;
   align-items: center;
@@ -389,29 +388,4 @@ input[type="submit"]:hover {
 /* Form field spacing */
 form div {
   margin-bottom: 10px;
-}
-
-/* Style button_to forms to display inline with other buttons */
-.action-buttons form {
-  display: inline-block;
-  margin: 0;
-}
-
-.action-buttons form input[type="submit"].btn-secondary {
-  background-color: var(--prussian-blue);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 6px;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.1s;
-  font-size: inherit;
-  font-family: inherit;
-}
-
-.action-buttons form input[type="submit"].btn-secondary:hover {
-  background-color: var(--barn-red-dark);
-  color: white;
-  transform: translateY(-1px);
 }
