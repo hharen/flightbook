@@ -6,9 +6,11 @@ class InstructorsController < ApplicationController
     @users = User.all
     @instructors = Instructor.all
 
-    if params[:user_id].present?
-      @selected_user = User.find(params[:user_id])
+    if params.key?(:user_id)
+      # User explicitly selected a filter (including "All users" which sends blank)
+      @selected_user = params[:user_id].present? ? User.find(params[:user_id]) : nil
     else
+      # First visit — preselect Hana
       @selected_user = User.find_by(name: "Hana")
     end
 

@@ -13,10 +13,11 @@ class FlyingSessionsController < ApplicationController
 
   # GET /flying_sessions
   def index
-    if params[:user_id].present?
-      @selected_user = User.find(params[:user_id])
+    if params.key?(:user_id)
+      # User explicitly selected a filter (including "All users" which sends blank)
+      @selected_user = params[:user_id].present? ? User.find(params[:user_id]) : nil
     else
-      # Preselect user 'Hana' by default
+      # First visit — preselect Hana
       @selected_user = User.find_by(name: "Hana")
     end
 
@@ -25,6 +26,7 @@ class FlyingSessionsController < ApplicationController
       @total_flight_time = @flying_sessions.total_flight_time
     else
       @flying_sessions = FlyingSession.all.includes(:user, :instructor)
+      @total_flight_time = @flying_sessions.total_flight_time
     end
     @users = User.all
   end
