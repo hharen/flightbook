@@ -5,6 +5,11 @@
 <div class="user-filter-section">
   <h1>Flying sessions</h1>
 
+  <div class="action-buttons">
+    <%= link_to "New flying session", new_flying_session_path, class: "btn btn-primary" %>
+    <%= button_to "Get flying sessions", get_flying_sessions_flying_sessions_path, method: :post, class: "btn btn-secondary" %>
+  </div>
+
   <div class="filter-controls">
     <%= form_with url: flying_sessions_path, method: :get, local: true, class: "user-filter-form" do |form| %>
       <%= form.select :user_id,
@@ -74,9 +79,4 @@
       <% end %>
     </tbody>
   </table>
-</div>
-
-<div class="action-buttons">
-  <%= link_to "New flying session", new_flying_session_path, class: "btn btn-primary" %>
-  <%= button_to "Get flying sessions", get_flying_sessions_flying_sessions_path, method: :post, class: "btn btn-secondary" %>
 </div>
