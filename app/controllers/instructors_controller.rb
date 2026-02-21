@@ -3,7 +3,25 @@ class InstructorsController < ApplicationController
 
   # GET /instructors
   def index
+    @users = User.all
     @instructors = Instructor.all
+
+    if params[:user_id].present?
+      @selected_user = User.find(params[:user_id])
+    else
+      @selected_user = User.find_by(name: "Hana")
+    end
+
+    # Build a hash of instructor stats filtered by user
+    @instructor_stats = {}
+    @instructors.each do |instructor|
+      sessions = instructor.flying_sessions
+      sessions = sessions.where(user: @selected_user) if @selected_user
+      @instructor_stats[instructor.id] = {
+        sessions_count: sessions.count,
+        flight_time: sessions.sum(:duration).to_i
+      }
+    end
   end
 
   # GET /instructors/new
