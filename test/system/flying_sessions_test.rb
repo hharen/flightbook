@@ -22,7 +22,6 @@ class FlyingSessionsTest < ApplicationSystemTestCase
     click_on "Create Flying session"
 
     assert_text "Flying session was successfully created"
-    click_on "Back"
   end
 
   test "should update Flying session" do
@@ -37,7 +36,6 @@ class FlyingSessionsTest < ApplicationSystemTestCase
     click_on "Update Flying session"
 
     assert_text "Flying session was successfully updated"
-    click_on "Back"
   end
 
   test "should destroy Flying session" do
