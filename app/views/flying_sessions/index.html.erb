@@ -27,6 +27,11 @@
     <% else %>
       <div class="filter-info">
         Showing all sessions (<%= pluralize(@flying_sessions.count, 'session') %>)
+        <% if @total_flight_time && @total_flight_time > 0 %>
+          <br>
+          Total flight time: <strong><%= (@total_flight_time / 60.0).round(1) %> hours</strong>
+          (<%= @total_flight_time %> minutes)
+        <% end %>
       </div>
     <% end %>
   </div>

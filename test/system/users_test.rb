@@ -22,7 +22,7 @@ class UsersTest < ApplicationSystemTestCase
 
   test "should update User" do
     visit users_url
-    click_on "Edit", match: :first
+    click_on @user.name, match: :first
 
     fill_in "Name", with: @user.name
     click_on "Update User"

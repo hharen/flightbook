@@ -22,7 +22,7 @@ class InstructorsTest < ApplicationSystemTestCase
 
   test "should update Instructor" do
     visit instructors_url
-    click_on "Edit", match: :first
+    click_on @instructor.name, match: :first
 
     fill_in "Name", with: @instructor.name
     click_on "Update Instructor"
