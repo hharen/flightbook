@@ -17,7 +17,6 @@
         <tr>
           <td><%= link_to instructor.name, edit_instructor_path(instructor) %></td>
           <td class="actions">
-            <%= link_to "Edit", edit_instructor_path(instructor), class: "btn btn-small" %>
             <%= link_to "Delete", instructor_path(instructor), 
                         data: { "turbo-method": :delete }, 
                         class: "btn btn-small btn-danger" %>
