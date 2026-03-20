@@ -1,0 +1,31 @@
+<% content_for :title, "Profile" %>
+
+<p style="color: green"><%= notice %></p>
+
+<div class="profile-header">
+  <h1><%= @user.name %></h1>
+  <%= link_to "Edit profile", edit_profile_path, class: "btn btn-primary" %>
+</div>
+
+<div class="profile-stats">
+  <div class="stat-card">
+    <div class="stat-value"><%= @sessions_count %></div>
+    <div class="stat-label">Flying sessions</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-value"><%= @total_flights %></div>
+    <div class="stat-label">Total flights</div>
+  </div>
+
+  <div class="stat-card">
+    <% if @total_flight_time > 0 %>
+      <div class="stat-value"><%= (@total_flight_time / 60.0).round(1) %></div>
+      <div class="stat-label">Hours airborne</div>
+      <div class="stat-sub"><%= @total_flight_time %> min</div>
+    <% else %>
+      <div class="stat-value">—</div>
+      <div class="stat-label">Hours airborne</div>
+    <% end %>
+  </div>
+</div>

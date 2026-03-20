@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   resource :session, only: [:new, :create, :destroy]
+  resource :profile, only: [:show, :edit, :update]
 
   resources :flying_sessions do
     collection do

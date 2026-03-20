@@ -39,7 +39,7 @@
             <% if current_user.admin? %>
               <%= link_to "Users", users_path, class: "navbar-item" %>
             <% end %>
-            <span class="navbar-item navbar-user"><%= current_user.name %></span>
+            <%= link_to current_user.name, profile_path, class: "navbar-item navbar-user" %>
             <%= button_to "Log out", session_path, method: :delete, class: "navbar-item btn-logout" %>
           <% end %>
         </div>
