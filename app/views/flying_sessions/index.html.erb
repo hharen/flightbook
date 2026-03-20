@@ -76,10 +76,10 @@
         </tr>
         <% if flying_session.note.present? %>
           <tr class="note-row">
-            <td colspan="7">
+            <td colspan="6">
               <strong>Note:</strong>
-              <%= truncate(flying_session.note, length: 100) %>
-              <% if flying_session.note.length > 100 %>
+              <%= truncate(flying_session.note, length: 500) %>
+              <% if flying_session.note.length > 500 %>
                 <%= link_to "Read more", flying_session_path(flying_session), class: "text-link" %>
               <% end %>
             </td>
