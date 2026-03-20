@@ -56,9 +56,10 @@
       </tr>
     </thead>
     <tbody>
+      <% total = @flying_sessions.count %>
       <% @flying_sessions.each_with_index do |flying_session, index| %>
         <tr>
-          <td><%= index + 1 %></td>
+          <td><%= total - index %></td>
           <td>
             <%= link_to flying_session.date_time&.strftime("%d.%m.%Y - %H:%M"), edit_flying_session_path(flying_session),
               class: "text-link" %>
