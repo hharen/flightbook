@@ -1,18 +1,44 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @flying_session %>
+<% content_for :title, "Flying session" %>
 
-<div class="flights-section">
-  <h2>Flight Information</h2>
-  
-  <div class="flight-summary">
-    <p><strong>Number of flights:</strong> <%= @flying_session.flights %></p>
-  </div>
+<h1>Flying Session</h1>
+
+<div class="session-details">
+  <p>
+    <strong>Date & Time:</strong>
+    <%= @flying_session.date_time&.strftime("%d.%m.%Y - %H:%M") %>
+  </p>
+
+  <p>
+    <strong>User:</strong>
+    <%= @flying_session.user&.name %>
+  </p>
+
+  <p>
+    <strong>Instructor:</strong>
+    <%= @flying_session.instructor&.name || "No instructor assigned" %>
+  </p>
+
+  <p>
+    <strong>Flight Time:</strong>
+    <%= @flying_session.show_flight_time %> min
+  </p>
+
+  <p>
+    <strong>Number of Flights:</strong>
+    <%= @flying_session.flights %>
+  </p>
+
+  <p>
+    <strong>Notes:</strong><br>
+    <%= simple_format(@flying_session.note) %>
+  </p>
 </div>
 
-<div>
-  <%= link_to "Edit this flying session", edit_flying_session_path(@flying_session) %> |
-  <%= link_to "Back to flying sessions", flying_sessions_path %>
-
-  <%= button_to "Destroy this flying session", @flying_session, method: :delete %>
+<div class="action-buttons">
+  <%= link_to "Edit", edit_flying_session_path(@flying_session), class: "btn btn-primary" %>
+  <%= link_to "Back to flying sessions", flying_sessions_path, class: "btn btn-secondary" %>
+  <%= link_to "Delete", flying_session_path(@flying_session), method: :delete,
+              confirm: "Are you sure?", class: "btn btn-danger" %>
 </div>

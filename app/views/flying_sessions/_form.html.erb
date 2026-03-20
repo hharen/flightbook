@@ -33,12 +33,12 @@
 
   <div>
     <%= form.label :note, style: "display: block" %>
-    <%= form.text_area :note, rows: 4, cols: 50 %>
+    <%= form.text_area :note, rows: 8, cols: 50 %>
   </div>
 
   <div>
     <%= form.label :user_id, "User", style: "display: block" %>
-    <%= form.select :user_id, 
+    <%= form.select :user_id,
         options_from_collection_for_select(@users, :id, :name, flying_session.user_id),
         { prompt: "Select a user" },
         { style: "display: block" } %>
@@ -46,7 +46,7 @@
 
   <div>
     <%= form.label :instructor_id, "Instructor", style: "display: block" %>
-    <%= form.select :instructor_id, 
+    <%= form.select :instructor_id,
         options_from_collection_for_select(@instructors, :id, :name, flying_session.instructor_id),
         { prompt: "Select an instructor (optional)" },
         { style: "display: block" } %>

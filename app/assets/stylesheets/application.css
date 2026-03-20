@@ -131,9 +131,9 @@ td {
   padding: 5px 10px;
 }
 
-/* Action buttons */
-.actions {
-  white-space: nowrap;
+/* Note sub-row: hidden on large screens, shown on small */
+.note-row {
+  display: none;
 }
 
 .btn {
@@ -184,6 +184,10 @@ h1 {
 
 /* Responsive design */
 @media (max-width: 768px) {
+  .main-content {
+    padding: 1rem 0;
+  }
+
   .navbar-container {
     flex-direction: column;
     gap: 1rem;
@@ -197,6 +201,11 @@ h1 {
     padding: 0.5rem;
   }
 
+  .filter-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .data-table {
     font-size: 0.8rem;
   }
@@ -206,10 +215,18 @@ h1 {
     padding: 0.5rem;
   }
 
-  .actions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
+  .note-column {
+    display: none;
+  }
+
+  .note-row {
+    display: table-row;
+  }
+
+  .note-row td {
+    background-color: rgba(33, 158, 188, 0.05);
+    font-size: 0.85rem;
+    padding: 0.4rem 0.5rem;
   }
 }
 

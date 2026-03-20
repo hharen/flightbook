@@ -52,8 +52,7 @@
         <th>Flights</th>
         <th>User</th>
         <th>Instructor</th>
-        <th>Note</th>
-        <th>Actions</th>
+        <th class="note-column">Note</th>
       </tr>
     </thead>
     <tbody>
@@ -68,14 +67,24 @@
           <td><%= flying_session.flights %></td>
           <td><%= flying_session.user&.name %></td>
           <td><%= flying_session.instructor&.name %></td>
-          <td><%= flying_session.note %></td>
-          <td>
-            <div class="actions">
-              <%= link_to "Delete", flying_session_path(flying_session), method: :delete,
-                          confirm: "Are you sure?", class: "btn btn-small btn-danger" %>
-            </div>
+          <td class="note-column">
+            <%= truncate(flying_session.note, length: 500) %>
+            <% if flying_session.note.present? && flying_session.note.length > 500 %>
+              <%= link_to "Read more", flying_session_path(flying_session), class: "text-link" %>
+            <% end %>
           </td>
         </tr>
+        <% if flying_session.note.present? %>
+          <tr class="note-row">
+            <td colspan="7">
+              <strong>Note:</strong>
+              <%= truncate(flying_session.note, length: 100) %>
+              <% if flying_session.note.length > 100 %>
+                <%= link_to "Read more", flying_session_path(flying_session), class: "text-link" %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
       <% end %>
     </tbody>
   </table>
