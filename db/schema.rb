@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_15_185401) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_20_110351) do
   create_table "flying_sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "date_time", null: false
@@ -33,8 +33,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_15_185401) do
 
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.string "email"
     t.string "name"
+    t.string "password_digest"
     t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
   end
 
   add_foreign_key "flying_sessions", "instructors"

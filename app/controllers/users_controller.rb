@@ -49,6 +49,10 @@ class UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_params
-      params.require(:user).permit(:name)
+      permitted = params.require(:user).permit(:name, :email, :password, :password_confirmation)
+      # Don't update password if blank on edit
+      permitted.delete(:password) if permitted[:password].blank?
+      permitted.delete(:password_confirmation) if permitted[:password_confirmation].blank?
+      permitted
     end
 end

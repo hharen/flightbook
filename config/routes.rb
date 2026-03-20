@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resource :session, only: [:new, :create, :destroy]
+
   resources :flying_sessions do
     collection do
       post :get_flying_sessions

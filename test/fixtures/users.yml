@@ -2,6 +2,8 @@
 
 hana:
   name: Hana
+  email: hana@flightbook.local
 
 anna:
   name: Anna
+  email: anna@flightbook.local
