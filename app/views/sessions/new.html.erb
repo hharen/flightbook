@@ -1,0 +1,25 @@
+<% content_for :title, "Log in" %>
+
+<div class="login-container">
+  <h1>Log in</h1>
+
+  <% if flash[:alert] %>
+    <p class="flash-alert"><%= flash[:alert] %></p>
+  <% end %>
+
+  <%= form_with url: session_path, method: :post do |form| %>
+    <div>
+      <%= form.label :email, style: "display: block" %>
+      <%= form.email_field :email, autofocus: true, autocomplete: "email" %>
+    </div>
+
+    <div>
+      <%= form.label :password, style: "display: block" %>
+      <%= form.password_field :password, autocomplete: "current-password" %>
+    </div>
+
+    <div>
+      <%= form.submit "Log in", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

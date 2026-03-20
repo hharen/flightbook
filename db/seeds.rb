@@ -23,6 +23,7 @@ end
 
 # Find or create users
 hana = User.find_or_create_by!(name: "Hana")
+hana.update!(admin: true) unless hana.admin?
 
 # Create flying sessions with flights
 flying_sessions_data = [
