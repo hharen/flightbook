@@ -15,4 +15,8 @@ class ApplicationController < ActionController::Base
   def authenticate_user!
     redirect_to new_session_path unless current_user
   end
+
+  def require_admin!
+    redirect_to root_path, alert: "Not authorized." unless current_user&.admin?
+  end
 end

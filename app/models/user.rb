@@ -1,5 +1,7 @@
 class User < ApplicationRecord
   has_many :flying_sessions, dependent: :destroy
+  belongs_to :creator, class_name: "User", foreign_key: :created_by_id, optional: true
+  has_many :created_users, class_name: "User", foreign_key: :created_by_id
 
   has_secure_password
 

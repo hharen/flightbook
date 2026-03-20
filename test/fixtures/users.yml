@@ -3,6 +3,7 @@
 hana:
   name: Hana
   email: hana@flightbook.local
+  admin: true
 
 anna:
   name: Anna

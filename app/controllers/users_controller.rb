@@ -1,9 +1,10 @@
 class UsersController < ApplicationController
+  before_action :require_admin!
   before_action :set_user, only: %i[edit update destroy]
 
   # GET /users
   def index
-    @users = User.all
+    @users = current_user.created_users
   end
 
   # GET /users/new
@@ -17,7 +18,7 @@ class UsersController < ApplicationController
 
   # POST /users
   def create
-    @user = User.new(user_params)
+    @user = current_user.created_users.build(user_params)
 
     if @user.save
       redirect_to users_path, notice: "User was successfully created."
@@ -44,12 +45,12 @@ class UsersController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
-      @user = User.find(params[:id])
+      @user = current_user.created_users.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def user_params
-      permitted = params.require(:user).permit(:name, :email, :password, :password_confirmation)
+      permitted = params.require(:user).permit(:name, :email, :password, :password_confirmation, :admin)
       # Don't update password if blank on edit
       permitted.delete(:password) if permitted[:password].blank?
       permitted.delete(:password_confirmation) if permitted[:password_confirmation].blank?
