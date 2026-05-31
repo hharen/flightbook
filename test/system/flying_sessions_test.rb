@@ -16,10 +16,10 @@ class FlyingSessionsTest < ApplicationSystemTestCase
     click_on "New flying session"
 
     fill_in "Date", with: @flying_session.date_time.to_date
-    fill_in "Time", with: @flying_session.date_time.strftime("%H:%M")
+    fill_in "Time", with: @flying_session.date_time.strftime("%d-%m-%Y")
     fill_in "Note", with: @flying_session.note
     select @flying_session.user.name, from: "User"
-    select @flying_session.instructor.name, from: "Instructor" if @flying_session.instructor
+    select @flying_session.instructor.name, from: "Instructor"
     click_on "Create Flying session"
 
     assert_text "Flying session was successfully created"
@@ -41,7 +41,9 @@ class FlyingSessionsTest < ApplicationSystemTestCase
 
   test "should destroy Flying session" do
     visit flying_session_url(@flying_session)
-    click_on "Delete", match: :first
+    accept_confirm("Are you sure?") do
+      click_on "Delete", match: :first
+    end
 
     assert_text "Flying session was successfully destroyed"
   end
