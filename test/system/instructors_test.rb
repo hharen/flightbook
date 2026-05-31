@@ -3,6 +3,7 @@ require "application_system_test_case"
 class InstructorsTest < ApplicationSystemTestCase
   setup do
     @instructor = instructors(:dominique)
+    sign_in users(:hana)
   end
 
   test "visiting the index" do

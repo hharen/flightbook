@@ -3,6 +3,7 @@ require "test_helper"
 class InstructorsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @instructor = instructors(:lena)
+    sign_in users(:hana)
   end
 
   test "should get index" do

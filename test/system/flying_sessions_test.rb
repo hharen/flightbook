@@ -3,6 +3,7 @@ require "application_system_test_case"
 class FlyingSessionsTest < ApplicationSystemTestCase
   setup do
     @flying_session = flying_sessions(:one)
+    sign_in users(:hana)
   end
 
   test "visiting the index" do
@@ -26,7 +27,7 @@ class FlyingSessionsTest < ApplicationSystemTestCase
 
   test "should update Flying session" do
     visit flying_session_url(@flying_session)
-    click_on "Edit this flying session", match: :first
+    click_on "Edit", match: :first
 
     fill_in "Date", with: (@flying_session.date_time + 1.day).to_date
     fill_in "Time", with: @flying_session.date_time.strftime("%H:%M")
@@ -40,7 +41,7 @@ class FlyingSessionsTest < ApplicationSystemTestCase
 
   test "should destroy Flying session" do
     visit flying_session_url(@flying_session)
-    click_on "Destroy this flying session", match: :first
+    click_on "Delete", match: :first
 
     assert_text "Flying session was successfully destroyed"
   end
