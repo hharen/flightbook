@@ -19,6 +19,7 @@ class UsersController < ApplicationController
   # POST /users
   def create
     @user = current_user.created_users.build(user_params)
+    @user.admin = params.dig(:user, :admin) == "1"
 
     if @user.save
       redirect_to users_path, notice: "User was successfully created."
@@ -29,6 +30,7 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
+    @user.admin = params.dig(:user, :admin) == "1"
     if @user.update(user_params)
       redirect_to users_path, notice: "User was successfully updated.", status: :see_other
     else
@@ -50,7 +52,7 @@ class UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_params
-      permitted = params.require(:user).permit(:name, :email, :password, :password_confirmation, :admin)
+      permitted = params.require(:user).permit(:name, :email, :password, :password_confirmation)
       # Don't update password if blank on edit
       permitted.delete(:password) if permitted[:password].blank?
       permitted.delete(:password_confirmation) if permitted[:password_confirmation].blank?
