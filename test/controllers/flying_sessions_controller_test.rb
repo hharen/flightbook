@@ -3,6 +3,7 @@ require "test_helper"
 class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @flying_session = flying_sessions(:one)
+    sign_in users(:hana)
   end
 
   test "should get index" do

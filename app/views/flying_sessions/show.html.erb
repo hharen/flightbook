@@ -39,6 +39,6 @@
 <div class="action-buttons">
   <%= link_to "Edit", edit_flying_session_path(@flying_session), class: "btn btn-primary" %>
   <%= link_to "Back to flying sessions", flying_sessions_path, class: "btn btn-secondary" %>
-  <%= link_to "Delete", flying_session_path(@flying_session), method: :delete,
-              confirm: "Are you sure?", class: "btn btn-danger" %>
+  <%= button_to "Delete", flying_session_path(@flying_session), method: :delete,
+                data: { turbo_confirm: "Are you sure?" }, class: "btn btn-danger" %>
 </div>

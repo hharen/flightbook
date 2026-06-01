@@ -4,7 +4,10 @@ hana:
   name: Hana
   email: hana@flightbook.local
   admin: true
+  password_digest: <%= BCrypt::Password.create('password', cost: BCrypt::Engine::MIN_COST) %>
 
 anna:
   name: Anna
   email: anna@flightbook.local
+  password_digest: <%= BCrypt::Password.create('password', cost: BCrypt::Engine::MIN_COST) %>
+  creator: hana

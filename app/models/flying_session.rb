@@ -10,6 +10,7 @@ class FlyingSession < ApplicationRecord
     greater_than_or_equal_to: 0,
     only_integer: true
   }
+  validates :date_time, presence: true
 
   def flight_time
     duration || 0
