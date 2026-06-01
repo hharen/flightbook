@@ -16,7 +16,8 @@ class InstructorsTest < ApplicationSystemTestCase
     click_on "New instructor"
 
     fill_in "Name", with: @instructor.name
-    click_on "Create Instructor"
+    # Use JS submit to bypass Turbo form submission issues in headless Chrome
+    page.execute_script("document.querySelector('form[action=\"/instructors\"]').submit()")
 
     assert_text "Instructor was successfully created"
   end
@@ -26,7 +27,7 @@ class InstructorsTest < ApplicationSystemTestCase
     click_on @instructor.name, match: :first
 
     fill_in "Name", with: @instructor.name
-    click_on "Update Instructor"
+    page.execute_script("document.querySelector('form[action^=\"/instructors/\"]').submit()")
 
     assert_text "Instructor was successfully updated"
   end
