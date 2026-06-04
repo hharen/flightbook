@@ -63,7 +63,7 @@ class FlyingSessionsController < ApplicationController
     end
 
     if @flying_session.save
-      redirect_to flying_sessions_path, notice: "Flying session was successfully created."
+      redirect_to flying_sessions_path, notice: t("flash.flying_sessions.created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -77,7 +77,7 @@ class FlyingSessionsController < ApplicationController
     end
 
     if @flying_session.update(flying_session_params.except(:date, :time))
-      redirect_to flying_sessions_path, notice: "Flying session was successfully updated.", status: :see_other
+      redirect_to flying_sessions_path, notice: t("flash.flying_sessions.updated"), status: :see_other
     else
       render :edit, status: :unprocessable_entity
     end
@@ -86,7 +86,7 @@ class FlyingSessionsController < ApplicationController
   # DELETE /flying_sessions/1
   def destroy
     @flying_session.destroy!
-    redirect_to flying_sessions_path, notice: "Flying session was successfully destroyed.", status: :see_other
+    redirect_to flying_sessions_path, notice: t("flash.flying_sessions.destroyed"), status: :see_other
   end
 
   # POST /flying_sessions/get_flying_sessions
@@ -96,7 +96,7 @@ class FlyingSessionsController < ApplicationController
       cookie = authenticate_and_get_cookie
 
       if cookie.blank?
-        redirect_to flying_sessions_path, alert: "Failed to authenticate with Windwerk. Please check your credentials."
+        redirect_to flying_sessions_path, alert: t("flash.flying_sessions.windwerk_auth_failed")
         return
       end
 
@@ -106,14 +106,14 @@ class FlyingSessionsController < ApplicationController
       if html_content.present?
         created_count = parse_and_create_sessions(html_content)
         message = "Successfully imported #{created_count} flying sessions from Windwerk."
-        redirect_to flying_sessions_path, notice: message
+        redirect_to flying_sessions_path, notice: t("flash.flying_sessions.windwerk_imported", count: created_count)
       else
-        redirect_to flying_sessions_path, alert: "Failed to fetch data from Windwerk after authentication."
+        redirect_to flying_sessions_path, alert: t("flash.flying_sessions.windwerk_fetch_failed")
       end
     rescue => e
       Rails.logger.error "Error fetching Windwerk data: #{e.message}"
       Rails.logger.error e.backtrace.join("\n")
-      redirect_to flying_sessions_path, alert: "An error occurred while fetching data: #{e.message}"
+      redirect_to flying_sessions_path, alert: t("flash.flying_sessions.windwerk_error", message: e.message)
     end
   end
 

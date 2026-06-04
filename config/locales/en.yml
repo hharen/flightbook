@@ -28,4 +28,224 @@
 #       enabled: "ON"
 
 en:
-  hello: "Hello world"
+  layouts:
+    application:
+      nav:
+        flying_sessions: "Flying Sessions"
+        instructors: "Instructors"
+        users: "Users"
+        log_out: "Log out"
+
+  sessions:
+    new:
+      title: "Log in"
+      submit: "Log in"
+
+  registrations:
+    new:
+      title: "Sign up"
+      submit: "Sign up"
+      have_account: "Already have an account?"
+      log_in: "Log in"
+
+  flying_sessions:
+    index:
+      title: "Flying sessions"
+      heading: "Flying sessions"
+      new_link: "New flying session"
+      get_sessions_button: "Get flying sessions"
+      all_users_prompt: "All users"
+      showing_for: "Showing sessions for: %{name}"
+      showing_all: "Showing all sessions"
+      session_count:
+        one: "1 session"
+        other: "%{count} sessions"
+      total_flight_time: "Total flight time:"
+      hours: "%{hours} hours"
+      minutes: "%{minutes} minutes"
+      th_number: "#"
+      th_date_time: "Date & Time"
+      th_flight_time: "Flight Time (min)"
+      th_flights: "Flights"
+      th_user: "User"
+      th_instructor: "Instructor"
+      th_note: "Note"
+    show:
+      title: "Flying session"
+      heading: "Flying Session"
+      date_time: "Date & Time"
+      user: "User"
+      instructor: "Instructor"
+      flight_time: "Flight Time"
+      flight_time_unit: "min"
+      number_of_flights: "Number of Flights"
+      notes: "Notes"
+      no_instructor: "No instructor assigned"
+      edit_link: "Edit"
+      back_link: "Back to flying sessions"
+      delete_button: "Delete"
+      confirm_delete: "Are you sure?"
+    new:
+      title: "New flying session"
+      heading: "New flying session"
+    edit:
+      title: "Edit flying session"
+      heading: "Edit flying session"
+    form:
+      date: "Date"
+      time: "Time"
+      duration: "Duration (minutes)"
+      flights: "Number of flights"
+      note: "Note"
+      user: "User"
+      instructor: "Instructor"
+      select_user: "Select a user"
+      select_instructor: "Select an instructor (optional)"
+      back_link: "Back to flying sessions"
+      error_header:
+        one: "1 error prohibited this flying session from being saved:"
+        other: "%{count} errors prohibited this flying session from being saved:"
+
+  instructors:
+    index:
+      title: "Instructors"
+      heading: "Instructors"
+      new_link: "New instructor"
+      all_users_prompt: "All users"
+      showing_for: "Showing stats for: %{name}"
+      showing_all: "Showing stats for all users"
+      th_name: "Name"
+      th_flying_sessions: "Flying sessions"
+      th_flight_time: "Flight time"
+      th_actions: "Actions"
+      delete: "Delete"
+      hours_unit: "hours"
+      min_unit: "min"
+    new:
+      title: "New instructor"
+      heading: "New instructor"
+      back_link: "Back to instructors"
+    edit:
+      title: "Editing instructor"
+      heading: "Editing instructor"
+      back_link: "Back to instructors"
+    form:
+      error_header:
+        one: "1 error prohibited this instructor from being saved:"
+        other: "%{count} errors prohibited this instructor from being saved:"
+
+  users:
+    index:
+      title: "Users"
+      heading: "Users"
+      new_link: "New user"
+      th_name: "Name"
+      th_sessions: "Sessions"
+      th_total_flight_time: "Total flight time"
+      th_actions: "Actions"
+      delete: "Delete"
+      no_flights: "No flights"
+      hrs: "hrs"
+      sessions_count:
+        one: "1 session"
+        other: "%{count} sessions"
+    new:
+      title: "New user"
+      heading: "New user"
+      back_link: "Back to users"
+    edit:
+      title: "Editing user"
+      heading: "Editing user"
+      back_link: "Back to users"
+    form:
+      password_label: "Password"
+      new_password_label: "New password (leave blank to keep current)"
+      error_header:
+        one: "1 error prohibited this user from being saved:"
+        other: "%{count} errors prohibited this user from being saved:"
+
+  profiles:
+    show:
+      title: "Profile"
+      edit_link: "Edit profile"
+      flying_sessions: "Flying sessions"
+      total_flights: "Total flights"
+      hours_airborne: "Hours airborne"
+    edit:
+      title: "Edit Profile"
+      heading: "Edit Profile"
+      back_link: "← Back"
+      save_button: "Save changes"
+      new_password_label: "New password (leave blank to keep current)"
+
+  flash:
+    sessions:
+      welcome: "Welcome, %{name}!"
+      invalid_credentials: "Invalid email or password."
+      logged_out: "You have been logged out."
+    registrations:
+      welcome: "Welcome, %{name}! Your account has been created."
+    flying_sessions:
+      created: "Flying session was successfully created."
+      updated: "Flying session was successfully updated."
+      destroyed: "Flying session was successfully destroyed."
+      windwerk_auth_failed: "Failed to authenticate with Windwerk. Please check your credentials."
+      windwerk_fetch_failed: "Failed to fetch data from Windwerk after authentication."
+      windwerk_error: "An error occurred while fetching data: %{message}"
+      windwerk_imported:
+        one: "Successfully imported 1 flying session from Windwerk."
+        other: "Successfully imported %{count} flying sessions from Windwerk."
+    instructors:
+      created: "Instructor was successfully created."
+      updated: "Instructor was successfully updated."
+      destroyed: "Instructor was successfully destroyed."
+    users:
+      created: "User was successfully created."
+      updated: "User was successfully updated."
+      destroyed: "User was successfully destroyed."
+    profiles:
+      updated: "Profile updated."
+    authorization:
+      not_authorized: "Not authorized."
+
+  activerecord:
+    models:
+      flying_session:
+        one: "Flying session"
+        other: "Flying sessions"
+      instructor:
+        one: "Instructor"
+        other: "Instructors"
+      user:
+        one: "User"
+        other: "Users"
+    attributes:
+      flying_session:
+        date_time: "Date & Time"
+        duration: "Duration"
+        flights: "Flights"
+        note: "Note"
+      instructor:
+        name: "Name"
+      user:
+        name: "Name"
+        email: "Email"
+        password: "Password"
+        password_confirmation: "Password confirmation"
+        admin: "Admin"
+
+  date:
+    formats:
+      default: "%m/%d/%Y"
+      short: "%b %d"
+      long: "%B %d, %Y"
+    month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]
+    abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+    day_names: [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]
+    abbr_day_names: [Mon, Tue, Wed, Thu, Fri, Sat, Sun]
+
+  time:
+    formats:
+      default: "%a, %d %b %Y %H:%M:%S %z"
+      short: "%d %b %H:%M"
+      long: "%B %d, %Y %H:%M"

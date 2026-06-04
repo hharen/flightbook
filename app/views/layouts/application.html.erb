@@ -34,13 +34,13 @@
 
         <div class="navbar-menu">
           <% if current_user %>
-            <%= link_to "Flying Sessions", flying_sessions_path, class: "navbar-item" %>
-            <%= link_to "Instructors", instructors_path, class: "navbar-item" %>
+            <%= link_to t('.nav.flying_sessions'), flying_sessions_path, class: "navbar-item" %>
+            <%= link_to t('.nav.instructors'), instructors_path, class: "navbar-item" %>
             <% if current_user.admin? %>
-              <%= link_to "Users", users_path, class: "navbar-item" %>
+              <%= link_to t('.nav.users'), users_path, class: "navbar-item" %>
             <% end %>
             <%= link_to current_user.name, profile_path, class: "navbar-item navbar-user" %>
-            <%= button_to "Log out", session_path, method: :delete, class: "navbar-item btn-logout" %>
+            <%= button_to t('.nav.log_out'), session_path, method: :delete, class: "navbar-item btn-logout" %>
           <% end %>
         </div>
       </div>

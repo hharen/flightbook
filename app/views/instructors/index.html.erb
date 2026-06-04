@@ -1,12 +1,12 @@
 <p style="color: green"><%= notice %></p>
 
-<% content_for :title, "Instructors" %>
+<% content_for :title, t('.title') %>
 
 <div class="user-filter-section">
-  <h1>Instructors</h1>
+  <h1><%= t('.heading') %></h1>
 
   <div class="action-buttons">
-    <%= link_to "New instructor", new_instructor_path, class: "btn btn-primary" %>
+    <%= link_to t('.new_link'), new_instructor_path, class: "btn btn-primary" %>
   </div>
 
   <div class="filter-controls">
@@ -14,7 +14,7 @@
       <%= form_with url: instructors_path, method: :get, local: true, class: "user-filter-form" do |form| %>
         <%= form.select :user_id,
             options_from_collection_for_select(@users, :id, :name, @selected_user&.id),
-            { prompt: "All users" },
+            { prompt: t('.all_users_prompt') },
             { class: "form-select", onchange: "this.form.submit();" }
         %>
       <% end %>
@@ -23,11 +23,11 @@
     <div class="filter-info">
       <% if @selected_user %>
 
-        Showing stats for: <strong><%= @selected_user.name %></strong>
+        <%= t('.showing_for', name: @selected_user.name) %>
 
       <% else %>
 
-        Showing stats for all users
+        <%= t('.showing_all') %>
 
       <% end %>
     </div>
@@ -38,10 +38,10 @@
   <table class="data-table">
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Flying sessions</th>
-        <th>Flight time</th>
-        <th>Actions</th>
+        <th><%= t('.th_name') %></th>
+        <th><%= t('.th_flying_sessions') %></th>
+        <th><%= t('.th_flight_time') %></th>
+        <th><%= t('.th_actions') %></th>
       </tr>
     </thead>
     <tbody>
@@ -53,13 +53,13 @@
           <td>
             <% minutes = stats[:flight_time] %>
             <% if minutes > 0 %>
-              <%= (minutes / 60.0).round(1) %> hours (<%= minutes %> min)
+              <%= (minutes / 60.0).round(1) %> <%= t('.hours_unit') %> (<%= minutes %> <%= t('.min_unit') %>)
             <% else %>
               -
             <% end %>
           </td>
           <td class="actions">
-            <%= link_to "Delete", instructor_path(instructor),
+            <%= link_to t('.delete'), instructor_path(instructor),
                         data: { "turbo-method": :delete },
                         class: "btn btn-small btn-danger" %>
           </td>

@@ -1,21 +1,21 @@
 <p style="color: green"><%= notice %></p>
 
-<% content_for :title, "Users" %>
+<% content_for :title, t('.title') %>
 
-<h1>Users</h1>
+<h1><%= t('.heading') %></h1>
 
 <div class="action-buttons">
-  <%= link_to "New user", new_user_path, class: "btn btn-primary" %>
+  <%= link_to t('.new_link'), new_user_path, class: "btn btn-primary" %>
 </div>
 
 <div class="table-container">
   <table class="data-table">
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Sessions</th>
-        <th>Total flight time</th>
-        <th>Actions</th>
+        <th><%= t('.th_name') %></th>
+        <th><%= t('.th_sessions') %></th>
+        <th><%= t('.th_total_flight_time') %></th>
+        <th><%= t('.th_actions') %></th>
       </tr>
     </thead>
     <tbody>
@@ -23,20 +23,20 @@
         <tr>
           <td><%= link_to user.name, edit_user_path(user) %></td>
           <td>
-            <%= link_to "#{user.flying_sessions.count} sessions", user_flying_sessions_path(user) %>
+              <%= link_to t('.sessions_count', count: user.flying_sessions.count), user_flying_sessions_path(user) %>
           </td>
           <td>
             <% total_time = user.total_flight_time %>
             <% if total_time > 0 %>
-              <strong><%= (total_time / 60.0).round(1) %> hrs</strong>
+              <strong><%= (total_time / 60.0).round(1) %> <%= t('.hrs') %></strong>
               <br>
               <span class="text-muted">(<%= total_time %> min)</span>
             <% else %>
-              <span class="text-muted">No flights</span>
+              <span class="text-muted"><%= t('.no_flights') %></span>
             <% end %>
           </td>
           <td class="actions">
-            <%= link_to "Delete", user_path(user),
+            <%= link_to t('.delete'), user_path(user),
                         data: { "turbo-method": :delete },
                         class: "btn btn-small btn-danger" %>
           </td>

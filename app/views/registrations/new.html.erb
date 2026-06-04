@@ -1,7 +1,7 @@
-<% content_for :title, "Sign up" %>
+<% content_for :title, t('.title') %>
 
 <div class="login-container">
-  <h1>Sign up</h1>
+  <h1><%= t('.title') %></h1>
 
   <% if @user.errors.any? %>
     <div style="color: red">
@@ -35,9 +35,9 @@
     </div>
 
     <div>
-      <%= form.submit "Sign up", class: "btn btn-primary" %>
+      <%= form.submit t('.submit'), class: "btn btn-primary" %>
     </div>
   <% end %>
 
-  <p>Already have an account? <%= link_to "Log in", new_session_path %></p>
+  <p><%= t('.have_account') %> <%= link_to t('.log_in'), new_session_path %></p>
 </div>

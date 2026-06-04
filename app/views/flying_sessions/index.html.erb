@@ -1,12 +1,12 @@
 <p style="color: green"><%= notice %></p>
 
-<% content_for :title, "Flying sessions" %>
+<% content_for :title, t('.title') %>
 
 <div class="user-filter-section">
-  <h1>Flying sessions</h1>
+  <h1><%= t('.heading') %></h1>
 
   <div class="action-buttons">
-    <%= link_to "New flying session", new_flying_session_path, class: "btn btn-primary" %>
+    <%= link_to t('.new_link'), new_flying_session_path, class: "btn btn-primary" %>
   </div>
 
   <div class="filter-controls">
@@ -14,7 +14,7 @@
       <%= form_with url: flying_sessions_path, method: :get, local: true, class: "user-filter-form" do |form| %>
         <%= form.select :user_id,
             options_from_collection_for_select(@users, :id, :name, @selected_user&.id),
-            { prompt: "All users" },
+            { prompt: t('.all_users_prompt') },
             { class: "form-select", onchange: "this.form.submit();" }
         %>
       <% end %>
@@ -23,21 +23,24 @@
     <div class="filter-info">
       <% if @selected_user %>
 
-        Showing sessions for: <strong><%= @selected_user.name %></strong>
-        (<%= pluralize(@flying_sessions.count, 'session') %>)
+        <%= t('.showing_for', name: @selected_user.name) %>
+        (<%= t('.session_count', count: @flying_sessions.count) %>)
         <% if @total_flight_time && @total_flight_time > 0 %>
           <br>
-          Total flight time: <strong><%= (@total_flight_time / 60.0).round(1) %> hours</strong>
-          (<%= @total_flight_time %> minutes)
+          <%= t('.total_flight_time') %>
+          <strong><%= t('.hours', hours: (@total_flight_time / 60.0).round(1)) %></strong>
+          (<%= t('.minutes', minutes: @total_flight_time) %>)
         <% end %>
 
       <% else %>
 
-        Showing all sessions (<%= pluralize(@flying_sessions.count, 'session') %>)
+        <%= t('.showing_all') %>
+        (<%= t('.session_count', count: @flying_sessions.count) %>)
         <% if @total_flight_time && @total_flight_time > 0 %>
           <br>
-          Total flight time: <strong><%= (@total_flight_time / 60.0).round(1) %> hours</strong>
-          (<%= @total_flight_time %> minutes)
+          <%= t('.total_flight_time') %>
+          <strong><%= t('.hours', hours: (@total_flight_time / 60.0).round(1)) %></strong>
+          (<%= t('.minutes', minutes: @total_flight_time) %>)
         <% end %>
 
       <% end %>
@@ -49,13 +52,13 @@
   <table class="data-table">
     <thead>
       <tr>
-        <th>#</th>
-        <th>Date & Time</th>
-        <th>Flight Time (min)</th>
-        <th>Flights</th>
-        <th>User</th>
-        <th>Instructor</th>
-        <th class="note-column">Note</th>
+        <th><%= t('.th_number') %></th>
+        <th><%= t('.th_date_time') %></th>
+        <th><%= t('.th_flight_time') %></th>
+        <th><%= t('.th_flights') %></th>
+        <th><%= t('.th_user') %></th>
+        <th><%= t('.th_instructor') %></th>
+        <th class="note-column"><%= t('.th_note') %></th>
       </tr>
     </thead>
     <tbody>
@@ -74,7 +77,7 @@
           <td class="note-column">
             <%= truncate(flying_session.note, length: 500) %>
             <% if flying_session.note.present? && flying_session.note.length > 500 %>
-              <%= link_to "Read more", flying_session_path(flying_session), class: "text-link" %>
+              <%= link_to t('flying_sessions.show.edit_link'), flying_session_path(flying_session), class: "text-link" %>
             <% end %>
           </td>
         </tr>
