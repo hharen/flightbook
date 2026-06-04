@@ -3,21 +3,22 @@ class InstructorsController < ApplicationController
 
   # GET /instructors
   def index
-    @users = User.all
+    @visible_users = current_user.admin? \
+      ? User.where(id: [ current_user.id ] + current_user.created_users.ids)
+      : User.where(id: current_user.id)
+    @users = @visible_users
     @instructors = Instructor.all
 
-    if params.key?(:user_id)
-      # User explicitly selected a filter (including "All users" which sends blank)
-      @selected_user = params[:user_id].present? ? User.find(params[:user_id]) : nil
+    if current_user.admin? && params.key?(:user_id)
+      @selected_user = params[:user_id].present? ? @visible_users.find(params[:user_id]) : nil
     else
-      # First visit — preselect Hana
-      @selected_user = User.find_by(name: "Hana")
+      @selected_user = current_user
     end
 
-    # Build a hash of instructor stats filtered by user
+    # Build a hash of instructor stats filtered by visible user(s)
     @instructor_stats = {}
     @instructors.each do |instructor|
-      sessions = instructor.flying_sessions
+      sessions = instructor.flying_sessions.where(user: @visible_users)
       sessions = sessions.where(user: @selected_user) if @selected_user
       @instructor_stats[instructor.id] = {
         sessions_count: sessions.count,

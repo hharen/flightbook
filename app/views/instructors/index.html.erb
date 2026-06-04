@@ -10,23 +10,27 @@
   </div>
 
   <div class="filter-controls">
-    <%= form_with url: instructors_path, method: :get, local: true, class: "user-filter-form" do |form| %>
-      <%= form.select :user_id,
-          options_from_collection_for_select(@users, :id, :name, @selected_user&.id),
-          { prompt: "All users" },
-          { class: "form-select", onchange: "this.form.submit();" }
-      %>
+    <% if current_user.admin? %>
+      <%= form_with url: instructors_path, method: :get, local: true, class: "user-filter-form" do |form| %>
+        <%= form.select :user_id,
+            options_from_collection_for_select(@users, :id, :name, @selected_user&.id),
+            { prompt: "All users" },
+            { class: "form-select", onchange: "this.form.submit();" }
+        %>
+      <% end %>
     <% end %>
 
-    <% if @selected_user %>
-      <div class="filter-info">
+    <div class="filter-info">
+      <% if @selected_user %>
+
         Showing stats for: <strong><%= @selected_user.name %></strong>
-      </div>
-    <% else %>
-      <div class="filter-info">
+
+      <% else %>
+
         Showing stats for all users
-      </div>
-    <% end %>
+
+      <% end %>
+    </div>
   </div>
 </div>
 

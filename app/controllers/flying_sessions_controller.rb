@@ -13,22 +13,25 @@ class FlyingSessionsController < ApplicationController
 
   # GET /flying_sessions
   def index
-    if params.key?(:user_id)
-      # User explicitly selected a filter (including "All users" which sends blank)
-      @selected_user = params[:user_id].present? ? User.find(params[:user_id]) : nil
+    # Visible users: self + users this admin created (for non-admins, just self)
+    @visible_users = current_user.admin? \
+      ? User.where(id: [ current_user.id ] + current_user.created_users.ids)
+      : User.where(id: current_user.id)
+
+    if current_user.admin? && params.key?(:user_id)
+      @selected_user = params[:user_id].present? ? @visible_users.find(params[:user_id]) : nil
     else
-      # First visit — preselect Hana
-      @selected_user = User.find_by(name: "Hana")
+      @selected_user = current_user
     end
+    @users = @visible_users
 
     if @selected_user
       @flying_sessions = FlyingSession.where(user: @selected_user).includes(:user, :instructor)
       @total_flight_time = @flying_sessions.total_flight_time
     else
-      @flying_sessions = FlyingSession.all.includes(:user, :instructor)
+      @flying_sessions = FlyingSession.where(user: @visible_users).includes(:user, :instructor)
       @total_flight_time = @flying_sessions.total_flight_time
     end
-    @users = User.all
   end
 
   # GET /flying_sessions/1

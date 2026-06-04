@@ -1,0 +1,43 @@
+<% content_for :title, "Sign up" %>
+
+<div class="login-container">
+  <h1>Sign up</h1>
+
+  <% if @user.errors.any? %>
+    <div style="color: red">
+      <ul>
+        <% @user.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form_with model: @user, url: registration_path do |form| %>
+    <div>
+      <%= form.label :name, style: "display: block" %>
+      <%= form.text_field :name, autofocus: true, autocomplete: "name" %>
+    </div>
+
+    <div>
+      <%= form.label :email, style: "display: block" %>
+      <%= form.email_field :email, autocomplete: "email" %>
+    </div>
+
+    <div>
+      <%= form.label :password, style: "display: block" %>
+      <%= form.password_field :password, autocomplete: "new-password" %>
+    </div>
+
+    <div>
+      <%= form.label :password_confirmation, style: "display: block" %>
+      <%= form.password_field :password_confirmation, autocomplete: "new-password" %>
+    </div>
+
+    <div>
+      <%= form.submit "Sign up", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+
+  <p>Already have an account? <%= link_to "Log in", new_session_path %></p>
+</div>
