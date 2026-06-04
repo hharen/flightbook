@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
 
   before_action :authenticate_user!
+  before_action :set_locale
 
   helper_method :current_user
 
@@ -18,5 +19,10 @@ class ApplicationController < ActionController::Base
 
   def require_admin!
     redirect_to root_path, alert: t("flash.authorization.not_authorized") unless current_user&.admin?
+  end
+
+  def set_locale
+    locale = session[:locale] || I18n.default_locale
+    I18n.locale = I18n.available_locales.map(&:to_s).include?(locale.to_s) ? locale : I18n.default_locale
   end
 end
