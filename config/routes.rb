@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   resource :session, only: [:new, :create, :destroy]
   resource :registration, only: [:new, :create]
   resource :profile, only: [:show, :edit, :update]
+  resource :locale, only: [:update]
 
   resources :flying_sessions do
     collection do

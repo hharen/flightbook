@@ -88,6 +88,7 @@ en:
     new:
       title: "New flying session"
       heading: "New flying session"
+      back_link: "Back to flying sessions"
     edit:
       title: "Edit flying session"
       heading: "Edit flying session"
