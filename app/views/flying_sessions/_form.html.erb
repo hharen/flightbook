@@ -36,13 +36,17 @@
     <%= form.text_area :note, rows: 8, cols: 50 %>
   </div>
 
-  <div>
-    <%= form.label :user_id, t('flying_sessions.form.user'), style: "display: block" %>
-    <%= form.select :user_id,
-        options_from_collection_for_select(@users, :id, :name, flying_session.user_id),
-        { prompt: t('flying_sessions.form.select_user') },
-        { style: "display: block" } %>
-  </div>
+  <% if @users.size > 1 %>
+    <div>
+      <%= form.label :user_id, t('flying_sessions.form.user'), style: "display: block" %>
+      <%= form.select :user_id,
+          options_from_collection_for_select(@users, :id, :name, flying_session.user_id || current_user.id),
+          { prompt: t('flying_sessions.form.select_user') },
+          { style: "display: block" } %>
+    </div>
+  <% else %>
+    <%= form.hidden_field :user_id, value: flying_session.user_id || current_user.id %>
+  <% end %>
 
   <div>
     <%= form.label :instructor_id, t('flying_sessions.form.instructor'), style: "display: block" %>
