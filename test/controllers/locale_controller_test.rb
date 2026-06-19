@@ -1,6 +1,10 @@
 require "test_helper"
 
 class LocaleControllerTest < ActionDispatch::IntegrationTest
+  setup do
+    sign_in users(:hana)
+  end
+
   test "sets a valid locale in the session" do
     patch locale_url, params: { locale: "en" }
     assert_redirected_to root_url
