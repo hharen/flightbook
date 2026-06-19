@@ -270,4 +270,47 @@ class FlyingSessionsControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal expected_timestamps, actual_timestamps, "Should extract correct timestamps"
   end
+
+  # --- User scoping tests ---
+
+  test "admin user dropdown includes self and created users only" do
+    sign_in users(:hana)
+    get new_flying_session_url
+    assert_response :success
+    # hana (admin) should see herself and anna (created by hana) but no other users
+    assert_select "select[name='flying_session[user_id]'] option", count: 3 # prompt + hana + anna
+  end
+
+  test "non-admin does not see user dropdown" do
+    sign_in users(:anna)
+    get new_flying_session_url
+    assert_response :success
+    assert_select "select[name='flying_session[user_id]']", count: 0
+    assert_select "input[name='flying_session[user_id]'][type='hidden']", count: 1
+  end
+
+  test "non-admin cannot create session for another user" do
+    sign_in users(:anna)
+    assert_no_difference("FlyingSession.count") do
+      post flying_sessions_url, params: { flying_session: {
+        date_time: Time.zone.now,
+        user_id: users(:hana).id,
+        flights: 1,
+        duration: 10
+      } }
+    end
+    assert_response :forbidden
+  end
+
+  test "non-admin cannot access another user's flying session" do
+    sign_in users(:anna)
+    get flying_session_url(flying_sessions(:one))
+    assert_response :not_found
+  end
+
+  test "non-admin cannot edit another user's flying session" do
+    sign_in users(:anna)
+    get edit_flying_session_url(flying_sessions(:one))
+    assert_response :not_found
+  end
 end

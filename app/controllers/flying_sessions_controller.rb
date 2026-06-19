@@ -11,6 +11,7 @@ require "set"
 class FlyingSessionsController < ApplicationController
   before_action :set_flying_session, only: %i[show edit update destroy]
   before_action :set_form_collections, only: %i[new edit create update]
+  before_action :authorize_user_id!, only: %i[create update]
 
   # GET /flying_sessions
   def index
@@ -115,23 +116,32 @@ class FlyingSessionsController < ApplicationController
   end
 
   private
-    def set_form_collections
-      @users = if current_user.admin?
-        User.where(id: [ current_user.id ] + current_user.created_users.ids)
+    def visible_user_ids
+      if current_user.admin?
+        [ current_user.id ] + current_user.created_users.ids
       else
-        User.where(id: current_user.id)
+        [ current_user.id ]
       end
+    end
+
+    def set_form_collections
+      @users = User.where(id: visible_user_ids)
       @instructors = Instructor.all
     end
 
     # Use callbacks to share common setup or constraints between actions.
     def set_flying_session
       if params[:user_id].present?
-        @selected_user = User.find(params[:user_id])
+        @selected_user = User.where(id: visible_user_ids).find(params[:user_id])
         @flying_session = @selected_user.flying_sessions.find(params[:id])
       else
-        @flying_session = FlyingSession.find(params[:id])
+        @flying_session = FlyingSession.where(user_id: visible_user_ids).find(params[:id])
       end
+    end
+
+    def authorize_user_id!
+      submitted_id = params.dig(:flying_session, :user_id).to_i
+      head :forbidden unless visible_user_ids.include?(submitted_id)
     end
 
     # Only allow a list of trusted parameters through.
