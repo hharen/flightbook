@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   resource :session, only: [:new, :create, :destroy]
   resource :registration, only: [:new, :create]
   resource :profile, only: [:show, :edit, :update]
-  resource :locale, only: [:update]
+  resource :locale, only: [:update], controller: "locale"
 
   resources :flying_sessions do
     collection do

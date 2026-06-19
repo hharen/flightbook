@@ -77,7 +77,7 @@
           <td class="note-column">
             <%= truncate(flying_session.note, length: 500) %>
             <% if flying_session.note.present? && flying_session.note.length > 500 %>
-              <%= link_to t('flying_sessions.show.edit_link'), flying_session_path(flying_session), class: "text-link" %>
+              <%= link_to t('.read_more'), flying_session_path(flying_session), class: "text-link" %>
             <% end %>
           </td>
         </tr>
@@ -87,7 +87,7 @@
               <strong>Note:</strong>
               <%= truncate(flying_session.note, length: 500) %>
               <% if flying_session.note.length > 500 %>
-                <%= link_to "Read more", flying_session_path(flying_session), class: "text-link" %>
+                <%= link_to t('.read_more'), flying_session_path(flying_session), class: "text-link" %>
               <% end %>
             </td>
           </tr>

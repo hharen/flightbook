@@ -70,6 +70,7 @@ en:
       th_user: "User"
       th_instructor: "Instructor"
       th_note: "Note"
+      read_more: "Read more"
     show:
       title: "Flying session"
       heading: "Flying Session"
@@ -242,8 +243,8 @@ en:
       long: "%B %d, %Y"
     month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]
     abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
-    day_names: [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]
-    abbr_day_names: [Mon, Tue, Wed, Thu, Fri, Sat, Sun]
+    day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+    abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
 
   time:
     formats:

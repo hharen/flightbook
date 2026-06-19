@@ -5,7 +5,7 @@
 <div class="session-details">
   <p>
     <strong><%= t('.date_time') %>:</strong>
-    <%= @flying_session.date_time&.strftime("%d.%m.%Y - %H:%M") %>
+    <%= l(@flying_session.date_time, format: :long) if @flying_session.date_time %>
   </p>
 
   <p>
