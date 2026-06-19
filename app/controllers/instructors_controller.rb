@@ -41,7 +41,7 @@ class InstructorsController < ApplicationController
     @instructor = Instructor.new(instructor_params)
 
     if @instructor.save
-      redirect_to instructors_path, notice: "Instructor was successfully created."
+      redirect_to instructors_path, notice: t("flash.instructors.created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -50,7 +50,7 @@ class InstructorsController < ApplicationController
   # PATCH/PUT /instructors/1
   def update
     if @instructor.update(instructor_params)
-      redirect_to instructors_path, notice: "Instructor was successfully updated.", status: :see_other
+      redirect_to instructors_path, notice: t("flash.instructors.updated"), status: :see_other
     else
       render :edit, status: :unprocessable_entity
     end
@@ -59,7 +59,7 @@ class InstructorsController < ApplicationController
   # DELETE /instructors/1
   def destroy
     @instructor.destroy!
-    redirect_to instructors_path, notice: "Instructor was successfully destroyed.", status: :see_other
+    redirect_to instructors_path, notice: t("flash.instructors.destroyed"), status: :see_other
   end
 
   private

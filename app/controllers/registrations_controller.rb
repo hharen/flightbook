@@ -11,7 +11,7 @@ class RegistrationsController < ApplicationController
 
     if @user.save
       session[:user_id] = @user.id
-      redirect_to root_path, notice: "Welcome, #{@user.name}! Your account has been created."
+      redirect_to root_path, notice: t("flash.registrations.welcome", name: @user.name)
     else
       render :new, status: :unprocessable_entity
     end

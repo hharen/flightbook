@@ -22,7 +22,7 @@ class UsersController < ApplicationController
     @user.admin = params.dig(:user, :admin) == "1"
 
     if @user.save
-      redirect_to users_path, notice: "User was successfully created."
+      redirect_to users_path, notice: t("flash.users.created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -32,7 +32,7 @@ class UsersController < ApplicationController
   def update
     @user.admin = params.dig(:user, :admin) == "1"
     if @user.update(user_params)
-      redirect_to users_path, notice: "User was successfully updated.", status: :see_other
+      redirect_to users_path, notice: t("flash.users.updated"), status: :see_other
     else
       render :edit, status: :unprocessable_entity
     end
@@ -41,7 +41,7 @@ class UsersController < ApplicationController
   # DELETE /users/1
   def destroy
     @user.destroy!
-    redirect_to users_path, notice: "User was successfully destroyed.", status: :see_other
+    redirect_to users_path, notice: t("flash.users.destroyed"), status: :see_other
   end
 
   private

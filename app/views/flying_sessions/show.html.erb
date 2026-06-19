@@ -1,44 +1,42 @@
-<p style="color: green"><%= notice %></p>
+<% content_for :title, t('.title') %>
 
-<% content_for :title, "Flying session" %>
-
-<h1>Flying Session</h1>
+<h1><%= t('.heading') %></h1>
 
 <div class="session-details">
   <p>
-    <strong>Date & Time:</strong>
-    <%= @flying_session.date_time&.strftime("%d.%m.%Y - %H:%M") %>
+    <strong><%= t('.date_time') %>:</strong>
+    <%= l(@flying_session.date_time, format: :long) if @flying_session.date_time %>
   </p>
 
   <p>
-    <strong>User:</strong>
+    <strong><%= t('.user') %>:</strong>
     <%= @flying_session.user&.name %>
   </p>
 
   <p>
-    <strong>Instructor:</strong>
-    <%= @flying_session.instructor&.name || "No instructor assigned" %>
+    <strong><%= t('.instructor') %>:</strong>
+    <%= @flying_session.instructor&.name || t('.no_instructor') %>
   </p>
 
   <p>
-    <strong>Flight Time:</strong>
-    <%= @flying_session.show_flight_time %> min
+    <strong><%= t('.flight_time') %>:</strong>
+    <%= @flying_session.show_flight_time %> <%= t('.flight_time_unit') %>
   </p>
 
   <p>
-    <strong>Number of Flights:</strong>
+    <strong><%= t('.number_of_flights') %>:</strong>
     <%= @flying_session.flights %>
   </p>
 
   <p>
-    <strong>Notes:</strong><br>
+    <strong><%= t('.notes') %>:</strong><br>
     <%= simple_format(@flying_session.note) %>
   </p>
 </div>
 
 <div class="action-buttons">
-  <%= link_to "Edit", edit_flying_session_path(@flying_session), class: "btn btn-primary" %>
-  <%= link_to "Back to flying sessions", flying_sessions_path, class: "btn btn-secondary" %>
-  <%= button_to "Delete", flying_session_path(@flying_session), method: :delete,
-                data: { turbo_confirm: "Are you sure?" }, class: "btn btn-danger" %>
+  <%= link_to t('.edit_link'), edit_flying_session_path(@flying_session), class: "btn btn-primary" %>
+  <%= link_to t('.back_link'), flying_sessions_path, class: "btn btn-secondary" %>
+  <%= button_to t('.delete_button'), flying_session_path(@flying_session), method: :delete,
+                data: { turbo_confirm: t('.confirm_delete') }, class: "btn btn-danger" %>
 </div>

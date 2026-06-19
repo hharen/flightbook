@@ -1,0 +1,224 @@
+de:
+  layouts:
+    application:
+      nav:
+        flying_sessions: "Flugsessions"
+        instructors: "Coach"
+        users: "Benutzer"
+        log_out: "Abmelden"
+
+  sessions:
+    new:
+      title: "Anmelden"
+      submit: "Anmelden"
+
+  registrations:
+    new:
+      title: "Registrieren"
+      submit: "Registrieren"
+      have_account: "Haben Sie bereits ein Konto?"
+      log_in: "Anmelden"
+
+  flying_sessions:
+    index:
+      title: "Flugsessions"
+      heading: "Flugsessions"
+      new_link: "Neue Flugsession"
+      get_sessions_button: "Flugsessions abrufen"
+      all_users_prompt: "Alle Benutzer"
+      showing_for: "Einträge für: %{name}"
+      showing_all: "Alle Einträge"
+      session_count:
+        one: "1 Eintrag"
+        other: "%{count} Einträge"
+      total_flight_time: "Gesamte Flugzeit:"
+      hours: "%{hours} Stunden"
+      minutes: "%{minutes} Minuten"
+      th_number: "#"
+      th_date_time: "Datum & Uhrzeit"
+      th_flight_time: "Flugzeit (min)"
+      th_flights: "Flüge"
+      th_user: "Pilot"
+      th_instructor: "Coach"
+      th_note: "Notiz"
+      read_more: "Mehr lesen"
+    show:
+      title: "Flugsession"
+      heading: "Flugsession"
+      date_time: "Datum & Uhrzeit"
+      user: "Pilot"
+      instructor: "Coach"
+      flight_time: "Flugzeit"
+      flight_time_unit: "min"
+      number_of_flights: "Anzahl Flüge"
+      notes: "Notizen"
+      no_instructor: "Kein Coach zugewiesen"
+      edit_link: "Bearbeiten"
+      back_link: "Zurück zu den Flugsessions"
+      delete_button: "Löschen"
+      confirm_delete: "Sind Sie sicher?"
+    new:
+      title: "Neue Flugsession"
+      heading: "Neue Flugsession"
+      back_link: "Zurück zu den Flugsessions"
+    edit:
+      title: "Flugsession bearbeiten"
+      heading: "Flugsession bearbeiten"
+    form:
+      date: "Datum"
+      time: "Uhrzeit"
+      duration: "Dauer (Minuten)"
+      flights: "Anzahl Flüge"
+      note: "Notiz"
+      user: "Pilot"
+      instructor: "Coach"
+      select_user: "Pilot auswählen"
+      select_instructor: "Coach auswählen (optional)"
+      back_link: "Zurück zu den Flugsessions"
+      error_header:
+        one: "1 Fehler verhindert die Speicherung dieser Flugsession:"
+        other: "%{count} Fehler verhindern die Speicherung dieser Flugsession:"
+
+  instructors:
+    index:
+      title: "Coach"
+      heading: "Coach"
+      new_link: "Neuer Coach"
+      all_users_prompt: "Alle Benutzer"
+      showing_for: "Statistiken für: %{name}"
+      showing_all: "Statistiken für alle Benutzer"
+      th_name: "Name"
+      th_flying_sessions: "Flugsessions"
+      th_flight_time: "Flugzeit"
+      th_actions: "Aktionen"
+      delete: "Löschen"
+      hours_unit: "Std."
+      min_unit: "min"
+    new:
+      title: "Neuer Coach"
+      heading: "Neuer Coach"
+      back_link: "Zurück zu den Coaches"
+    edit:
+      title: "Coach bearbeiten"
+      heading: "Coach bearbeiten"
+      back_link: "Zurück zu den Coaches"
+    form:
+      error_header:
+        one: "1 Fehler verhindert die Speicherung dieses Coaches:"
+        other: "%{count} Fehler verhindern die Speicherung dieses Coaches:"
+
+  users:
+    index:
+      title: "Benutzer"
+      heading: "Benutzer"
+      new_link: "Neuer Benutzer"
+      th_name: "Name"
+      th_sessions: "Flugsessions"
+      th_total_flight_time: "Gesamte Flugzeit"
+      th_actions: "Aktionen"
+      delete: "Löschen"
+      no_flights: "Keine Flüge"
+      hrs: "Std."
+      sessions_count:
+        one: "1 Eintrag"
+        other: "%{count} Einträge"
+    new:
+      title: "Neuer Benutzer"
+      heading: "Neuer Benutzer"
+      back_link: "Zurück zu den Benutzern"
+    edit:
+      title: "Benutzer bearbeiten"
+      heading: "Benutzer bearbeiten"
+      back_link: "Zurück zu den Benutzern"
+    form:
+      password_label: "Passwort"
+      new_password_label: "Neues Passwort (leer lassen um das aktuelle zu behalten)"
+      error_header:
+        one: "1 Fehler verhindert die Speicherung dieses Benutzers:"
+        other: "%{count} Fehler verhindern die Speicherung dieses Benutzers:"
+
+  profiles:
+    show:
+      title: "Profil"
+      edit_link: "Profil bearbeiten"
+      flying_sessions: "Flugsessions"
+      total_flights: "Gesamte Flüge"
+      hours_airborne: "Flugsessions"
+    edit:
+      title: "Profil bearbeiten"
+      heading: "Profil bearbeiten"
+      back_link: "← Zurück"
+      save_button: "Änderungen speichern"
+      new_password_label: "Neues Passwort (leer lassen um das aktuelle zu behalten)"
+
+  flash:
+    sessions:
+      welcome: "Willkommen, %{name}!"
+      invalid_credentials: "Ungültige E-Mail oder Passwort."
+      logged_out: "Sie wurden abgemeldet."
+    registrations:
+      welcome: "Willkommen, %{name}! Ihr Konto wurde erstellt."
+    flying_sessions:
+      created: "Flugsession wurde erfolgreich erstellt."
+      updated: "Flugsession wurde erfolgreich aktualisiert."
+      destroyed: "Flugsession wurde erfolgreich gelöscht."
+      windwerk_auth_failed: "Authentifizierung bei Windwerk fehlgeschlagen. Bitte überprüfen Sie Ihre Zugangsdaten."
+      windwerk_fetch_failed: "Datenabruf von Windwerk nach der Authentifizierung fehlgeschlagen."
+      windwerk_error: "Fehler beim Abrufen der Daten: %{message}"
+      windwerk_imported:
+        one: "1 Flugsession von Windwerk importiert."
+        other: "%{count} Flugsessions von Windwerk importiert."
+    instructors:
+      created: "Coach wurde erfolgreich erstellt."
+      updated: "Coach wurde erfolgreich aktualisiert."
+      destroyed: "Coach wurde erfolgreich gelöscht."
+    users:
+      created: "Benutzer wurde erfolgreich erstellt."
+      updated: "Benutzer wurde erfolgreich aktualisiert."
+      destroyed: "Benutzer wurde erfolgreich gelöscht."
+    profiles:
+      updated: "Profil wurde aktualisiert."
+    authorization:
+      not_authorized: "Nicht autorisiert."
+
+  activerecord:
+    models:
+      flying_session:
+        one: "Flugsession"
+        other: "Flugsessions"
+      instructor:
+        one: "Coach"
+        other: "Coach"
+      user:
+        one: "Benutzer"
+        other: "Benutzer"
+    attributes:
+      flying_session:
+        date_time: "Datum & Uhrzeit"
+        duration: "Dauer"
+        flights: "Anzahl Flüge"
+        note: "Notiz"
+      instructor:
+        name: "Name"
+      user:
+        name: "Name"
+        email: "E-Mail"
+        password: "Passwort"
+        password_confirmation: "Passwortbestätigung"
+        admin: "Administrator"
+
+  date:
+    formats:
+      default: "%d.%m.%Y"
+      short: "%d.%m.%y"
+      long: "%d. %B %Y"
+    month_names: [~, Januar, Februar, März, April, Mai, Juni, Juli, August, September, Oktober, November, Dezember]
+    abbr_month_names: [~, Jan, Feb, Mär, Apr, Mai, Jun, Jul, Aug, Sep, Okt, Nov, Dez]
+    day_names: [Sonntag, Montag, Dienstag, Mittwoch, Donnerstag, Freitag, Samstag]
+    abbr_day_names: [So, Mo, Di, Mi, Do, Fr, Sa]
+
+  time:
+    formats:
+      default: "%d.%m.%Y %H:%M"
+      short: "%d.%m. %H:%M"
+      long: "%d. %B %Y %H:%M Uhr"
