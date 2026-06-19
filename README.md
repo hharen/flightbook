@@ -1,24 +1,33 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Local
+### Server
+- start server `bin/rails`
+- start console `rails c`
 
-Things you may want to cover:
+## SERVER
+- `ssh root@challengic.hharen.com`
 
-* Ruby version
+### Update regularly
+- `apt update` - downloads the newest list of updates
+- `apt upgrade` - does the actual upgrade
+- `reboot` - reboots the server
 
-* System dependencies
+### Find volumes
+- `docker volume ls`
 
-* Configuration
+## Kamal
+- `kamal redeploy`
+- `kamal app stop`
+- `kamal app start`
+- `kamal app exec --reuse -i 'bin/rails c'` or `kamal app exec --reuse 'bin/rails runner "CLASS.update_all(ATRIBUTE: VALUE)"'`
 
-* Database creation
+### Logs
+- `kamal app logs` - View recent logs
+- `kamal app logs --follow` - Follow logs in real-time
+- `kamal app logs --since 1h` - View logs from a specific time
+- `kamal app logs --timestamps` - View logs with timestamps
+- `kamal app logs --all` - View logs from all containers
+- `kamal app logs --service web` - View logs for a specific service
+- `kamal proxy logs -f` - Real time logs from Kamal's proxy
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
