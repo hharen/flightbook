@@ -10,6 +10,7 @@ require "set"
 
 class FlyingSessionsController < ApplicationController
   before_action :set_flying_session, only: %i[show edit update destroy]
+  before_action :set_form_collections, only: %i[new edit create update]
 
   # GET /flying_sessions
   def index
@@ -41,14 +42,10 @@ class FlyingSessionsController < ApplicationController
   # GET /flying_sessions/new
   def new
     @flying_session = FlyingSession.new
-    @users = User.all
-    @instructors = Instructor.all
   end
 
   # GET /flying_sessions/1/edit
   def edit
-    @users = User.all
-    @instructors = Instructor.all
   end
 
   # POST /flying_sessions
@@ -118,6 +115,15 @@ class FlyingSessionsController < ApplicationController
   end
 
   private
+    def set_form_collections
+      @users = if current_user.admin?
+        User.where(id: [ current_user.id ] + current_user.created_users.ids)
+      else
+        User.where(id: current_user.id)
+      end
+      @instructors = Instructor.all
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_flying_session
       if params[:user_id].present?
