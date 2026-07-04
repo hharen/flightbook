@@ -21,6 +21,7 @@ class UsersTest < ApplicationSystemTestCase
     fill_in "Password confirmation", with: "secret123"
     click_on "Create User"
 
+    assert_current_path users_path
     assert_text "User was successfully created"
   end
 
