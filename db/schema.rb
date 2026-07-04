@@ -15,12 +15,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_20_120200) do
     t.datetime "created_at", null: false
     t.datetime "date_time", null: false
     t.integer "duration"
-    t.integer "flight_time"
-    t.integer "flights"
+    t.integer "flights", default: 0, null: false
     t.integer "instructor_id"
     t.string "note"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.index ["flights"], name: "index_flying_sessions_on_flights"
     t.index ["instructor_id"], name: "index_flying_sessions_on_instructor_id"
     t.index ["user_id"], name: "index_flying_sessions_on_user_id"
   end

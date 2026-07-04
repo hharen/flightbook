@@ -97,26 +97,17 @@ flying_sessions_data.each do |session_data|
   instructor = session_data[:instructor] ? Instructor.find_by(name: session_data[:instructor]) : nil
 
   # Create or find the flying session
-  session = FlyingSession.find_or_create_by!(
+  FlyingSession.find_or_create_by!(
     user: hana,
     date_time: session_data[:date_time]
   ) do |fs|
     fs.note = session_data[:note]
     fs.instructor = instructor
-    # Set the total duration for the session (flights_count * flight_duration in minutes)
+    fs.flights = session_data[:flights_count]
     fs.duration = (session_data[:flights_count] * session_data[:flight_duration]).to_i if session_data[:flights_count] > 0
   end
 
-  # Create flights for this session if specified
-  if session_data[:flights_count] > 0 && session.flights.empty?
-    session_data[:flights_count].times do |i|
-      flight_number = i + 1
-      session.flights.create!(
-        number: flight_number
-      )
-    end
-    puts "Created #{session_data[:flights_count]} flights for session on #{session_data[:date_time]}"
-  end
+  puts "Created/found session on #{session_data[:date_time]}"
 end
 
 puts "Seeds completed successfully!"
