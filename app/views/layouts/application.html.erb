@@ -60,6 +60,12 @@
     </nav>
 
     <main class="main-content">
+      <% if notice %>
+        <p style="color: green" role="status"><%= notice %></p>
+      <% end %>
+      <% if alert %>
+        <p style="color: red" role="alert"><%= alert %></p>
+      <% end %>
       <%= yield %>
     </main>
   </body>

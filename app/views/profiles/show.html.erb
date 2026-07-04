@@ -1,7 +1,5 @@
 <% content_for :title, t('.title') %>
 
-<p style="color: green"><%= notice %></p>
-
 <div class="profile-header">
   <h1><%= @user.name %></h1>
   <%= link_to t('.edit_link'), edit_profile_path, class: "btn btn-primary" %>
