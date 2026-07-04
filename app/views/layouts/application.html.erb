@@ -28,11 +28,17 @@
   </head>
 
   <body>
-    <nav class="navbar">
+    <nav class="navbar" data-controller="navbar">
       <div class="navbar-container">
         <%= link_to "Flightbook", root_path, class: "navbar-brand" %>
 
-        <div class="navbar-menu">
+        <button class="navbar-toggle" data-action="click->navbar#toggle" aria-label="Toggle menu">
+          <span class="navbar-toggle-icon"></span>
+          <span class="navbar-toggle-icon"></span>
+          <span class="navbar-toggle-icon"></span>
+        </button>
+
+        <div class="navbar-menu" data-navbar-target="menu">
           <% if current_user %>
             <%= link_to t('.nav.flying_sessions'), flying_sessions_path, class: "navbar-item" %>
             <%= link_to t('.nav.instructors'), instructors_path, class: "navbar-item" %>
@@ -54,6 +60,12 @@
     </nav>
 
     <main class="main-content">
+      <% if notice %>
+        <p style="color: green" role="status"><%= notice %></p>
+      <% end %>
+      <% if alert %>
+        <p style="color: red" role="alert"><%= alert %></p>
+      <% end %>
       <%= yield %>
     </main>
   </body>
