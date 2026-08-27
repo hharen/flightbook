@@ -93,6 +93,8 @@ en:
     edit:
       title: "Edit flying session"
       heading: "Edit flying session"
+      delete_button: "Delete flying session"
+      confirm_delete: "Are you sure?"
     form:
       date: "Date"
       time: "Time"

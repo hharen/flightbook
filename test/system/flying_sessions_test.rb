@@ -63,4 +63,14 @@ class FlyingSessionsTest < ApplicationSystemTestCase
 
     assert_text "Flying session was successfully destroyed"
   end
+
+  test "should destroy Flying session from edit page" do
+    visit edit_flying_session_url(@flying_session)
+    accept_confirm("Are you sure?") do
+      click_on "Delete flying session", match: :first
+    end
+
+    assert_text "Flying session was successfully destroyed"
+    assert_no_text @flying_session.note if @flying_session.note.present?
+  end
 end
