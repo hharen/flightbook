@@ -67,6 +67,8 @@ de:
     edit:
       title: "Flugsession bearbeiten"
       heading: "Flugsession bearbeiten"
+      delete_button: "Flugsession löschen"
+      confirm_delete: "Sind Sie sicher?"
     form:
       date: "Datum"
       time: "Uhrzeit"

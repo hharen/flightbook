@@ -56,7 +56,12 @@
         { style: "display: block" } %>
   </div>
 
-  <div>
+  <div class="form-actions">
     <%= form.submit %>
+    <% if flying_session.persisted? %>
+      <%= link_to t('flying_sessions.edit.delete_button'), flying_session_path(flying_session),
+            data: { turbo_method: :delete, turbo_confirm: t('flying_sessions.edit.confirm_delete') },
+            class: "btn btn-danger" %>
+    <% end %>
   </div>
 <% end %>
