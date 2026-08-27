@@ -104,6 +104,13 @@ a:hover {
   margin: 0 auto;
 }
 
+/* Note textarea on flying session forms */
+.note-textarea {
+  display: block;
+  width: 80%;
+  box-sizing: border-box;
+}
+
 /* Table Styles */
 .table-container {
   overflow-x: auto;
@@ -206,6 +213,10 @@ h1 {
 @media (max-width: 768px) {
   .main-content {
     padding: 1rem 0;
+  }
+
+  .note-textarea {
+    width: 95%;
   }
 
   .navbar-container {
