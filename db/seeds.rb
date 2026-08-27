@@ -71,24 +71,24 @@ flying_sessions_data = [
   },
   {
     date_time: DateTime.parse("2025-09-02 00:00"),
-    note: nil,
+    note: "Gutes Bauchfliegen, stabiler Bogen.",
     instructor: "Cris",
     flights_count: 5,
-    flight_duration: 0
+    flight_duration: 2.5
   },
   {
     date_time: DateTime.parse("2025-09-08 13:00"),
-    note: nil,
+    note: "R\u00fcckenfliegen und Beinarbeit ge\u00fcbt. N\u00e4chstes Mal wieder auf die Beinarbeit achten. Drehungen von Bauch zu R\u00fccken und zur\u00fcck.",
     instructor: "Chris",
     flights_count: 5,
-    flight_duration: 0
+    flight_duration: 3
   },
   {
     date_time: DateTime.parse("2025-09-08 14:00"),
-    note: nil,
+    note: "Ganze Session zu Sitfly-Grundlagen. Begonnen auf dem Boden mit der K\u00f6rperposition: neutrale Wirbels\u00e4ule, Knie ca. 90\u00b0 gebeugt, Arme zur Balance ausgestreckt, und wie kleine Kinn-/Kniebewegungen die Fallgeschwindigkeit ver\u00e4ndern. Im Tunnel haben wir zuerst Stabilit\u00e4t im Sitz erarbeitet, bevor Bewegung dazukam, danach kontrollierte Drehungen ge\u00fcbt.\n\nN\u00e4chstes Mal: Schultern gerade halten. Im Debrief ging es um typische Verspannungspunkte (Schultern, H\u00e4nde) und ein paar Trocken\u00fcbungen f\u00fcr die n\u00e4chste Session.",
     instructor: "Chris",
     flights_count: 5,
-    flight_duration: 0
+    flight_duration: 4
   }
 ]
 
@@ -96,16 +96,16 @@ flying_sessions_data.each do |session_data|
   # Find instructor by name if specified
   instructor = session_data[:instructor] ? Instructor.find_by(name: session_data[:instructor]) : nil
 
-  # Create or find the flying session
-  FlyingSession.find_or_create_by!(
+  # Create or update the flying session
+  fs = FlyingSession.find_or_initialize_by(
     user: hana,
     date_time: session_data[:date_time]
-  ) do |fs|
-    fs.note = session_data[:note]
-    fs.instructor = instructor
-    fs.flights = session_data[:flights_count]
-    fs.duration = (session_data[:flights_count] * session_data[:flight_duration]).to_i if session_data[:flights_count] > 0
-  end
+  )
+  fs.note = session_data[:note]
+  fs.instructor = instructor
+  fs.flights = session_data[:flights_count]
+  fs.duration = (session_data[:flights_count] * session_data[:flight_duration]).to_i if session_data[:flights_count] > 0
+  fs.save!
 
   puts "Created/found session on #{session_data[:date_time]}"
 end

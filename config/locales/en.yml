@@ -40,6 +40,9 @@ en:
     new:
       title: "Log in"
       submit: "Log in"
+      invite_heading: "New to Flightbook?"
+      invite_body_html: "Flightbook is an invite-only space for tracking flights. If you're a flyer and would like to use it, just say hello \u2014 send a quick email to %{email} and I'll happily add you."
+      preview_heading: "A look inside"
 
   registrations:
     new:

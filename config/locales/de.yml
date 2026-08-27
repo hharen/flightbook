@@ -11,6 +11,9 @@ de:
     new:
       title: "Anmelden"
       submit: "Anmelden"
+      invite_heading: "Neu bei Flightbook?"
+      invite_body_html: "Flightbook ist ein Bereich nur auf Einladung f\u00fcr das Erfassen von Fl\u00fcgen. Wenn du fliegst und Flightbook nutzen m\u00f6chtest, meld dich einfach kurz per E-Mail bei %{email} \u2014 ich f\u00fcge dich gerne hinzu."
+      preview_heading: "Ein Blick hinein"
 
   registrations:
     new:
