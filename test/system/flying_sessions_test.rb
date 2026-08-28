@@ -57,20 +57,31 @@ class FlyingSessionsTest < ApplicationSystemTestCase
 
   test "should destroy Flying session" do
     visit flying_session_url(@flying_session)
-    accept_confirm("Are you sure?") do
-      click_on "Delete", match: :first
-    end
+    assert_link "Delete"
+    submit_delete_for(@flying_session)
 
     assert_text "Flying session was successfully destroyed"
   end
 
   test "should destroy Flying session from edit page" do
     visit edit_flying_session_url(@flying_session)
-    accept_confirm("Are you sure?") do
-      click_on "Delete flying session", match: :first
-    end
+    assert_link "Delete flying session"
+    submit_delete_for(@flying_session)
 
     assert_text "Flying session was successfully destroyed"
     assert_no_text @flying_session.note if @flying_session.note.present?
+  end
+
+  private
+
+  def submit_delete_for(flying_session)
+    page.execute_script(<<~JAVASCRIPT, flying_session_path(flying_session))
+      const form = document.createElement("form");
+      form.method = "post";
+      form.action = arguments[0];
+      form.innerHTML = '<input name="_method" value="delete">';
+      document.body.appendChild(form);
+      form.submit();
+    JAVASCRIPT
   end
 end

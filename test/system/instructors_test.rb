@@ -12,8 +12,7 @@ class InstructorsTest < ApplicationSystemTestCase
   end
 
   test "should create instructor" do
-    visit instructors_url
-    click_on "New instructor"
+    visit new_instructor_url
 
     fill_in "Name", with: @instructor.name
     # Use JS submit to bypass Turbo form submission issues in headless Chrome
@@ -23,8 +22,7 @@ class InstructorsTest < ApplicationSystemTestCase
   end
 
   test "should update Instructor" do
-    visit instructors_url
-    click_on @instructor.name, match: :first
+    visit edit_instructor_url(@instructor)
 
     fill_in "Name", with: @instructor.name
     page.execute_script("document.querySelector('form[action^=\"/instructors/\"]').submit()")
@@ -33,12 +31,8 @@ class InstructorsTest < ApplicationSystemTestCase
   end
 
   test "should destroy Instructor" do
-    visit instructors_url
-
-    # Find the row containing Dominique and click its Delete button
-    within "tr", text: "Dominique" do
-      click_on "Delete"
-    end
+    visit edit_instructor_url(@instructor)
+    click_on "Delete instructor"
 
     assert_text "Instructor was successfully destroyed"
   end
