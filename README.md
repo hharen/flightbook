@@ -6,7 +6,7 @@
 - start console `rails c`
 
 ## SERVER
-- `ssh root@challengic.hharen.com`
+- `ssh root@flightbook.hharen.com`
 
 ### Update regularly
 - `apt update` - downloads the newest list of updates
