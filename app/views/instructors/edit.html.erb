@@ -4,7 +4,7 @@
 
 <%= render "form", instructor: @instructor %>
 
-<%= link_to t('.delete'), instructor_path(instructor),
+<%= link_to t('.delete'), instructor_path(@instructor),
             data: { "turbo-method": :delete },
             class: "btn btn-small btn-danger" %>
 
