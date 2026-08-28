@@ -107,7 +107,10 @@ de:
       title: "Coach bearbeiten"
       heading: "Coach bearbeiten"
       back_link: "Zurück zu den Coaches"
+      delete_button: "Coach löschen"
     form:
+      create_button: "Coach erstellen"
+      update_button: "Coach aktualisieren"
       error_header:
         one: "1 Fehler verhindert die Speicherung dieses Coaches:"
         other: "%{count} Fehler verhindern die Speicherung dieses Coaches:"

@@ -1,15 +1,9 @@
 <% content_for :title, t('.title') %>
 
+<div class="action-buttons">
+  <%= link_to t('.back_link'), instructors_path %>
+</div>
+
 <h1><%= t('.heading') %></h1>
 
 <%= render "form", instructor: @instructor %>
-
-<%= link_to t('.delete'), instructor_path(@instructor),
-            data: { "turbo-method": :delete },
-            class: "btn btn-small btn-danger" %>
-
-<br>
-
-<div>
-  <%= link_to t('.back_link'), instructors_path %>
-</div>
