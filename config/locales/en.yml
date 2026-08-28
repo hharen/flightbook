@@ -136,7 +136,10 @@ en:
       title: "Editing instructor"
       heading: "Editing instructor"
       back_link: "Back to instructors"
+      delete_button: "Delete instructor"
     form:
+      create_button: "Create instructor"
+      update_button: "Update instructor"
       error_header:
         one: "1 error prohibited this instructor from being saved:"
         other: "%{count} errors prohibited this instructor from being saved:"

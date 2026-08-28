@@ -39,7 +39,6 @@
         <th><%= t('.th_name') %></th>
         <th><%= t('.th_flying_sessions') %></th>
         <th><%= t('.th_flight_time') %></th>
-        <th><%= t('.th_actions') %></th>
       </tr>
     </thead>
     <tbody>
@@ -55,11 +54,6 @@
             <% else %>
               -
             <% end %>
-          </td>
-          <td class="actions">
-            <%= link_to t('.delete'), instructor_path(instructor),
-                        data: { "turbo-method": :delete },
-                        class: "btn btn-small btn-danger" %>
           </td>
         </tr>
       <% end %>

@@ -1,11 +1,9 @@
 <% content_for :title, t('.title') %>
 
+<div class="action-buttons">
+  <%= link_to t('.back_link'), instructors_path %>
+</div>
+
 <h1><%= t('.heading') %></h1>
 
 <%= render "form", instructor: @instructor %>
-
-<br>
-
-<div>
-  <%= link_to t('.back_link'), instructors_path %>
-</div>

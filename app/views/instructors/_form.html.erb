@@ -16,7 +16,12 @@
     <%= form.text_field :name %>
   </div>
 
-  <div>
-    <%= form.submit %>
+  <div class="form-actions">
+    <%= form.submit t("instructors.form.#{instructor.persisted? ? 'update_button' : 'create_button'}") %>
+    <% if instructor.persisted? %>
+      <%= link_to t('instructors.edit.delete_button'), instructor_path(instructor),
+                  data: { turbo_method: :delete },
+                  class: "btn btn-danger" %>
+    <% end %>
   </div>
 <% end %>
