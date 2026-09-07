@@ -33,7 +33,7 @@
 
   <div>
     <%= form.label :note, t('flying_sessions.form.note'), style: "display: block" %>
-    <%= form.text_area :note, rows: 8, cols: 50 %>
+    <%= form.text_area :note, rows: 8, class: "note-textarea" %>
   </div>
 
   <% if @users.size > 1 %>
