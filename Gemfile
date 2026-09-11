@@ -18,6 +18,9 @@ gem "stimulus-rails", "~> 1.3"
 gem "jbuilder", "~> 2.14"
 # HTML parsing for flying sessions data
 gem "nokogiri", "~> 1.19"
+# Pin json below 3.0 until Rails supports the keyword-only JSON.parse API
+# introduced there (see https://github.com/rails/rails/issues/58685).
+gem "json", "~> 2.21"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem "bcrypt", "~> 3.1"
