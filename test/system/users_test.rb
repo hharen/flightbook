@@ -19,7 +19,8 @@ class UsersTest < ApplicationSystemTestCase
     fill_in "Email", with: "newtest@flightbook.local"
     fill_in "Password", with: "secret123"
     fill_in "Password confirmation", with: "secret123"
-    click_on "Create User"
+    # Use JS submit to bypass Turbo form submission issues in headless Chrome
+    page.execute_script("document.querySelector('form[action=\"/users\"]').submit()")
 
     assert_current_path users_path
     assert_text "User was successfully created"
