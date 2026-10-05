@@ -50,7 +50,7 @@ group :development, :test do
   gem "debug", "~> 1.11", platforms: %i[ mri windows ], require: "debug/prelude"
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
-  gem "brakeman", "~> 8.0", require: false
+  gem "brakeman", "~> 8.1", require: false
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", "~> 1.1", require: false
