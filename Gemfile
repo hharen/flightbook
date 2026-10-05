@@ -64,7 +64,7 @@ end
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara", "~> 3.40"
-  gem "selenium-webdriver", "~> 4.41"
+  gem "selenium-webdriver", "~> 4.50"
   # Mock and stub for testing
   gem "mocha", "~> 3.1"
 end
